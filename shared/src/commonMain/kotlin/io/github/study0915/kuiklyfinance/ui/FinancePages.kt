@@ -14,6 +14,7 @@ import com.tencent.kuikly.core.views.List
 import com.tencent.kuikly.core.views.Text
 import com.tencent.kuikly.core.views.View
 import io.github.study0915.kuiklychart.CandleChart
+import io.github.study0915.kuiklychart.BarChart
 import io.github.study0915.kuiklychart.ChartPoint
 import io.github.study0915.kuiklychart.ChartSeries
 import io.github.study0915.kuiklychart.ChartTheme
@@ -57,6 +58,7 @@ class FinanceHomePage : Pager() {
     private val market = MockMarketDataSource()
     private val quotes = market.quotesSnapshot()
     private var selectedSummary: String by observable("拖动图表查看时间点")
+    private var selectedBar: String by observable("点击柱体查看涨跌幅")
 
     override fun body(): ViewBuilder {
         val ctx = this
@@ -217,6 +219,64 @@ class FinanceHomePage : Pager() {
                             event {
                                 onPointSelected {
                                     ctx.selectedSummary = "${it.label}  ¥${it.value.pretty()}"
+                                }
+                            }
+                        }
+                    }
+
+                    View {
+                        attr {
+                            margin(left = 16f, right = 16f, top = 14f)
+                            padding(top = 15f, bottom = 12f)
+                            height(226f)
+                            backgroundColor(FinancePalette.panel)
+                            borderRadius(14f)
+                            overflow(true)
+                        }
+                        Text {
+                            attr {
+                                text("样本涨跌幅")
+                                color(FinancePalette.text)
+                                fontSize(14f)
+                                fontWeight600()
+                                marginLeft(15f)
+                            }
+                        }
+                        Text {
+                            attr {
+                                text(ctx.selectedBar)
+                                color(FinancePalette.muted)
+                                fontFamily("monospace")
+                                fontSize(11f)
+                                margin(left = 15f, top = 5f)
+                            }
+                        }
+                        BarChart {
+                            attr {
+                                height(166f)
+                                marginTop(8f)
+                                data(
+                                    listOf(
+                                        ChartSeries(
+                                            name = "涨跌幅",
+                                            points = ctx.quotes.map { quote ->
+                                                ChartPoint(quote.name, quote.changePercent)
+                                            },
+                                            color = FinancePalette.blue,
+                                        ),
+                                    ),
+                                )
+                                barColors(listOf(FinancePalette.blue))
+                                showAxis(true)
+                                showGrid(true)
+                                showValueLabels(true)
+                                cornerRadius(6f)
+                                showTooltip(true)
+                                theme(ChartTheme.FINANCE_DARK)
+                            }
+                            event {
+                                onPointSelected {
+                                    ctx.selectedBar = "${it.label}  ${it.value.pretty()}%"
                                 }
                             }
                         }
@@ -490,10 +550,62 @@ class StockDetailPage : Pager() {
                         flexDirectionRow()
                         justifyContentSpaceBetween()
                     }
-                    ctx.addMetric(container, "今开", detail.open.pretty())
-                    ctx.addMetric(container, "最高", quote.high.pretty())
-                    ctx.addMetric(container, "最低", quote.low.pretty())
-                    ctx.addMetric(container, "成交量", "${(quote.volume / 10000f).pretty()}万")
+                    View {
+                        attr { alignItemsCenter() }
+                        Text { attr { text("今开"); color(FinancePalette.muted); fontSize(10f) } }
+                        Text {
+                            attr {
+                                text(detail.open.pretty())
+                                color(FinancePalette.text)
+                                fontFamily("monospace")
+                                fontSize(12f)
+                                fontWeight600()
+                                marginTop(5f)
+                            }
+                        }
+                    }
+                    View {
+                        attr { alignItemsCenter() }
+                        Text { attr { text("最高"); color(FinancePalette.muted); fontSize(10f) } }
+                        Text {
+                            attr {
+                                text(quote.high.pretty())
+                                color(FinancePalette.text)
+                                fontFamily("monospace")
+                                fontSize(12f)
+                                fontWeight600()
+                                marginTop(5f)
+                            }
+                        }
+                    }
+                    View {
+                        attr { alignItemsCenter() }
+                        Text { attr { text("最低"); color(FinancePalette.muted); fontSize(10f) } }
+                        Text {
+                            attr {
+                                text(quote.low.pretty())
+                                color(FinancePalette.text)
+                                fontFamily("monospace")
+                                fontSize(12f)
+                                fontWeight600()
+                                marginTop(5f)
+                            }
+                        }
+                    }
+                    View {
+                        attr { alignItemsCenter() }
+                        Text { attr { text("成交量"); color(FinancePalette.muted); fontSize(10f) } }
+                        Text {
+                            attr {
+                                text("${(quote.volume / 10000f).pretty()}万")
+                                color(FinancePalette.text)
+                                fontFamily("monospace")
+                                fontSize(12f)
+                                fontWeight600()
+                                marginTop(5f)
+                            }
+                        }
+                    }
                 }
 
                 View {
@@ -579,7 +691,91 @@ class StockDetailPage : Pager() {
                     }
                 }
 
-                ctx.addAnalysisCard(container, analysis)
+                View {
+                    attr {
+                        margin(left = 16f, right = 16f, top = 14f)
+                        padding(17f)
+                        backgroundColor(Color(0xFF1B2130L))
+                        borderRadius(14f)
+                        borderLeft(Border(3f, BorderStyle.SOLID, FinancePalette.amber))
+                    }
+                    View {
+                        attr {
+                            flexDirectionRow()
+                            justifyContentSpaceBetween()
+                            alignItemsCenter()
+                        }
+                        Text {
+                            attr {
+                                text("AI / 结构化解读")
+                                color(FinancePalette.amber)
+                                fontFamily("monospace")
+                                fontSize(12f)
+                                letterSpacing(1f)
+                                fontWeight700()
+                            }
+                        }
+                        Text {
+                            attr {
+                                text("MOCK · ${analysis.riskLevel.name}")
+                                color(
+                                    when (analysis.riskLevel) {
+                                        RiskLevel.LOW -> FinancePalette.positive
+                                        RiskLevel.MEDIUM -> FinancePalette.amber
+                                        RiskLevel.HIGH -> FinancePalette.negative
+                                    },
+                                )
+                                fontFamily("monospace")
+                                fontSize(10f)
+                            }
+                        }
+                    }
+                    Text {
+                        attr {
+                            text(analysis.summary)
+                            color(FinancePalette.text)
+                            fontSize(14f)
+                            lineHeight(21f)
+                            marginTop(13f)
+                        }
+                    }
+                    View {
+                        attr {
+                            height(1f)
+                            backgroundColor(FinancePalette.rule)
+                            margin(top = 14f, bottom = 12f)
+                        }
+                    }
+                    Text {
+                        attr {
+                            text("支撑 ${analysis.supportLevel.pretty()}  /  压力 ${analysis.resistanceLevel.pretty()}")
+                            color(FinancePalette.blue)
+                            fontFamily("monospace")
+                            fontSize(12f)
+                        }
+                    }
+                    analysis.keyPoints.forEach { point ->
+                        Text {
+                            attr {
+                                text("• $point")
+                                color(FinancePalette.muted)
+                                fontSize(12f)
+                                marginTop(8f)
+                            }
+                        }
+                    }
+                    if (analysis.riskNotes.isNotEmpty()) {
+                        Text {
+                            attr {
+                                text("风险提示：${analysis.riskNotes.joinToString("；")}")
+                                color(FinancePalette.amber)
+                                fontSize(12f)
+                                lineHeight(18f)
+                                marginTop(12f)
+                            }
+                        }
+                    }
+                }
 
                 Text {
                     attr {

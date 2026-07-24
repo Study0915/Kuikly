@@ -29,7 +29,7 @@ try {
     & .\gradlew.bat :KuiklyChart:jsNodeTest :shared:compileKotlinJs :h5App:jsBrowserProductionWebpack @gradleArgs
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     if (-not $SkipAndroid) {
-        & .\gradlew.bat :androidApp:assembleDebug @gradleArgs
+        & .\gradlew.bat :shared:testDebugUnitTest :androidApp:assembleDebug @gradleArgs
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     }
 } finally {

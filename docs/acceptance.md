@@ -5,10 +5,10 @@
 | 能力 | 验收方式 | 当前状态 |
 |---|---|---|
 | 数值范围/刻度/坐标/K 线窗口 | `:KuiklyChart:jsNodeTest` | 通过（2026-07-24，见 `docs/evidence/2026-07-24-build.md`） |
-| 折线图/柱状图/K 线 DSL | Kotlin 编译 + H5 Demo 页面 | H5 首页折线图、详情页 K 线/成交量实际渲染通过（2026-07-24） |
-| Tooltip/点击/拖动/缩放平移 | H5 浏览器交互 + 截图 | 列表点击路由与折线图可视化已验；Canvas 触点/缩放手势仍待专门自动化覆盖 |
-| Mock 行情列表/详情 | H5 页面交互 + 测试 | H5 行情列表点击“贵州茅台”后实际进入详情页（2026-07-24）；Provider JS 单测受 Kotlin/JS 编译器内部异常阻断 |
-| Mock AI 分析 | Provider 单测 + 页面 | H5 详情页已实际展示确定性 Mock 分析；Provider JS 单测受 Kotlin/JS 编译器内部异常阻断 |
+| 折线图/柱状图/K 线 DSL | Kotlin 编译 + H5 Demo 页面 | H5 首页折线图与 `BarChart`、详情页 K 线/成交量均实际渲染通过（2026-07-25） |
+| Tooltip/点击/拖动/缩放平移 | H5 浏览器交互 + 截图 | 首页分时图和柱图、详情分时图与 K线均已实际点击并显示 Tooltip；浏览器自动化拖动未触发 Kuikly `pan`，缩放/平移仍待专门运行时覆盖 |
+| Mock 行情列表/详情 | H5 页面交互 + 测试 | H5 观察列表实际滚动，点击“贵州茅台”后进入详情页（2026-07-25）；Android 本地 JVM Provider 测试 5/5 通过，Provider JS 单测仍受 Kotlin/JS 编译器内部异常阻断 |
+| Mock AI 分析 | Provider 单测 + 页面 | H5 详情页已实际展示确定性 Mock 分析；Android 本地 JVM 测试覆盖确定性与免责声明，Provider JS 单测仍受 Kotlin/JS 编译器内部异常阻断 |
 | Kotlin/JS | `:shared:compileKotlinJs` | 通过（2026-07-24） |
 | H5 production bundle | `:h5App:jsBrowserProductionWebpack` | 通过（2026-07-24） |
 | Android Debug APK | `scripts\verify.ps1` / `:androidApp:assembleDebug` | 通过（2026-07-24；项目内 Wrapper 8.0、JDK 17.0.12，APK 与 SHA-256 见构建证据） |
