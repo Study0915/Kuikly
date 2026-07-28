@@ -1,0 +1,10 @@
+{
+  "name": "kuikly-finance-h5",
+  "version": "0.1.0",
+  "private": true,
+  "description": "H5 host manifest; application dependencies are resolved by the Gradle lockfile.",
+  "scripts": {
+    "build": "..\\gradlew.bat :h5App:jsBrowserDistribution",
+    "dev": "..\\gradlew.bat :h5App:jsBrowserDevelopmentRun"
+  }
+}

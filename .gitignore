@@ -1,5 +1,41 @@
-# Object file
-*.o
+# Build and local caches
+.gradle/
+.cache/
+.kotlin/
+kotlin-js-store/
+**/build/
 
-# Ada Library Information
-*.ali
+# IDE and local machine configuration
+.idea/
+.vscode/
+*.iml
+local.properties
+
+# JavaScript / H5 dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional Python tooling
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Secrets and local environment values
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+
+# Generated application packages
+*.apk
+*.aab
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+hs_err_pid*.log
+replay_pid*.log

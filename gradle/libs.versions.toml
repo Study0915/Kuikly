@@ -1,0 +1,19 @@
+[versions]
+kuikly = "2.4.0-2.0.21"
+kotlin = "2.0.21"
+kotlinx-coroutines = "1.8.1"
+androidx-appcompat = "1.6.1"
+androidx-core = "1.13.1"
+material = "1.12.0"
+
+[libraries]
+kuikly-core = { module = "com.tencent.kuikly-open:core", version.ref = "kuikly" }
+kuikly-annotations = { module = "com.tencent.kuikly-open:core-annotations", version.ref = "kuikly" }
+kuikly-ksp = { module = "com.tencent.kuikly-open:core-ksp", version.ref = "kuikly" }
+kuikly-render-android = { module = "com.tencent.kuikly-open:core-render-android", version.ref = "kuikly" }
+kuikly-render-web-base = { module = "com.tencent.kuikly-open.core-render-web:base", version.ref = "kuikly" }
+kuikly-render-web-h5 = { module = "com.tencent.kuikly-open.core-render-web:h5", version.ref = "kuikly" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
