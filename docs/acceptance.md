@@ -14,5 +14,7 @@
 | Android Debug APK | `scripts\verify.ps1` / `:androidApp:assembleDebug` | 通过（2026-07-24；项目内 Wrapper 8.0、JDK 17.0.12，APK 与 SHA-256 见构建证据） |
 | Android 运行 | 真机或模拟器启动、截图 | 未验证：当前未检测到可用 ADB 设备，且未安装模拟器镜像 |
 | iOS/鸿蒙 | 不在 Windows 验收范围 | 未验证 |
+| 2026-08-12 基线回归 | `scripts\verify.ps1` | 通过：图表 JS 测试、shared JS、H5 production bundle、Android JVM 测试、Debug APK 均成功；详见 `docs/evidence/2026-08-12-readiness.md` |
+| Task 2 问答 Demo | `finance_chat` + Android/H5 交互验收 | 未实现；当前仅完成接口、Markdown 兼容策略与测试合同，不得表述为已完成 |
 
 最终证据写入 `docs/evidence/`，包括命令、工具版本、日志摘要和截图路径。

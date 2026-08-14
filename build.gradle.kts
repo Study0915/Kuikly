@@ -33,7 +33,10 @@ if (System.getProperty("os.name").startsWith("Windows", ignoreCase = true)) {
     gradle.projectsEvaluated {
         rootProject.extensions.findByName("kotlinNodeJs")?.let { nodeExtension ->
             nodeExtension.javaClass.getMethod("setDownload", Boolean::class.javaPrimitiveType).invoke(nodeExtension, false)
-            nodeExtension.javaClass.getMethod("setNodeCommand", String::class.java).invoke(nodeExtension, "D:/nodejs/node.exe")
+            nodeExtension.javaClass.getMethod("setNodeCommand", String::class.java).invoke(
+                nodeExtension,
+                rootProject.file(".cache/node/node.exe").absolutePath,
+            )
         }
         rootProject.extensions.findByName("kotlinYarn")?.let { yarnExtension ->
             yarnExtension.javaClass.getMethod("setDownload", Boolean::class.javaPrimitiveType).invoke(yarnExtension, false)
