@@ -34,7 +34,7 @@
 ```
 
 一键脚本为 `scripts\verify.ps1`；没有 Android SDK 时可先使用
-`.\scripts\verify.ps1 -SkipAndroid`。脚本会选择项目 `.cache\jdk17`、`.cache\gradle` 和 `.cache\android`，并以单 worker、低内存参数调用 Wrapper；不会把未执行的平台写成通过。
+`.\scripts\verify.ps1 -SkipAndroid`。脚本会选择项目 `.cache\jdk17`、`.cache\gradle` 和 `.cache\android-sdk`，并以单 worker、低内存参数调用 Wrapper；不会把未执行的平台写成通过。
 
 手工运行 Gradle 命令前先执行 `. .\scripts\use-cli-env.ps1`。当前 Windows `adb.exe` 仍会访问系统用户配置目录；为保持 C 盘零写入，本工作区暂不把 ADB/真机运行纳入自动门禁。
 

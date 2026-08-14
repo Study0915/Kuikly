@@ -24,6 +24,6 @@ APK 路径为 `androidApp\build\outputs\apk\debug\androidApp-debug.apk`，大小
 
 ## 已知边界
 
-- 系统默认 Java 仍是 JDK 21，但项目脚本强制使用 `.cache\jdk17`；直接调用 Wrapper 不属于受支持入口。
+- 这是 2026-08-12 盘点时的系统默认 Java 观察；受支持脚本均强制使用项目内 `.cache\jdk17`，当前环境以 `scripts\doctor.ps1` 的 JDK 17 检查为准，直接调用 Wrapper 仍不属于受支持入口。
 - Windows platform-tools 37 的 `adb.exe` 会解析系统用户目录下的 `.android`。为遵守 C 盘零写入，本轮不运行 ADB、不安装模拟器，Android 状态保持“Debug APK 构建通过、设备运行未验证”。
 - KuiklyMarkdown 的公开说明未声明 H5；本轮只建立兼容探针与 fallback 合同，没有添加依赖或声称 Task 2 Markdown 已通过。
