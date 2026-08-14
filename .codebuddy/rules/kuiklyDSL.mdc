@@ -1,0 +1,53 @@
+---
+description: Kuikly 跨端开发规范，涵盖架构、编码、UI、性能、状态管理等最佳实践
+alwaysApply: true
+enabled: true
+updatedAt: 2026-03-06T01:45:46.504Z
+source: https://github.com/Tencent-TDS/KuiklyUI-AI/blob/main/rules/kuiklyDSL.mdc
+snapshotDate: 2026-08-14
+---
+
+# Kuikly DSL 工作区固定规则
+
+本文件是腾讯 `KuiklyUI-AI` 官方 `kuiklyDSL.mdc` 的仓库快照，固定于 `snapshotDate`，不自动更新。仓库自身的安全、真实性、平台验证和 Task 合同优先于本文件；本文件优先于工具默认行为。需要核对 API 时必须阅读当前工程依赖的官方 Kuikly 文档或源码，不得凭记忆编码。
+
+## 跨端代码
+
+- 业务逻辑优先写在 `commonMain`，优先使用 Kuikly 自身能力和 Module，减少不必要的 `expect/actual`。
+- 依赖优先选择多平台库；禁止在 `commonMain` 直接使用平台专属 API。
+- 每次变更都要在工程配置的目标平台上编译验证；未验证的平台不得声明支持。
+
+## UI 与布局
+
+- 使用 Kuikly 内置组件和组合式跨端组件；除非组合无法满足需求，否则不要直接扩展平台原生 View。
+- 使用 FlexBox 布局，根容器避免固定宽高；根据 `pagerData` 和安全区域处理不同屏幕。
+- 在 `attr {}` 中设置属性，在 `event {}` 中设置事件，在 `ref {}` 中设置引用。
+- `List`、`Scroller`、`WaterfallList`、`PageList` 等滚动容器必须有确定的尺寸约束。
+- `Text`、`Input` 等叶子组件不使用 `padding`，用 `margin` 或父容器间距替代。
+- 返回 `ViewBuilder` 的抽取函数必须通过 `.invoke(this)` 或 `apply()` 显式执行。
+
+## 性能与生命周期
+
+- 不在页面生命周期启动阶段阻塞首屏渲染；耗时 Module 调用和网络/解析任务必须异步化。
+- 只加载首屏所需数据，避免在 `attr {}` 中放置会随响应式更新反复执行的重逻辑。
+- 最小化 `observable` 的影响范围，避免一个响应式字段触发整页无关重建。
+
+## 状态管理
+
+- 普通响应式字段使用 `observable`，列表使用 `observableList`；`vfor`、`vforIndex`、`vforLazy` 的数据源必须是 `observableList`。
+- `observableList` 只监听列表增删；Item 内部需要单独的响应式字段。
+- 指令闭包必须有唯一普通根节点；复杂分支先用 `View` 包裹，不把空闭包、多节点或根级条件指令作为列表项根节点。
+- 响应式状态绑定当前 PagerScope；跨页面共享通过明确的路由参数、页面事件或 Provider，不依赖隐式全局状态。
+
+## 页面、路由和平台扩展
+
+- 页面必须使用 `@Page` 标记，并遵守当前工程已有的 Pager 生命周期约定。
+- 页面跳转使用现有 `RouterModule` 和项目路由封装；不得在聊天页复制详情页或图表坐标计算。
+- 平台能力通过 Module 访问；先检查已有 Module，缺失时再按扩展 API 规范封装，不在 `commonMain` 直接调用原生 API。
+- JSON 使用 Kuikly 提供的序列化能力，资源使用业务模块的 `commonMain/assets` 约定。
+
+## 本项目附加约束
+
+- `KuiklyChart` 的坐标、刻度、命中测试和数据处理与 Canvas/UI 渲染分离。
+- Task 2 的 Markdown、股票/指数卡片、图表和错误状态必须是显式内容块，不从不可信 Markdown 执行 HTML 或脚本。
+- 所有股票内容显示“仅作技术演示，不构成投资建议”。

@@ -10,6 +10,15 @@ kotlin-js-store/
 .vscode/
 *.iml
 local.properties
+XDG_STATE_HOME/
+
+# Local agent configuration and review material
+.opencode/
+opencode.json
+.codebuddy/settings.local.json
+.workbuddy/
+.worktrees/
+workbuddy-review-workspace/
 
 # JavaScript / H5 dependencies
 node_modules/
