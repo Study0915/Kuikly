@@ -79,3 +79,10 @@
 - 交接必须返回 commit hash、实际文件、执行命令及结果、未执行项、证据路径、已知风险和“未 merge/release”声明。
 - 原始 WorkBuddy 结果保留在本地；只有经 Codex 验证并被用户接受的建议才可写入任务板或产品文档。
 - 腾讯 KuiklyUI-AI 的 Rule 已固定到 `.codebuddy/rules/kuiklyDSL.mdc`；官方 Skills 不整包安装，新增 Skill 必须先检查版本、网络更新和缓存行为。
+
+## 交付后的下一步导航（强制）
+
+- 每次功能完成、交接、阻塞或验收回复都必须包含明确的 `下一步`，不能只报告当前结果。
+- 需要 OpenCode 时，下一步必须写明任务 ID、基线 SHA、`feature/<topic>` 分支、允许路径、`~/code/Kuikly` 工作目录、启动命令、首条提示词和验收命令。
+- 需要 WorkBuddy 时，下一步必须写明 WB-01～WB-04 评审点、独立评审目录、Default Permissions、输入/输出材料和不得写入主仓库的边界。
+- 不需要外部 Agent 时必须明确说明，并指定 Codex 或用户的下一动作；不得自动启动 Agent、评审、合并、PR、发布或外部沟通。

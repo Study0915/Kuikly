@@ -91,7 +91,32 @@ BACKLOG → READY → IN_PROGRESS → HANDOFF → REVIEW → VERIFIED → INTEGR
 
 Codex 只有在交接报告完整、diff 可读、测试结果可复现后，才能把任务从 `HANDOFF` 推进到 `REVIEW`。
 
-## 7. Git 与本地配置
+## 7. 交付后的下一步导航
+
+每次完成、交接、阻塞或验收回复都必须给用户一个可执行的 `下一步`，并明确是否需要外部 Agent。
+
+### 需要 OpenCode 时
+
+必须提供任务 ID、基线 SHA、功能分支、允许路径、WSL 目录 `~/code/Kuikly`、启动命令、首条提示词和验收命令。标准入口：
+
+```bash
+wsl -d Ubuntu-24.04
+source ~/.bashrc
+cd ~/code/Kuikly
+opencode
+```
+
+不得只写“让 OpenCode 继续”，也不得把 OpenCode 引导到 `/mnt/e/Internship/tecent/Kuikly`。
+
+### 需要 WorkBuddy 时
+
+必须提供 WB-01～WB-04 评审点、独立评审目录、Default Permissions、输入材料、期望输出和不得写入主仓库的边界。原始输出保留在仓库外，Codex 验证且用户接受后才登记任务板。
+
+### 不需要外部 Agent 时
+
+明确写“本步不需要外部 Agent”，并指定由 Codex 或用户执行的具体动作。下一步导航只是交接信息，不授权自动启动 Agent、评审、合并、PR、发布或外部沟通。
+
+## 8. Git 与本地配置
 
 - 分支命名使用 `feature/<topic>` 或 `bugfix/<topic>`；提交信息使用 Angular Convention。
 - Agent 可以创建聚焦 commit，并推送功能分支；禁止推送 `main`、force-push、自动 merge、PR、tag、release 或外部消息。
@@ -99,7 +124,7 @@ Codex 只有在交接报告完整、diff 可读、测试结果可复现后，才
 - OpenCode/WorkBuddy 的本地权限配置不提交；仓库只提交共享规则和可复现的文档模板。
 - WorkBuddy 使用 Default Permissions，并将原始输出放在仓库外的独立评审目录。用户确认后，只把去重后的行动项登记到任务板。
 
-## 8. 优秀学生质量闭环
+## 9. 优秀学生质量闭环
 
 Task 1、Task 2 均按以下六个维度检查：
 
@@ -119,13 +144,13 @@ WorkBuddy Token 只用于四个里程碑评审：
 
 原始评审结果留在本地；Codex 验证并经用户接受的建议才进入 `docs/workboard.md` 或产品文档。
 
-## 9. 证据和阻塞升级
+## 10. 证据和阻塞升级
 
 - 每次功能变更至少记录组件测试、Kotlin/JS 编译、H5 production bundle 和 Android Debug 构建的执行状态；实际未运行的项目不能标为通过。
 - H5 浏览器交互、Android APK 构建和 Android 真机/模拟器运行分别记录；一个不能替代另一个。
 - 连续两次有日志的复现失败、官方文档与工程行为冲突、或需求边界无法从公开资料确定时，进入 `BLOCKED`。
 - 阻塞报告必须包含问题、已尝试方案、命令和日志、影响、最小问题以及希望导师确认的事项；用户审核后才发送给导师。
 
-## 10. 演练任务
+## 11. 演练任务
 
 首次启用 OpenCode 前先执行无业务改动演练：领取一个只读任务卡，在 Linux 原生克隆创建功能分支，生成交接报告并推送分支；Codex 只审查状态、权限和证据，不合并代码。
