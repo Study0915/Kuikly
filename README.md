@@ -47,6 +47,15 @@ H5 预览：
 构建日志、版本和截图放在 `docs\evidence\`，当前验收状态以
 [`docs/acceptance.md`](docs/acceptance.md) 为准。
 
+工程文档入口：
+
+- 需求与完成定义：[`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md)
+- 架构与模块边界：[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+- 决策记录：[`docs/DECISIONS.md`](docs/DECISIONS.md)
+- 学习与面试记录：[`docs/INTERVIEW_NOTES.md`](docs/INTERVIEW_NOTES.md)、[`docs/learning/`](docs/learning/)
+- Bug 与 Reviewer 证据：[`docs/BUG_LOG.md`](docs/BUG_LOG.md)、[`docs/REVIEWS/`](docs/REVIEWS/)
+- 固定版本 Agent Skill：[`docs/skills.md`](docs/skills.md)
+
 ## Task 2 准备状态
 
 Task 2 将新增 `finance_chat` 页面和可替换的 Mock Chat Provider，返回 Markdown 与显式的股票/指数卡片、图表内容块；卡片复用现有 `stock_detail` 路由，图表复用 `KuiklyChart`。接口、Markdown 的 Android/H5 兼容策略、失败状态和测试门禁见 [`docs/task2-readiness.md`](docs/task2-readiness.md)。
@@ -54,6 +63,8 @@ Task 2 将新增 `finance_chat` 页面和可替换的 Mock Chat Provider，返�
 ## Agent 协作与证据
 
 项目使用 Windows Codex 负责规划/集成验收、WSL OpenCode 负责隔离实现、WorkBuddy 负责里程碑评审的协作流程。任务卡、交接格式、分支权限、Mock/构建/浏览器/设备证据边界见 [`docs/agent-workflow.md`](docs/agent-workflow.md) 与 [`docs/workboard.md`](docs/workboard.md)。
+
+每个 Feature 还必须产出易懂的学习报告；代码、测试、证据和学习四门齐全后才能标记为验证通过。项目结构暂不强制搬迁，后续结构调整必须通过独立任务卡和决策记录完成。
 
 ## DSL 示例
 

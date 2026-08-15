@@ -39,9 +39,11 @@
 - `shared/`：股票 Demo 页面、路由、Mock 数据、行情/分析/聊天 Provider 接口。
 - `androidApp/`、`h5App/`：Android 与 H5 运行宿主。
 - `docs/`：设计、API、验收记录、运行说明和演示材料。
+- `docs/REQUIREMENTS.md`、`docs/ARCHITECTURE.md`、`docs/DECISIONS.md`、`docs/INTERVIEW_NOTES.md` 和 `docs/BUG_LOG.md` 是项目级文档入口；学习报告、Reviewer 结果和交接报告分别放在 `docs/learning/`、`docs/REVIEWS/` 和 `docs/handoffs/`。
 - `scripts/`：一键构建、测试和验收脚本；每个新增脚本必须提供运行说明。
 - 图表的坐标换算、刻度、命中测试和数据处理必须与 Canvas/UI 渲染分离，确保可独立测试。
 - 每个新增功能先在 `docs/` 说明目标、边界、输入输出、主要方案和验证方式。
+- 项目结构调整必须先登记任务卡和 ADR；当前阶段不物理搬迁或冻结 Task 1 源码。
 - README 必须包含环境版本、运行命令、DSL 示例、平台验证状态、数据来源和免责声明。
 - 不得复制其他参赛者实现；公开仓库只能用于理解 API、工程结构和设计思路。
 
@@ -77,8 +79,15 @@
 - 任务进入 `IN_PROGRESS` 前必须具备任务 ID、业务目标、Owner、基线 SHA、功能分支、允许/禁止路径、测试命令和证据要求。
 - Agent 可以创建聚焦 commit，并推送 `feature/*` 或 `bugfix/*`；禁止推送 `main`、force-push、自动合并、创建 PR、打 tag、发布或发送外部消息。
 - 交接必须返回 commit hash、实际文件、执行命令及结果、未执行项、证据路径、已知风险和“未 merge/release”声明。
+- 交接必须附易懂的学习报告；报告解释调用链、状态变化、关键 Kuikly API、设计原因、未验证项和 5 道面试题。
 - 原始 WorkBuddy 结果保留在本地；只有经 Codex 验证并被用户接受的建议才可写入任务板或产品文档。
 - 腾讯 KuiklyUI-AI 的 Rule 已固定到 `.codebuddy/rules/kuiklyDSL.mdc`；官方 Skills 不整包安装，新增 Skill 必须先检查版本、网络更新和缓存行为。
+
+## 学习门与 Reviewer
+
+- 任务板保留现有生命周期，并增加 `code`、`tests`、`evidence`、`learning` 四个完成门；不要通过增加状态名称来替代门禁。
+- 独立 Reviewer session 只读检查基线到当前 diff，不直接修代码；原始输出保存在仓库外，采纳结论才进入 `docs/REVIEWS/`、`docs/BUG_LOG.md` 或 `docs/DECISIONS.md`。
+- 当前 `T1-TOUR` 暂缓，不作为 Task 2 开始的硬前置；项目结构稳定后由用户重新启用。
 
 ## 交付后的下一步导航（强制）
 

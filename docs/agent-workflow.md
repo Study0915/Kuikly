@@ -91,6 +91,12 @@ BACKLOG → READY → IN_PROGRESS → HANDOFF → REVIEW → VERIFIED → INTEGR
 
 Codex 只有在交接报告完整、diff 可读、测试结果可复现后，才能把任务从 `HANDOFF` 推进到 `REVIEW`。
 
+## 6.1 学习报告与四门完成门
+
+每个 Feature 必须同时提交代码、测试结果、证据和学习报告。学习报告由实现 Agent 起草，Codex 审查准确性，用户通过口述和面试题自答确认理解。模板见 `docs/learning/_TEMPLATE.md`，自答记录见 `docs/INTERVIEW_NOTES.md`。
+
+任务板继续使用原有生命周期，不新增 `TEACHING` 或 `ORAL_CHECK` 状态；四门未齐时任务只能停留在 `HANDOFF` 或 `REVIEW`。
+
 ## 7. 交付后的下一步导航
 
 每次完成、交接、阻塞或验收回复都必须给用户一个可执行的 `下一步`，并明确是否需要外部 Agent。
@@ -153,4 +159,10 @@ WorkBuddy Token 只用于四个里程碑评审：
 
 ## 11. 演练任务
 
-首次启用 OpenCode 前先执行无业务改动演练：领取一个只读任务卡，在 Linux 原生克隆创建功能分支，生成交接报告并推送分支；Codex 只审查状态、权限和证据，不合并代码。
+首次启用 OpenCode 前先执行无业务改动演练：领取一个只读任务卡，在 Linux 原生克隆创建功能分支，生成交接报告并推送分支；Codex 只审查状态、权限和证据，不合并代码。`T1-TOUR` 当前暂缓，不阻塞本阶段文档基础设施或后续项目结构讨论。
+
+## 12. 结构变化与任务顺序
+
+- 当前阶段先完成 `WF-002` 工作区文档、规则和 Skill 审计，不搬迁或冻结 Task 1 源码。
+- 项目结构变化必须独立建卡、说明迁移范围、回滚方式和 Task 1 回归证据，并在 `docs/DECISIONS.md` 新增 ADR。
+- Task 2 的首个实现任务是 Android 最小可运行页面；聊天 UI、Mock 对话、Markdown、结构化卡片、详情、路由、图表、AI Service 和 UI 打磨按独立 Feature 依次推进。

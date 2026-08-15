@@ -1,5 +1,7 @@
 # Kuikly Finance 架构与边界
 
+> 本文是当前架构基线。若项目结构发生变化，新增 ADR 和迁移任务，不直接覆盖历史决策。
+
 ## 目标
 
 工程同时交付两个可复用层级：
@@ -15,13 +17,20 @@
 - `androidApp`：Android JVM 模式宿主。
 - `h5App`：Web 渲染器宿主。
 
+## Task 2 规划边界
+
+- `shared/commonMain` 负责消息模型、ChatProvider、聊天状态和内容块；默认使用确定性 Mock。
+- 聊天页只负责消息展示和用户操作，股票/指数卡片与图表通过显式事件复用 `stock_detail` 和 `KuiklyChart`。
+- Markdown 先做 Android/H5 依赖探针；H5 不兼容时使用受限 commonMain renderer。
+- 当前没有真实 NetworkModule 或模型服务接入；未来接入必须独立建卡并补齐密钥、失败和成本边界。
+
 ## 依赖与版本
 
 - Kuikly UI：`2.4.0`
 - Kotlin/KMP：`2.0.21`
 - Kuikly 制品：`2.4.0-2.0.21`
 - JDK：17
-- Gradle：7.6.3（Wrapper）
+- Gradle：8.0（Wrapper，实际来源以 `gradle/wrapper/gradle-wrapper.properties` 为准）
 
 Kuikly 官方制品版本格式为 `{Kuikly版本}-{Kotlin版本}`。因此目标中的 `2.0.21`
 落实为 Kotlin 兼容后缀，并对 core、KSP、Android renderer 和 Web renderer 保持一致。
