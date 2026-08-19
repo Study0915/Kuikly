@@ -103,7 +103,7 @@ internal class MyPage : BasePager() {
                     backgroundColor(Color.GREEN)
                     borderRadius(20f)
                 }
-                
+
                 event {
                     click { params ->
                         // 处理点击事件
@@ -307,7 +307,7 @@ Kuikly 使用 **FlexBox 布局**作为跨平台布局规则，确保各平台一
 ### 核心概念
 - **跨端工程模式**：`references/KuiklyUI/docs/Introduction/paradigm.md`
   - 标准模式、进阶模式、纯逻辑跨端模式
-  
+
 - **架构介绍**：`references/KuiklyUI/docs/Introduction/arch.md`
   - Kuikly 整体架构、KuiklyUI、KuiklyBase
 
