@@ -7,7 +7,7 @@ import kotlin.test.assertTrue
 class Task1ShellContractTest {
     @Test
     fun shellKeepsStableEntryAndDisclaimer() {
-        assertEquals("finance_home", Task1ShellContract.PAGE_NAME)
+        assertEquals("finance_home", Task1Routes.FINANCE_HOME)
         assertTrue(Task1ShellContract.DISCLAIMER.contains("不构成投资建议"))
     }
 }

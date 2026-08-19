@@ -3,6 +3,7 @@ package io.github.study0915.kuiklyfinance.web
 import com.tencent.kuikly.core.render.web.expand.KuiklyRenderViewDelegatorDelegate
 import com.tencent.kuikly.core.render.web.ktx.SizeI
 import com.tencent.kuikly.core.render.web.runtime.web.expand.KuiklyRenderViewDelegator
+import io.github.study0915.kuiklyfinance.ui.Task1Routes
 import kotlinx.browser.document
 import kotlinx.browser.window
 
@@ -28,7 +29,7 @@ private class Task1WebDelegator : KuiklyRenderViewDelegatorDelegate {
     fun attach() {
         delegate.onAttach(
             "root",
-            "finance_home",
+            Task1Routes.FINANCE_HOME,
             mapOf("host" to "h5", "mock" to 1),
             SizeI(window.innerWidth, window.innerHeight),
         )

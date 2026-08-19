@@ -9,6 +9,7 @@ import com.tencent.kuikly.core.render.android.adapter.IKRLogAdapter
 import com.tencent.kuikly.core.render.android.adapter.KuiklyRenderAdapterManager
 import com.tencent.kuikly.core.render.android.expand.KuiklyRenderViewBaseDelegator
 import com.tencent.kuikly.core.render.android.expand.KuiklyRenderViewBaseDelegatorDelegate
+import io.github.study0915.kuiklyfinance.ui.Task1Routes
 
 class MainActivity : AppCompatActivity(), KuiklyRenderViewBaseDelegatorDelegate {
     private lateinit var delegator: KuiklyRenderViewBaseDelegator
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity(), KuiklyRenderViewBaseDelegatorDelegate 
         setContentView(container)
 
         delegator = KuiklyRenderViewBaseDelegator(this)
-        delegator.onAttach(container, "", "finance_home", mapOf("host" to "android", "mock" to 1))
+        delegator.onAttach(container, "", Task1Routes.FINANCE_HOME, mapOf("host" to "android", "mock" to 1))
     }
 
     override fun onResume() {

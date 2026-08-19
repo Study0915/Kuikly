@@ -9,7 +9,7 @@
 
 ## 归档隔离
 
-- 归档 Git 文件数（写入 README 前的已跟踪快照）：31。
+- 归档 Git 文件数：32。
 - 归档中命中的 build/cache/node_modules/APK/密钥类已跟踪文件：0。
 - `settings.gradle.kts`、根 build、CI、`verify.ps1`、`run-h5.ps1` 对 `archive/task1-v1` 的引用：0。
 - 活动四模块对旧 `LineChart`、`BarChart`、`CandleChart`、`MarketDataSource`、`AnalysisProvider`、`stock_detail` 的引用：0。
@@ -41,7 +41,7 @@
 
 结果：exit 0。
 
-- `:KuiklyChart:jsNodeTest`：通过。
+- `:KuiklyChart:jsNodeTest`：初版曾由标记测试通过；审阅删除无业务价值测试后任务为 `SKIPPED`，空壳当前没有图表行为可测。
 - `:shared:compileKotlinJs`：通过。
 - `:h5App:jsBrowserProductionWebpack`：通过，JS/H5 阶段 `BUILD SUCCESSFUL in 2m 50s`。
 - `:shared:testDebugUnitTest`：通过。
@@ -52,8 +52,8 @@
 ## Android 产物
 
 - 路径：`androidApp/build/outputs/apk/debug/androidApp-debug.apk`
-- 大小：6,397,564 bytes
-- SHA-256：`30DED8628080CB6990F5A13517532F013A2518FF91E903AAE5AF2FFC8FCC9785`
+- 审阅修复后大小：6,401,804 bytes
+- 审阅修复后 SHA-256：`35C59BDFB0F113A19303F00F5C2E021D6F12CEA8C6D12AAC87A6ECA0F54E96A4`
 - 状态：Debug APK 构建通过；ADB、真机和模拟器未执行。
 
 ## H5 服务与视觉边界
@@ -66,3 +66,12 @@
 
 - 未推送、未合并、未创建 PR、未发布、未发送外部消息。
 - 未启动 OpenCode 或 WorkBuddy。
+
+## 审阅修复回归
+
+双轴审阅后执行 `git diff --check` 与完整 `scripts\verify.ps1`，结果 exit 0：
+
+- JS/shared/H5 阶段：`BUILD SUCCESSFUL in 43s`。
+- Android JVM/APK 阶段：`BUILD SUCCESSFUL in 48s`。
+- `Task1Routes.FINANCE_HOME` 成为宿主和共享页唯一入口常量；活动源码只剩定义与合同测试中的两个 `finance_home` 字面量。
+- 活动源码对旧图表、行情 Provider 和 `stock_detail` 的引用仍为 0。

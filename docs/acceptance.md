@@ -5,11 +5,11 @@
 | 能力 | 验收方式 | 当前状态 |
 |---|---|---|
 | 项目内 CLI | `scripts\doctor.ps1` | 通过（2026-08-19，`CLI_ENV_OK`） |
-| 图表模块空壳 | `:KuiklyChart:jsNodeTest` | 通过（2026-08-19） |
+| 图表模块空壳 | `:KuiklyChart:jsNodeTest` | 任务到达但 SKIPPED：空壳没有可测试图表行为 |
 | shared JS 编译 | `:shared:compileKotlinJs` | 通过（2026-08-19） |
 | H5 production bundle | `:h5App:jsBrowserProductionWebpack` | 通过（2026-08-19） |
 | Android JVM 测试 | `:shared:testDebugUnitTest` | 通过（2026-08-19） |
-| Android Debug APK | `:androidApp:assembleDebug` | 通过（2026-08-19，SHA-256 见 evidence） |
+| Android Debug APK | `:androidApp:assembleDebug` | 审阅修复后通过（2026-08-19，SHA-256 见 evidence） |
 | H5 空壳页面 | dev server + 浏览器 | HTTP 200；浏览器插件受信任路径错误，可视渲染未验证 |
 | Android 设备运行 | 真机或模拟器 | 未验证 |
 | 新版 Task 1 业务能力 | `T1-VERTICAL`、`T1-EXPERIENCE` | 未实现 |

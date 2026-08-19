@@ -7,12 +7,15 @@ import com.tencent.kuikly.core.pager.Pager
 import com.tencent.kuikly.core.views.Text
 import com.tencent.kuikly.core.views.View
 
+object Task1Routes {
+    const val FINANCE_HOME: String = "finance_home"
+}
+
 internal object Task1ShellContract {
-    const val PAGE_NAME: String = "finance_home"
     const val DISCLAIMER: String = "仅作技术演示，不构成投资建议"
 }
 
-@Page(Task1ShellContract.PAGE_NAME, supportInLocal = true)
+@Page(Task1Routes.FINANCE_HOME, supportInLocal = true)
 class Task1ShellPage : Pager() {
     override fun body(): ViewBuilder = {
         attr {
