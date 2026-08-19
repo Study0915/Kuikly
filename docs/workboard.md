@@ -6,8 +6,8 @@
 
 | 任务 ID | 目标 | Owner | 基线 SHA | 分支 | 状态 | 验收与证据 |
 |---|---|---|---|---|---|---|
-| WF-003 | Codex 主开发管线、旧 Task 1 隔离归档和新空壳部署 | Codex | `ab8675d` | `feature/codex-primary-reset` | REVIEW | [任务卡](handoffs/WF-003-TASK.md)；归档/doctor/verify/learning 通过；H5 可视受 Browser 插件阻塞 |
-| T1-000 | 新版 Task 1 跨端最小可运行空壳 | Codex | `ab8675d` | `feature/codex-primary-reset` | REVIEW | [任务卡](handoffs/T1-000-TASK.md)；common/JS/H5 bundle/JVM/APK 通过；可视渲染未验证 |
+| WF-003 | Codex 主开发管线、旧 Task 1 隔离归档和新空壳部署 | Codex | `ab8675d` | `feature/codex-primary-reset` | REVIEW | [任务卡](handoffs/WF-003-TASK.md) / [Handoff](handoffs/WF-003.md) / [Review](REVIEWS/WF-003.md)；仅剩 H5 可视阻塞 |
+| T1-000 | 新版 Task 1 跨端最小可运行空壳 | Codex | `ab8675d` | `feature/codex-primary-reset` | REVIEW | [任务卡](handoffs/T1-000-TASK.md) / [Handoff](handoffs/T1-000.md)；编译/JVM/APK 通过，可视渲染未验证 |
 | T1-VERTICAL | 行情列表到详情的首个离线垂直切片 | Codex | 待 T1-000 VERIFIED | `feature/task1-vertical` | BACKLOG | 新模型/Provider/路由/基础图表、Android/H5 证据和学习报告 |
 | T1-EXPERIENCE | 图表交互、Mock AI 解读、边界状态和跨端体验 | Codex | 待 T1-VERTICAL VERIFIED | `feature/task1-experience` | BACKLOG | 四门完成门、浏览器交互和 APK 构建证据 |
 | T2-000 | AI 股票问答最小可运行页面 | Codex | 待 T1-EXPERIENCE VERIFIED | `feature/task2-min-shell` | BACKLOG | Android/H5 空壳、测试、证据和学习报告 |
