@@ -1,61 +1,36 @@
-# Kuikly Finance 架构与边界
+# Kuikly Finance 当前架构
 
-> 本文是当前架构基线。若项目结构发生变化，新增 ADR 和迁移任务，不直接覆盖历史决策。
+## 当前状态
 
-## 目标
+活动工程是 Task 1 reset scaffold，不是旧版实现的兼容升级：
 
-工程同时交付两个可复用层级：
+- `KuiklyChart/`：仅保留可编译的新版模块边界，尚无稳定图表 API。
+- `shared/`：只注册 `finance_home` 空壳页。
+- `androidApp/`、`h5App/`：最小 Kuikly 宿主。
+- `archive/task1-v1/`：历史源码和证据，不在活动 Gradle dependency graph 中。
 
-1. `KuiklyChart`：与业务无关的折线图、柱状图、K 线/成交量、坐标与交互组件。
-2. `shared`：离线可复现的股票行情与 Mock AI 分析 Demo。
+## 目标边界
 
-## 模块
+- 图表的数据模型、范围、刻度、坐标和命中测试放在可独立测试的 common 逻辑中。
+- 页面只依赖新定义的 Provider 接口；默认实现离线、确定性、无密钥。
+- Android/H5 共享业务状态和模型，宿主只负责生命周期、模块注册和平台导航。
+- Task 2 只在 Task 1 的新接口通过验证后复用，不引用归档包名或类型。
 
-- `KuiklyChart/commonMain`：数据模型、范围/刻度/坐标换算、标签抽样、命中测试、K 线窗口算法、DSL 与 Canvas 组件。
-- `KuiklyChart/commonTest`：不依赖 UI 的确定性测试。
-- `shared/commonMain`：页面、路由、金融模型、Provider 接口和固定 Mock 数据。
-- `androidApp`：Android JVM 模式宿主。
-- `h5App`：Web 渲染器宿主。
+## 依赖基线
 
-## Task 2 规划边界
+- Kuikly UI `2.4.0`
+- Kotlin/KMP `2.0.21`
+- Kuikly 制品 `2.4.0-2.0.21`
+- JDK 17
+- Gradle Wrapper 8.0
 
-- `shared/commonMain` 负责消息模型、ChatProvider、聊天状态和内容块；默认使用确定性 Mock。
-- 聊天页只负责消息展示和用户操作，股票/指数卡片与图表通过显式事件复用 `stock_detail` 和 `KuiklyChart`。
-- Markdown 先做 Android/H5 依赖探针；H5 不兼容时使用受限 commonMain renderer。
-- 当前没有真实 NetworkModule 或模型服务接入；未来接入必须独立建卡并补齐密钥、失败和成本边界。
+版本升级、真实服务或项目结构变化必须独立建卡和新增 ADR。
 
-## 依赖与版本
-
-- Kuikly UI：`2.4.0`
-- Kotlin/KMP：`2.0.21`
-- Kuikly 制品：`2.4.0-2.0.21`
-- JDK：17
-- Gradle：8.0（Wrapper，实际来源以 `gradle/wrapper/gradle-wrapper.properties` 为准）
-
-Kuikly 官方制品版本格式为 `{Kuikly版本}-{Kotlin版本}`。因此目标中的 `2.0.21`
-落实为 Kotlin 兼容后缀，并对 core、KSP、Android renderer 和 Web renderer 保持一致。
-
-## 设计原则
-
-- 计算核心不得引用 Kuikly Canvas 或宿主 API。
-- 无效数值在进入几何计算前过滤；空数据返回显式空状态。
-- 单点和全等值数据使用稳定的最小范围，避免除零。
-- 点击与拖动统一映射到最近有效点。
-- 页面只依赖 Provider 接口；默认实现不联网、不读取密钥。
-- 股票页面始终展示“仅作技术演示，不构成投资建议”。
-
-## 版本范围
-
-- `v0.1.0-issue1477`：折线图、柱状图、DSL、Tooltip、点击/拖动选点。
-- `v0.2.0-shape-demo`：K 线与成交量组合、可测试的窗口缩放/平移、面积填充和股票详情集成。
-- 当前不包含实时行情、真实模型调用或交易能力。
-- Mock Provider 不代表真实行情或模型接入。
-- Windows 构建不能证明 iOS/鸿蒙支持。
-
-## 验证
+## 验证基线
 
 - `:KuiklyChart:jsNodeTest`
 - `:shared:compileKotlinJs`
 - `:h5App:jsBrowserProductionWebpack`
+- `:shared:testDebugUnitTest`
 - `:androidApp:assembleDebug`
-- H5 浏览器手工/自动截图；Android 仅在设备或模拟器真实启动后记录运行证据。
+- H5 浏览器交互；Android 设备运行单独记录。

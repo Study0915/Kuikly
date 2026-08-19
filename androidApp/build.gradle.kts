@@ -12,7 +12,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "0.1.0-reset"
     }
 
     buildTypes {
@@ -32,10 +32,7 @@ android {
 
     packagingOptions {
         doNotStrip("**/*.so")
-        resources.excludes += setOf(
-            "META-INF/AL2.0",
-            "META-INF/LGPL2.1",
-        )
+        resources.excludes += setOf("META-INF/AL2.0", "META-INF/LGPL2.1")
     }
 }
 

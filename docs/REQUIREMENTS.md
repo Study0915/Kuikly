@@ -2,42 +2,33 @@
 
 ## 产品范围
 
-本项目同时承载 Tencent-TDS KuiklyUI Issue #1477、Shape with AI Task 1 和 Task 2。默认以离线、确定性的 Mock 数据完成原型；真实行情、真实模型、登录、交易、联网检索和付费服务不属于默认范围。
+项目承载 KuiklyUI Issue #1477、Shape with AI Task 1 和 Task 2。旧实现只保留在 `archive/task1-v1/`；活动版本不继承旧业务 API 或完成状态。
+
+默认使用离线、确定性的 Mock。真实行情、真实模型、登录、交易、联网检索和付费服务不属于默认范围。
 
 ## Task 1：AI 股票行情原型
 
+按最小空壳、行情模型与 Provider、行情列表、详情路由、基础图表、Mock AI 解读、边界与跨端体验依次交付。
+
 完成定义：
 
-- 行情首页展示名称、代码、最新价、涨跌额和涨跌幅，支持滚动与点击。
-- 个股详情页展示基础行情、走势、K 线/成交量和 AI 分析摘要。
-- AI 分析明确标注 Mock 与“仅作技术演示，不构成投资建议”。
-- `KuiklyChart` 的计算逻辑与 UI 渲染分离，并保留组件单测。
-- Android Debug 构建、Kotlin/JS 编译、H5 production bundle 和已执行的交互证据分开记录。
+- 行情首页、详情页、图表和 Mock AI 解读形成可操作路径。
+- 图表计算与 Canvas/UI 分离，空数据、单点、等值、正负值、非有限值和命中边界可测试。
+- Android Debug、Kotlin/JS、H5 production bundle、H5 交互和设备运行分别记录。
+- Mock 与免责声明清晰可见；旧归档证据不作为新版验收。
 
 ## Task 2：AI 股票问答原型
 
-按以下垂直切片逐步交付：聊天 UI、Mock 对话与状态、Markdown、股票/指数卡片、详情承接页、路由、图表、可替换 AI Service、UI 打磨。
+Task 1 进入 `VERIFIED` 后，按最小页面、消息模型、Mock Chat、Markdown、结构化行情卡片/图表、详情承接、失败状态和跨端体验依次交付。
 
 完成定义：
 
-- 用户可以输入问题、发送消息并查看多轮会话。
-- AI 返回内容使用显式内容块表达 Markdown、行情卡片、图表和错误状态。
-- 卡片或图表可以通过现有路由打开股票/指数详情承接页。
-- 空输入、重复发送、失败重试、未知代码、长会话和免责声明有测试或人工证据。
-- Markdown 不执行原始 HTML、脚本或未经确认的外链。
-- Android 与 H5 的依赖和运行状态分别记录；未验证平台不得写成支持。
+- 用户可输入问题、发送并查看多轮会话。
+- Markdown、行情卡片、图表和错误使用显式内容块。
+- 结构化内容只复用新版 Task 1 已验证的模型、图表和路由。
+- 空输入、重复发送、失败重试、未知代码、长会话和免责声明有证据。
+- Markdown 不执行原始 HTML、脚本或未确认外链。
 
-## 质量门
+## 共同质量门
 
-每个 Feature 必须同时具备：
-
-1. `code`：变更范围与任务卡一致，拥有独立 commit；
-2. `tests`：自动化测试或明确记录无法执行的原因；
-3. `evidence`：日志、截图、构建产物或浏览器交互证据；
-4. `learning`：面向初学者的学习报告、调用链、状态变化、设计原因和 5 道面试题。
-
-质量门未齐时，任务不得进入 `VERIFIED`。
-
-## 真实性标签
-
-文档和演示统一使用：`[FACT]`、`[MOCK]`、`[VERIFIED]`、`[UNVERIFIED]`、`[LIMITATION]`、`[DECISION]`。不得用“理论可行”替代运行证据。
+每个 Feature 同时具备 `code`、`tests`、`evidence`、`learning` 才能进入 `VERIFIED`。文档标签统一使用 `[FACT]`、`[MOCK]`、`[VERIFIED]`、`[UNVERIFIED]`、`[LIMITATION]`、`[DECISION]`。

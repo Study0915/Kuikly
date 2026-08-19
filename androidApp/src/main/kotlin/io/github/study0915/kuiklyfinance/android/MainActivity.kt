@@ -25,12 +25,7 @@ class MainActivity : AppCompatActivity(), KuiklyRenderViewBaseDelegatorDelegate 
         setContentView(container)
 
         delegator = KuiklyRenderViewBaseDelegator(this)
-        delegator.onAttach(
-            container,
-            "",
-            intent.getStringExtra("pageName") ?: "finance_home",
-            mapOf("host" to "android", "mock" to 1),
-        )
+        delegator.onAttach(container, "", "finance_home", mapOf("host" to "android", "mock" to 1))
     }
 
     override fun onResume() {
@@ -49,11 +44,7 @@ class MainActivity : AppCompatActivity(), KuiklyRenderViewBaseDelegatorDelegate 
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        if (
-            event.keyCode == KeyEvent.KEYCODE_BACK &&
-            event.action == KeyEvent.ACTION_UP &&
-            delegator.onBackPressed()
-        ) {
+        if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP && delegator.onBackPressed()) {
             return true
         }
         return super.dispatchKeyEvent(event)
@@ -61,11 +52,8 @@ class MainActivity : AppCompatActivity(), KuiklyRenderViewBaseDelegatorDelegate 
 
     private object AndroidLogAdapter : IKRLogAdapter {
         override val asyncLogEnable: Boolean = true
-
         override fun i(tag: String, msg: String) = android.util.Log.i(tag, msg).let { }
-
         override fun d(tag: String, msg: String) = android.util.Log.d(tag, msg).let { }
-
         override fun e(tag: String, msg: String) = android.util.Log.e(tag, msg).let { }
     }
 }

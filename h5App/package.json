@@ -1,8 +1,8 @@
 {
-  "name": "kuikly-finance-h5",
+  "name": "kuikly-task1-reset-h5",
   "version": "0.1.0",
   "private": true,
-  "description": "H5 host manifest; application dependencies are resolved by the Gradle lockfile.",
+  "description": "H5 host for the Task 1 reset scaffold.",
   "scripts": {
     "build": "..\\gradlew.bat :h5App:jsBrowserDistribution",
     "dev": "..\\gradlew.bat :h5App:jsBrowserDevelopmentRun"

@@ -1,14 +1,8 @@
 # Changelog
 
-## v0.2.0-shape-demo（工作树实现）
+## Unreleased · Task 1 reset
 
-- 增加 K 线/成交量组合图、窗口算法、缩放和平移交互。
-- 股票详情页接入固定 Mock K 线与成交量数据。
-- 保留 Mock AI 分析、风险等级和技术演示免责声明。
-
-## v0.1.0-issue1477（工作树实现）
-
-- 增加跨端折线图、柱状图、DSL、坐标轴、网格、Tooltip、点击和拖动选点。
-- 增加坐标/刻度/命中测试、API 文档和验收脚本。
-
-版本标签、GitHub Release 和 Issue 评论只有在构建、平台证据齐全后才会创建；本工作树不伪造外部发布状态。
+- 将旧 Task 1 四个模块、文档和证据隔离到 `archive/task1-v1/`。
+- 保留归档版本的腾讯犀牛鸟「Issue 完成者」与 TOP 3 成果说明。
+- 活动工程重建为 Android/H5 可编译空壳，不再暴露旧图表、行情、Provider 或详情路由。
+- Codex 成为 Task 1、Task 2 的默认规划与代码实现者；OpenCode 调整为经确认才启用的备选。

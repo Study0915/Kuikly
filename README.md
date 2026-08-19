@@ -1,31 +1,31 @@
-# Kuikly Finance Charts
+# Kuikly Finance
 
-跨端 Kuikly 图表组件与 Shape with AI 股票 Demo 工作区。Task 1 行情原型已有 Android/H5 构建证据；Task 2 问答应用当前处于接口与验收基线准备阶段，尚未实现聊天页面。项目默认离线运行，行情与 AI 解读均为确定性的 Mock 实现。
+Kuikly 跨端股票 Demo 的重新开发工作区。当前活动工程是 Task 1 的 Android/H5 可编译空壳；旧版图表、行情、详情和 Mock AI 实现已隔离归档，不参与当前构建。
 
-## 项目成果
+## 历史归档
+
+旧版 Task 1 与对应证据位于 [`archive/task1-v1/`](archive/task1-v1/README.md)。归档版本曾：
 
 - 入选腾讯犀牛鸟开源人才培养计划「Issue 完成者」。
 - 获得腾讯犀牛鸟开源人才培养计划 TOP 3。
 
+这些成果不自动代表新版 Task 1 已完成。
+
+## 当前状态
+
+- `[FACT]` 活动入口为 `finance_home`。
+- `[MOCK]` 当前只显示重启状态和投资免责声明，没有行情或 AI 服务。
+- `[UNVERIFIED]` 新版图表、行情、详情、AI 解读和 Task 2 尚未实现。
+- `[DECISION]` Codex 负责 Task 1、Task 2 的规划和实际代码；OpenCode 仅作备选。
+
 ## 环境
 
-- JDK 17（Kotlin/Android 编译目标）；项目本地验证使用 `.cache\jdk17`，不要求全局安装。
-- Kotlin/KMP `2.0.21`。
-- Kuikly `2.4.0-2.0.21`（Kuikly 版本 `2.4.0` + Kotlin 兼容后缀）。
-- Gradle Wrapper `8.0`；分发与依赖缓存均固定在项目 `.cache\gradle`，不使用系统全局 Gradle。
-- Node.js `24.12.0` 位于 `.cache\node`；Yarn 1.22.17 通过 `.cache\npm` 项目缓存管理。
-- Android SDK 路径只写入未提交的 `local.properties`；构建产物和 SDK 缓存均在忽略目录。
+- JDK 17：`.cache\jdk17`
+- Node.js/npm：`.cache\node`、`.cache\npm`
+- Gradle Wrapper 8.0：缓存位于 `.cache\gradle`
+- Android SDK：`.cache\android-sdk`
 
-## 模块
-
-- `KuiklyChart`：KMP 折线图、柱状图、K 线/成交量、DSL、坐标与交互计算。
-- `shared`：行情列表、个股详情、Mock Provider、Mock AI 分析和页面路由。
-- `androidApp`：Android 验收宿主。
-- `h5App`：H5 验收宿主与静态加载壳。
-
-## 运行与验证
-
-在仓库根目录执行（PowerShell）：
+依赖和 SDK 不安装到 C 盘，也不要求全局 Gradle。PowerShell 入口：
 
 ```powershell
 .\scripts\bootstrap-cli.ps1
@@ -33,70 +33,24 @@
 .\scripts\verify.ps1
 ```
 
-一键脚本为 `scripts\verify.ps1`；没有 Android SDK 时可先使用
-`.\scripts\verify.ps1 -SkipAndroid`。脚本会选择项目 `.cache\jdk17`、`.cache\gradle` 和 `.cache\android-sdk`，并以单 worker、低内存参数调用 Wrapper；不会把未执行的平台写成通过。
+手工调用 Wrapper 前执行 `. .\scripts\use-cli-env.ps1`。H5 预览使用 `.\scripts\run-h5.ps1`。
 
-手工运行 Gradle 命令前先执行 `. .\scripts\use-cli-env.ps1`。当前 Windows `adb.exe` 仍会访问系统用户配置目录；为保持 C 盘零写入，本工作区暂不把 ADB/真机运行纳入自动门禁。
+## 活动模块
 
-H5 预览：
+- `KuiklyChart/`：新版图表组件空壳，旧 API 不再有效。
+- `shared/`：新版 `finance_home` 页面空壳。
+- `androidApp/`、`h5App/`：Android/H5 最小宿主。
+- `docs/`：需求、架构、任务合同、证据和学习报告。
 
-```powershell
-.\scripts\run-h5.ps1
-```
+## 开发顺序
 
-构建日志、版本和截图放在 `docs\evidence\`，当前验收状态以
-[`docs/acceptance.md`](docs/acceptance.md) 为准。
+1. 完成并验证新版 Task 1；
+2. 基于新版 Task 1 已验证接口开发 Task 2；
+3. 每个 Feature 通过 `code/tests/evidence/learning` 四门；
+4. 用户决定合并、PR、发布和外部沟通。
 
-工程文档入口：
+详细流程见 [`docs/agent-workflow.md`](docs/agent-workflow.md)，当前任务见 [`docs/workboard.md`](docs/workboard.md)。
 
-- 需求与完成定义：[`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md)
-- 架构与模块边界：[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-- 决策记录：[`docs/DECISIONS.md`](docs/DECISIONS.md)
-- 学习与面试记录：[`docs/INTERVIEW_NOTES.md`](docs/INTERVIEW_NOTES.md)、[`docs/learning/`](docs/learning/)
-- Bug 与 Reviewer 证据：[`docs/BUG_LOG.md`](docs/BUG_LOG.md)、[`docs/REVIEWS/`](docs/REVIEWS/)
-- 固定版本 Agent Skill：[`docs/skills.md`](docs/skills.md)
+## 真实性边界
 
-## Task 2 准备状态
-
-Task 2 将新增 `finance_chat` 页面和可替换的 Mock Chat Provider，返回 Markdown 与显式的股票/指数卡片、图表内容块；卡片复用现有 `stock_detail` 路由，图表复用 `KuiklyChart`。接口、Markdown 的 Android/H5 兼容策略、失败状态和测试门禁见 [`docs/task2-readiness.md`](docs/task2-readiness.md)。
-
-## Agent 协作与证据
-
-项目使用 Windows Codex 负责规划/集成验收、WSL OpenCode 负责隔离实现、WorkBuddy 负责里程碑评审的协作流程。任务卡、交接格式、分支权限、Mock/构建/浏览器/设备证据边界见 [`docs/agent-workflow.md`](docs/agent-workflow.md) 与 [`docs/workboard.md`](docs/workboard.md)。
-
-每个 Feature 还必须产出易懂的学习报告；代码、测试、证据和学习四门齐全后才能标记为验证通过。项目结构暂不强制搬迁，后续结构调整必须通过独立任务卡和决策记录完成。
-
-## DSL 示例
-
-```kotlin
-LineChart {
-    attr {
-        data(series)
-        showAxis(true)
-        showGrid(true)
-        showDots(true)
-        showTooltip(true)
-        theme(ChartTheme.FINANCE_DARK)
-    }
-    event { onPointSelected { selection -> println(selection) } }
-}
-
-CandleChart {
-    attr {
-        data(candles)
-        showVolume(true)
-        visibleCount(28)
-        theme(ChartTheme.FINANCE_DARK)
-    }
-    event { onCandleSelected { _, candle -> println(candle.close) } }
-}
-```
-
-折线/柱状图支持点击和横向拖动选点；K 线支持窗口缩放和平移。计算层位于
-`commonMain`，可独立测试空数据、单点、全等值、正负值、非有限值及边界坐标。
-
-## 数据与免责声明
-
-`MockMarketDataSource` 使用仓库内固定 JSON，`MockAnalysisProvider` 根据趋势、波动率和成交量生成结构化演示结果。没有 API Key、真实行情或真实模型服务依赖。
-
-股票页面仅作技术演示，不构成投资建议；不提供交易、荐股或收益承诺。iOS 与鸿蒙只有在对应环境构建/运行成功后才会记录为支持，当前默认不宣称已验证。
+默认使用离线、确定性的 Mock。真实行情、真实模型、登录、交易、联网检索和付费服务不在默认范围。股票内容仅作技术演示，不构成投资建议；未实际运行的平台不会标为支持。
