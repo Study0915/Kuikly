@@ -1,78 +1,67 @@
-# Task 2 AI 股票问答 Demo 准备合同
+# Task 2 阶段准备合同
 
-## 启动条件与复用边界
+## 题面依据与启动条件
 
-Task 2 只有在新版 `T1-EXPERIENCE` 进入 `VERIFIED` 后才开始。它在现有 `shared` 模块增加 `finance_chat` 页面，不新建另一套应用；只复用届时已验证的新行情模型、详情路由和图表接口，不得引用 `archive/task1-v1/`。
+- Task 2 的 Must 与完成定义只以 `docs/REQUIREMENTS.md` 为准；Issue #1477 不是题面。
+- 只有 T1-LEARNING `VERIFIED` 后才能启动 T2-PLAN；这是项目顺序，不是题面附加要求。
+- Task 2 在现有 shared module 增加 `finance_chat` 能力，不新建第二套应用，不引用 `archive/task1-v1/`。
+- 固定阶段为 `T2-PLAN → T2-CODE → T2-TESTS → T2-LEARNING`，不再拆分 Feature 任务卡。
 
-Task 1、Task 2 使用相同的 Codex 主开发与四门验收管线。OpenCode 仅在用户明确指定，或 Codex 带日志阻塞并经用户确认后作为备选。
+## 阶段责任
 
-首个可验收版本继续离线运行：用户可输入问题、发送并查看多轮记录；Mock Chat Provider 返回 Markdown 说明和股票/指数结构化内容。真实模型、实时行情、联网检索、语音、登录和会话云同步均不在本阶段范围。
+| 阶段 | Owner | 入口 | 唯一产物 | 完成门 |
+|---|---|---|---|---|
+| PLAN | Codex | T1 已验证能力、题面、评分 | `docs/plans/TASK2-PLAN.md` | 独立完成 40/25/25/10 映射，用户选定创新、business block、AI 载体和删减线 |
+| CODE | OpenCode | 已确认的 T2-PLAN | CODE handoff 与聚焦 commit | 在 Linux 原生克隆实现；未静默偏离计划 |
+| TESTS | Codex | CODE handoff | T2 TESTS 报告及证据 | Windows 构建、交互、详情承接、评分证据和平台边界全部裁决 |
+| LEARNING | Codex | T2-TESTS VERIFIED | 简历与面试版复盘 | 能讲清问答主线、结构化内容、复用、测试和取舍 |
 
-## 固定切片顺序
+OpenCode 不写 Windows 挂载工作树，不推送、合并、创建 PR 或发布。连续出现相同可复现阻塞时先置 `BLOCKED`；只有用户批准后，Codex 才能在 Windows 分支作为 CODE fallback 接管。
 
-1. `T2-000`：Android/H5 最小聊天页。
-2. `T2-VERTICAL`：消息模型、确定性 Mock Chat、发送状态和结构化内容首个切片。
-3. `T2-EXPERIENCE`：Markdown、长会话、失败重试、行情卡片/图表承接和跨端体验。
+## PLAN 强制约束
 
-## 公共模型与接口
+- Task 2 必须拥有自己的 40/25/25/10 映射；Task 1 的得分证据不能自动替代。
+- Codex 提供 2–4 个创新候选，比较用户价值、核心组件、AI 载体、20 秒可见效果、工作量、风险和删减代价；用户选择前不得 CODE。
+- 计划必须冻结至少一种非 Markdown 业务内容、详情承接、状态模型、Markdown 方案、测试矩阵、演示主线和降级线。
+- 最小趋势区域与 AI 标注可以作为高杠杆候选，但不默认扩大为通用图表、K 线或高级手势。
 
-实现时在 `shared/commonMain` 使用以下语义；引用的行情和图表类型必须来自新版 Task 1 的已验证接口，不得从归档复制：
+## 题面能力合同
 
-```kotlin
-enum class ChatRole { USER, ASSISTANT }
-enum class ChatStatus { SENDING, COMPLETE, FAILED }
-enum class MarketEntityKind { STOCK, INDEX }
+### 聊天主页面
 
-data class MarketEntityRef(
-    val kind: MarketEntityKind,
-    val code: String,
-    val name: String,
-)
+- 支持输入问题、发送消息和展示会话记录。
+- 非空问题显示用户消息与助手响应状态；空输入、重复发送、失败和 retry 采用明确、可测试的策略。
 
-sealed interface ChatBlock {
-    data class Markdown(val text: String) : ChatBlock
-    data class QuoteCard(val entity: MarketEntityRef, val quote: StockQuote) : ChatBlock
-    data class TrendChart(val entity: MarketEntityRef, val points: List<ChartPoint>) : ChatBlock
-    data class Notice(val text: String) : ChatBlock
-}
+### 返回内容
 
-data class ChatMessage(
-    val id: String,
-    val role: ChatRole,
-    val blocks: List<ChatBlock>,
-    val status: ChatStatus,
-)
+- 支持 Markdown，并至少实现一种显式、可测试的股票、指数或行情业务内容。
+- 结构化业务内容使用 typed model，不从 Markdown 文本反解析。
+- 具体 business block 由用户在 PLAN 中选择，不要求同时实现所有卡片或图表。
+- 最终候选的 business block 应提供展开、比较、追问、详情承接、信号定位或其他至少一种有意义交互，并覆盖适用的 loading/failed/unknown 状态。
 
-data class ChatRequest(val query: String, val history: List<ChatMessage>)
-data class ChatResponse(val blocks: List<ChatBlock>)
+### 详情承接
 
-interface ChatProvider {
-    suspend fun answer(request: ChatRequest): ChatResponse
-}
-```
+- 至少一个聊天结果能打开正确的股票或指数详情。
+- 详情展示基础行情、走势区域，并提供摘要或 AI 解读中的至少一种。
+- 结构化结果携带可校验实体标识；未知实体不跳转、不伪造行情。
 
-`MockChatProvider` 必须确定性处理至少四类问题：个股概览、价格/涨跌查询、走势总结、风险提醒；未知代码返回可恢复提示，不伪造行情。每条分析都展示“仅作技术演示，不构成投资建议”。
+## 工程与高分约束
 
-## 页面与数据流
+- 首版使用离线确定性 Mock Chat；真实模型、实时行情、联网检索、语音、登录和云同步默认不在范围。
+- Markdown 与业务 block 采用显式内容模型隔离；Markdown 不执行 raw HTML、script 或未经确认的远程资源。
+- KuiklyMarkdown 只是候选依赖。选用前必须按当前固定版本实际探测 Android、Kotlin/JS 和 H5；不兼容时使用受测的 commonMain 受限 renderer。
+- 被称为通用 renderer、卡片或趋势组件的能力必须在至少两个真实 caller、block 或数据变体中复用。
+- 股票内容展示“仅作技术演示，不构成投资建议”，且不把 Mock 响应描述为真实模型推理。
 
-- 页面由标题、可滚动消息列表、推荐问题、输入框和发送按钮组成；发送中禁用重复提交，但允许查看历史消息。
-- 提交非空问题后立即追加用户消息与 `SENDING` 助手占位；成功后原位替换为混合内容块，失败后标为 `FAILED` 并提供重试。
-- `QuoteCard` 与 `TrendChart` 点击时调用新版 Task 1 的已验证详情路由；股票与指数由 `MarketEntityKind` 显式区分。
-- Markdown 不执行原始 HTML、脚本或远程图片；外链只作为文本或经宿主确认后打开。结构化行情只来自本地模型/Provider，不从 Markdown 反解析。
+## TESTS 完成门
 
-## Markdown 兼容决策
+- Unit：输入、发送、会话、确定性响应、选定 business block、未知实体、失败/retry、免责声明和 Markdown 安全。
+- Route：聊天结果打开正确详情；未知实体不跳转。
+- Detail：基础行情、走势区域，以及摘要或 AI 解读至少一种可见。
+- UI：消息滚动、键盘不遮挡输入、状态清晰，结构化内容不只依赖颜色传达语义。
+- Build：执行 `scripts\doctor.ps1`、`scripts\verify.ps1` 及 Task 2 专项测试；H5 production bundle 与浏览器交互分别留证。
+- Score：40/25/25/10 每个申领项均有直接证据；未验证平台或 API 不计 Bonus。
 
-KuiklyMarkdown 公开说明给出 `1.0.4-2.0.21` 依赖与流式渲染 API，但未声明 H5。因此实施顺序固定为：
+## LEARNING 与后续
 
-1. 在独立 Task 2 分支添加依赖探针，运行 Android 编译、`:shared:compileKotlinJs` 和 `:h5App:jsBrowserProductionWebpack`。
-2. 三项均通过时，Android/H5 共用 KuiklyMarkdown，并为标题、段落、列表、强调、代码块和链接增加 smoke test。
-3. JS/H5 variant 不可用时，Android 保留 KuiklyMarkdown adapter；H5 使用受测的 commonMain 受限 renderer，只支持标题、段落、粗/斜体、列表、引用、行内代码和代码块，未知标记按纯文本显示。
-4. Android 依赖可解析不代表 H5 支持；最终状态以实际编译和浏览器证据为准。
-
-## 验收门禁
-
-- 单测：空白输入、连续发送、成功/失败/重试、未知代码、确定性响应、免责声明、Markdown 转义、不执行 HTML 和内容块顺序。
-- 路由：卡片/图表打开正确实体；未知实体不跳转；详情返回后会话仍保留。
-- UI：长会话可滚动、键盘不遮挡输入、发送状态清晰、推荐问题可发送、涨跌颜色不是唯一语义。
-- 构建：`scripts\verify.ps1` 全通过，并新增 Task 2 common/Android 测试；H5 完成 production bundle 和浏览器交互。
-- 证据：Android 构建、H5 运行和设备运行分别记录；四门未齐不得进入 `VERIFIED`。
+按 `docs/learning/_TEMPLATE.md` 输出通俗复盘，无需学习底层 API 细节。T2-LEARNING `VERIFIED` 后进入 SUBMIT，由 `docs/submit/_SUBMIT-CHECKLIST.md` 统一构建提交候选。

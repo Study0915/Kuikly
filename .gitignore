@@ -13,6 +13,11 @@ local.properties
 XDG_STATE_HOME/
 
 # Local agent configuration and review material
+.agents/
+.claude/
+.codex/
+CLAUDE.md
+PLAN.md
 .opencode/
 opencode.json
 .codebuddy/settings.local.json

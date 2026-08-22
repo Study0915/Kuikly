@@ -10,10 +10,12 @@
 | H5 production bundle | `:h5App:jsBrowserProductionWebpack` | 通过（2026-08-19） |
 | Android JVM 测试 | `:shared:testDebugUnitTest` | 通过（2026-08-19） |
 | Android Debug APK | `:androidApp:assembleDebug` | 审阅修复后通过（2026-08-19，SHA-256 见 evidence） |
-| H5 空壳页面 | dev server + 浏览器 | HTTP 200；浏览器插件受信任路径错误，可视渲染未验证 |
+| H5 空壳页面 | dev server + 真实浏览器 | **通过**（2026-08-19，Edge 151 / Playwright CLI 0.1.18，页面文本、root 挂载、boot 移除、入口与 JS 200；截图见 evidence） |
 | Android 设备运行 | 真机或模拟器 | 未验证 |
-| 新版 Task 1 业务能力 | `T1-VERTICAL`、`T1-EXPERIENCE` | 未实现 |
-| Task 2 | `T2-*` | 未实现；等待新版 Task 1 VERIFIED |
+| Task 1 活动业务 | `T1-PLAN → T1-CODE → T1-TESTS → T1-LEARNING` | 未开始；旧切片卡不代表当前进度 |
+| Task 2 活动业务 | `T2-PLAN → T2-CODE → T2-TESTS → T2-LEARNING` | 未开始；等待 T1-LEARNING VERIFIED |
+| SUBMIT | 两题评分审计、代码、文档、视频与真实性清单 | 未开始；等待两题 LEARNING VERIFIED |
+| 历史 T1-000 reset scaffold | 历史四门记录 | **VERIFIED**（2026-08-19；只证明空壳，不证明当前 Task 1 业务完成） |
 
 未执行的项目不得标记为通过。
 

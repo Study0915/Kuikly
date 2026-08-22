@@ -1,130 +1,169 @@
-# Kuikly Codex 主开发工作流
+# Kuikly 高分交付工作流
 
-## 1. 目标
+## 1. 唯一活动管线
 
-Task 1、Task 2 共用一条可追溯管线：需求、任务卡、唯一写入者、实现、测试、证据、学习报告、审查和用户集成。
+```text
+Task 1 PLAN → CODE → TESTS → LEARNING
+    → Task 2 PLAN → CODE → TESTS → LEARNING
+    → SUBMIT
+```
+
+这条顺序是活动唯一入口。Task 1 未完成 LEARNING 时不启动 Task 2 PLAN；两题未完成 LEARNING 时不进入 SUBMIT。
+
+不再为活动实现创建 `T1-VERTICAL`、`T1-EXPERIENCE`、`T2-000` 等 Feature 任务卡。旧卡片保留为历史审计，不授权当前代码修改，也不代表当前完成度。
 
 ## 2. 角色
 
-| 角色 | 工作区 | 默认职责 | 启用条件 |
-|---|---|---|---|
-| Windows Codex | `E:\Internship\tecent\Kuikly` | 规划、任务卡、代码、测试、Android/H5 验收、证据和审查 | 默认启用 |
-| WSL OpenCode | `~/code/Kuikly` | 被 handoff 的边界实现、测试和聚焦 commit | 用户明确指定，或 Codex 阻塞后经用户确认 |
-| WorkBuddy | 独立评审目录 | 产品、交互、展示和阶段复盘 | 用户选择里程碑评审 |
-| 用户 | Windows 主机 | 范围、handoff、合并、PR、发布和外部沟通 | 需要外部状态变化时 |
+| 阶段 | 默认 Owner | 完成标准 |
+|---|---|---|
+| PLAN | Windows Codex | 详细 Task 总计划完成 40/25/25/10 映射并获用户确认 |
+| CODE | WSL OpenCode | 严格按确认计划实现并给出聚焦 commit/handoff |
+| TESTS | Windows Codex | Windows diff、自动测试、H5/Android、交互与评分证据验收通过 |
+| LEARNING | Windows Codex | 形成通俗、简历可写、面试可答的项目报告 |
+| SUBMIT | Windows Codex 准备，用户决定外部操作 | 两题代码、文档、视频和评分证据组成可提交候选包 |
 
-同一任务同一时间只有一个代码写入者。OpenCode 不写 `/mnt/e` 工作树，WorkBuddy 不写主仓库。
+OpenCode 只写 WSL Linux 原生克隆 `~/code/Kuikly`，不写 Windows 挂载工作树。Codex 代码备选接管必须先停止 OpenCode 写入并获得用户确认。同一 Task 同一时间只有一个代码写入者。
 
-## 3. 指令优先级
+## 3. 阶段状态
 
-1. `AGENTS.md` 的安全、真实性、平台和验收规则；
-2. 当前任务卡的目标、允许路径和验收条件；
-3. `.codebuddy/rules/kuiklyDSL.mdc` 的固定 Kuikly DSL 规范；
-4. 工具本地配置、记忆和默认行为。
+每个阶段只使用以下状态：
 
-规则冲突时暂停实现，记录冲突和证据；不得用 Agent 常识覆盖仓库规则。
+- `BACKLOG`：前置阶段未完成；
+- `IN_PROGRESS`：Owner 正在执行；
+- `WAITING_USER`：等待用户选择创新点、确认计划或批准外部操作；
+- `BLOCKED`：存在带证据的环境、合同或实现阻塞；
+- `VERIFIED`：该阶段的退出条件全部满足。
 
-## 4. 标准管线
+`VERIFIED` 必须有直接证据。构建、浏览器交互、APK、设备运行和外部提交互不替代。
 
-1. **READY**：Codex读取规则与 readiness，登记任务 ID、目标、Owner、基线 SHA、分支、允许/禁止路径、测试和证据。
-2. **IN_PROGRESS**：Codex在 Windows 功能分支实现；每次修改保持任务边界，旧归档不作为复制源。
-3. **HANDOFF**：实现者给出 commit、实际文件、命令结果、未执行项、证据、风险和未 merge/release 声明。
-4. **REVIEW**：Codex检查 diff、任务合同、测试和平台证据；作者为 Codex 时仍执行独立的 diff/contract 审查清单。
-5. **VERIFIED**：`code/tests/evidence/learning` 四门齐全，指定构建和交互实际通过。
-6. **INTEGRATED**：仅由用户确认后合并或推进外部流程。
+## 4. PLAN：Codex 详细规划
 
-状态机：`BACKLOG → READY → IN_PROGRESS → HANDOFF → REVIEW → VERIFIED → INTEGRATED`，另设 `BLOCKED`。
+每题只维护一份总计划：
 
-## 5. 任务卡
+- Task 1：`docs/plans/TASK1-PLAN.md`
+- Task 2：`docs/plans/TASK2-PLAN.md`
 
-```markdown
-# Task <ID> · <标题>
+PLAN 必须包含：
 
-## 目标与价值
-- 目标：
-- 用户价值：
-- 完成定义：
+1. 题面 Must、明确非目标和归档/Issue 隔离边界；
+2. 40/25/25/10 评分矩阵，每项对应可见结果和直接证据；
+3. 创新候选表：候选方案、预期评分收益、实现成本、风险、删减线和 Codex 推荐；
+4. 用户最终选择的核心组件与 AI 信息载体；
+5. 文件落点、模块职责、接口、数据、状态、路由、错误恢复和跨端策略；
+6. CODE 的有序实现清单、每项退出条件和回滚点；
+7. TESTS 矩阵：命令、平台、交互、期望结果和失败判据；
+8. LEARNING 的简历亮点和面试主题；
+9. SUBMIT 所需 README、演示视频与评分证据落点；
+10. 风险、依赖、版本探针、许可、安全、Mock/真实边界。
 
-## 执行边界
-- Owner：Codex
-- 基线 commit：
-- 功能分支：`feature/<topic>` 或 `bugfix/<topic>`
-- 允许修改：
-- 禁止修改：
-- 必须复用：
-- 明确非目标：
+### 创新未确定时的约束
 
-## 验收
-- 自动命令：
-- 人工交互：
-- 证据：
-- 风险、依赖和失败升级条件：
-```
+- PLAN 可以列出 2-4 个候选与推荐，不能把 Codex 的推荐冒充用户决定。
+- 核心组件与 AI 载体未获用户确认时，PLAN 状态为 `WAITING_USER`，CODE 不得开始。
+- 用户确认后，把选择、拒绝理由和删减线写回同一总计划；不另建 Feature 任务卡。
 
-任务卡不完整时只能只读分析。
+### PLAN 退出条件
 
-## 6. 四门完成门
+- 所有题面 Must 有实现和测试落点；
+- 40/25/25/10 四项均有目标和证据合同；
+- 核心组件、AI 载体与删减线已由用户确认；
+- OpenCode handoff 所需的基线、分支、允许路径、首条提示词和验收命令齐全。
 
-- `code`：活动代码与任务卡一致，归档未进入活动依赖图。
-- `tests`：自动测试实际执行，或清楚记录无法执行的原因。
-- `evidence`：命令、版本、日志、截图和构建产物与声明一致。
-- `learning`：报告解释调用链、状态变化、Kuikly API、设计取舍、限制和 5 道面试题。
+## 5. 评分映射约束
 
-四门未齐只能停留在 `HANDOFF` 或 `REVIEW`。
+每份 Task 总计划必须包含：
 
-## 7. OpenCode 备选流程
+| 维度 | 权重 | 计划必须回答 |
+|---|---:|---|
+| R-FUNC | 40% | 哪些页面、链路、状态和题面字段直接拿分？如何证明完整？ |
+| R-ENG | 25% | 核心组件是什么？接口、状态和至少两个复用场景如何证明？ |
+| R-AI | 25% | AI 由什么载体承载？比静态文本多提供什么理解或交互价值？ |
+| R-BONUS | 10% | 核心三项稳定后选择哪项加分？若时间不足首先删除什么？ |
 
-Codex 连续两次获得相同的可复现失败、遇到 Windows 无法提供的必要 Linux 环境，或用户明确要求时，先进入 `BLOCKED` 并给出最小 handoff。用户确认后才启用 OpenCode。
+硬约束：
 
-handoff 必须包含任务 ID、基线 SHA、`feature/<topic>` 分支、允许/禁止路径、失败日志、WSL 目录 `~/code/Kuikly`、启动命令、首条提示词和验收命令。标准入口：
+- 评分映射是计划合同，不是事后包装；
+- “通用组件”必须有聚焦接口和至少两个 caller、场景或数据变体；
+- AI 载体至少呈现结论、理由、风险/不确定性、数据时效和一种有意义交互；
+- Bonus 不能阻塞 R-FUNC/R-ENG/R-AI；
+- 没有运行、测试或视频证据时不得标记为得分已验证。
 
-```bash
-wsl -d Ubuntu-24.04
-source ~/.bashrc
-cd ~/code/Kuikly
-opencode
-```
+详细评分定义只在 `docs/evaluation-pipeline.md` 维护。
 
-OpenCode 只提交功能分支，不推送 main、不合并、不发布。完成后 Codex 在 Windows 仓库重新验证。
+## 6. CODE：OpenCode 实现
 
-## 8. WorkBuddy 可选评审
+CODE 只消费用户确认后的 Task 总计划，不创建新的活动任务卡。
 
-只有用户选择 WB-01～WB-04 里程碑时才启用。评审卡必须给出独立目录、Default Permissions、输入材料、期望输出和“不得写主仓库”边界。原始输出保留在仓库外；Codex 复核且用户接受后，只把去重结论写入 workboard、REVIEWS、BUG_LOG 或 DECISIONS。
+Codex handoff 必须提供：
 
-## 9. 交接与下一步
+- Task、计划版本、基线 SHA、`feature/<topic>` 分支；
+- WSL 目录 `~/code/Kuikly`、启动命令和首条提示词；
+- 允许/禁止路径、实现清单、公开接口和明确非目标；
+- 验收命令、评分证据要求、失败升级条件；
+- 未 push、未 merge、未 release、未外发声明。
 
-```markdown
-# Handoff <Task ID>
-- commit / 分支：
-- 实际修改文件：
-- 已执行命令及结果：
-- 未执行项及原因：
-- 证据路径：
-- 已知风险：
-- 外部操作声明：未 merge、未 release、未发送外部消息
-```
+OpenCode 必须：
 
-每次完成、交接、阻塞或验收都提供下一步。默认注明“本步不需要外部 Agent”；只有已触发备选流程时才提供 OpenCode 卡。
+- 按计划顺序实现，范围变化先回到 PLAN；
+- 使用聚焦 commit，记录实际文件、命令结果、未执行项和风险；
+- 不把编译成功写成浏览器或设备通过；
+- 不读取或提交密钥、签名、本机配置或真实用户数据。
 
-## 10. Git 与本地配置
+CODE 完成后只进入 TESTS，不自行裁决 `VERIFIED`。
 
-- 分支使用 `feature/<topic>` 或 `bugfix/<topic>`，提交遵循 Angular Convention。
-- Agent 可以创建聚焦 commit；推送 main、force-push、自动 merge、PR、tag、release 和外部消息由用户决定。
-- `.env`、Token、密钥、`local.properties`、签名、机器路径和工具账户不进入 Git。
-- OpenCode/WorkBuddy 权限配置和原始评审材料只留本地；仓库只提交共享规则和可复现证据。
+分支命名、交接运输和清理规则见 `docs/GIT-WORKFLOW.md`。
 
-## 11. 质量与证据
+## 7. TESTS：Codex 验收
 
-Task 1、Task 2 均检查完成度、创新性、跨端一致性、工程质量、证据可信度和演示表达。
+TESTS 同时承担原 `tests + evidence` 职责。Codex 在 Windows 主仓库完成：
 
-- 每次 Feature 记录组件测试、Kotlin/JS、H5 production bundle、Android Debug 构建和指定交互的实际状态。
-- H5 浏览器交互、Android APK 构建和设备运行分别记录；一个不能替代另一个。
-- 连续两次有日志的同一失败、官方资料与工程行为冲突或需求边界无法确定时进入 `BLOCKED`。
-- 阻塞报告包含问题、复现命令、日志、影响、已尝试方案、最小问题和解除条件；外发前由用户确认。
+1. diff 与计划合同审查；
+2. 相关单元、状态、路由和安全测试；
+3. Kotlin/JS、H5 production bundle、Android JVM 和 Debug APK；
+4. H5 真实浏览器主链路；
+5. Android 设备/模拟器状态单独记录；
+6. 40/25/25/10 声明—证据矩阵；
+7. Mock、真实 API、平台与投资风险边界检查。
 
-## 12. 顺序与边界
+失败时记录复现命令、日志、影响和解除条件，阶段回到 CODE。只有全部必需项通过或被明确标为未验证且不阻塞题面时，TESTS 才能 `VERIFIED`。
 
-- 旧 Task 1 位于 `archive/task1-v1/`，不参与当前构建或验收。
-- 新 Task 1 按 `docs/task1-readiness.md` 完成并进入 `VERIFIED` 后，Task 2 才进入实现。
-- Task 2 按 `docs/task2-readiness.md` 复用新版 Task 1 已验证的接口，不复用归档接口。
-- 推送、合并、PR、tag、release、真实服务和外部消息始终需要用户决定。
+## 8. LEARNING：简历与面试级项目报告
+
+LEARNING 不再要求学习逐个 Kuikly/Kotlin API。报告服务两个目标：
+
+1. 用户能把项目写进简历；
+2. 面试官追问时，用户能用自己的话解释目标、架构、难点、取舍和结果。
+
+每题报告控制在通俗、可复述的深度，至少包含：
+
+- 一句话项目介绍和用户价值；
+- 用户本人可声明的职责；
+- 完整体验链路；
+- 高层架构与核心组件；
+- 3-5 个关键难点、选择和结果；
+- 40/25/25/10 对应亮点；
+- 真实验证结果与未验证边界；
+- 2-3 条可直接改写进简历的 bullet；
+- 8-12 个高概率面试问题及简洁答案；
+- 已知限制和下一步。
+
+报告避免逐文件流水账、逐 API 教程和无法由用户解释的术语堆砌。模板见 `docs/learning/_TEMPLATE.md`。
+
+## 9. SUBMIT：两题统一提交准备
+
+SUBMIT 只有在 Task 1、Task 2 的 LEARNING 都 `VERIFIED` 后启动。Codex 按 `docs/submit/_SUBMIT-CHECKLIST.md` 准备：
+
+- 可从干净环境启动的源代码；
+- 面向评审的 README 与架构/亮点说明；
+- Task 1、Task 2 完整演示视频和包含画面信息的文字稿；
+- 40/25/25/10 最终评分证据矩阵；
+- 构建、浏览器、APK、设备和未验证平台声明；
+- Mock/真实数据、AI、投资风险、许可和隐私边界；
+- 提交文件清单、版本、hash 和回滚备份；
+- 内部路径、账号、Token、通知和真实用户数据清理结果。
+
+Codex 可以生成本地候选包和报告，但实际 push、PR、tag、release、报名提交和外部沟通由用户确认。
+
+## 10. 当前下一步
+
+当前只进入 `T1-PLAN`。Codex 先给出创新候选、评分收益、成本与推荐；用户确认核心组件和 AI 载体后，Codex 完成 Task 1 总计划并生成 OpenCode handoff。此前不启动业务 CODE。
