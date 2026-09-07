@@ -1,6 +1,6 @@
 # ADR-013 · Task 1 行情证据联动卡与工作区工具隔离
 
-- 状态：Proposed；采用 v3 编写计划已获授权，完整实施合同及 CODE 待用户确认。
+- 状态：Accepted；2026-09-07 用户审阅计划提交 `0060711` 后明确“开始实施”，完整实施合同及 CODE 已获确认。
 - 日期：2026-09-07。
 - 对应计划：[TASK1-PLAN v1.0](../plans/TASK1-PLAN.md)。本 ADR 冻结拟议组织方式，不表示业务已经实现。
 
@@ -8,7 +8,7 @@
 
 用户以联合设计 v3 开始 Task 1 正式计划，选择固定 20 日 K 线、成交量、十字光标与 AI 证据双向联动的规划方向，并要求 Git commit 管理及工作区内安装，不污染 base 环境。现有活动工程为空壳，不能继承归档的图表或业务完成度。
 
-## 决定草案
+## 决定
 
 1. Codex 在 Windows 同一 Task 分支完成 PLAN、CODE、TESTS、LEARNING；本 ADR 不授权其他 Agent 写入。完整 PLAN 由用户确认后才进入 CODE。
 2. QuoteEvidenceLens 在现有 shared 内使用 `market/`、`insight/`，并以 `navigation/`、`ui/` 承接页面；不新增 Gradle module，不开发空 KuiklyChart，不迁移归档。
@@ -29,4 +29,4 @@
 
 具体文件、公式、状态、命令、P/F/I/Q 验收项与回滚点均在唯一 Task 总计划维护，不另建 Feature 卡。C1 先验证锁定 Kuikly 的双图、点选、宽度、父滚动及返回；任何范围/公开合同变更回写计划与本 ADR。代码尚未执行，本 ADR 不提供运行通过声明。
 
-下一步：确认完整计划后将本 ADR 改为 Accepted，Codex 从 C0 环境隔离与 C1 交互探针实施。
+下一步：Codex 从 C0 环境隔离与 C1 交互探针实施，并按总计划持续完成 Task 1。

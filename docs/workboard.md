@@ -8,8 +8,8 @@
 
 | 阶段 | Owner | 前置条件 | 状态 | 唯一产物 / 完成条件 |
 |---|---|---|---|---|
-| T1-PLAN | Codex | 用户指定联合设计 v3 编写正式计划 | WAITING_USER | [TASK1-PLAN v1.0](plans/TASK1-PLAN.md) 已形成；题面、40/25/25/10、文件/状态、环境隔离、技术探针和逐项验收合同待完整确认 |
-| T1-CODE | Codex | T1-PLAN VERIFIED | BACKLOG | 按已确认计划在 Windows 工作树实施并维护 CODE 实施记录；不得自行改变创新点或评分目标 |
+| T1-PLAN | Codex | 用户审阅计划提交后明确“开始实施” | VERIFIED | [TASK1-PLAN v1.0](plans/TASK1-PLAN.md) 已于 2026-09-07 获确认；确认时提交 `0060711` |
+| T1-CODE | Codex | T1-PLAN VERIFIED | IN_PROGRESS | [CODE 实施记录](handoffs/TASK1-CODE.md)；依次进行 C0–C4，按已确认计划保存聚焦 commit |
 | T1-TESTS | Codex | T1-CODE 实施记录完整 | BACKLOG | Windows 构建、自动测试、H5/Android 分级验证、评分证据与缺口报告 |
 | T1-LEARNING | Codex | T1-TESTS VERIFIED | BACKLOG | 简历与面试版项目复盘；不写成 API 教程 |
 | T2-PLAN | Codex | T1-LEARNING VERIFIED | BACKLOG | `docs/plans/TASK2-PLAN.md`；独立完成 40/25/25/10 映射和用户决策门 |
@@ -20,8 +20,8 @@
 
 ## 当前下一步
 
-1. 用户审阅并确认 [TASK1-PLAN v1.0](plans/TASK1-PLAN.md) 的完整实施合同；方案方向沿用已指定的 v3，不重复要求选择创新候选。
-2. 确认后 T1-PLAN 进入 `VERIFIED`；Codex 在 `feature/task1-quote-evidence-lens` 记录确认版本、实际 HEAD、既存差异与允许路径后启动 T1-CODE。
+1. 用户已确认 [TASK1-PLAN v1.0](plans/TASK1-PLAN.md)；Codex 持续实施 C0–C4，再进入 TESTS 与 LEARNING。
+2. 实施分支 `feature/task1-quote-evidence-lens`，基线 `0060711`；既存差异单列保留，按清单提交本轮文件。
 3. 实施先做 C0 工作区工具隔离，再做 C1 双图绘制、点选、滚动取消及返回探针；不把 APK 构建写成 Android 运行，不提前启动 Task 2。
 
 ## 2026-09-07 PLAN 记录
