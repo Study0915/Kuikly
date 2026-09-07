@@ -6,6 +6,10 @@
 
 用户指定以 v3 开始 Task 1 实施计划，并要求 Git commit 管理、依赖安装在工作区、避免污染 base 环境。2026-09-07 用户在审阅本计划提交 `0060711` 后明确“开始实施”，确认本 v1.0 并授权 Codex 进入 CODE；沿用已确认范围，不重新要求选择创新候选。
 
+执行记录：正文的基线/未验证表记录 PLAN 时点；当前源码、验证与限制见 [CODE](../handoffs/TASK1-CODE.md) 和 [TESTS](../REVIEWS/TASK1-TESTS.md)。实施没有扩大产品范围。C5 补充 `scripts/serve-task1-h5.cjs`、`test-task1-h5.js`、`test-task1-touch.js`、`test-task1-mouse.js` 与录像脚本作为验收入口；不属于新业务模块。
+
+录像工具补充（2026-09-07）：已有工作区 Playwright CLI 0.1.18 需要 FFmpeg build 1011 才能生成真实浏览器录像。仅通过同一工作区 Playwright 安装器获取其官方分发，目标 `.cache/browsers/ffmpeg-1011`，临时目录 `.cache/tmp`；不引入应用依赖、不写全局 PATH。分发来源和许可按下载清单/包内 LICENSE 留档。若工作区安装不能完成，只记录录像缺口，不写 C 盘。
+
 ## 1. 输入、基线与已验证边界
 
 | 项目 | 固定内容 |
@@ -300,7 +304,7 @@ C1 先用最少量 fixture 切片验证风险，C2 归并为正式数据，探�
 | 产物 | 落点 / 内容 |
 |---|---|
 | CODE 实施记录 | `docs/handoffs/TASK1-CODE.md`；沿用现有记录目录，Owner Codex，无外部 handoff；记录确认版本、实际 HEAD、基线差异、步骤/文件/commit/命令/风险 |
-| TESTS 报告 | `docs/reviews/TASK1-TESTS.md`；F/P/I/Q 场景、构建、浏览器、APK、设备分别记录，含评分声明—证据表 |
+| TESTS 报告 | `docs/REVIEWS/TASK1-TESTS.md`；F/P/I/Q 场景、构建、浏览器、APK、设备分别记录，含评分声明—证据表 |
 | 证据索引 | `docs/evidence/task1/README.md`；保存可公开截图/精简日志、日期、构建 SHA 和操作；大录屏/原始日志先放 `.cache/task1-evidence/`，索引记录相对位置与 hash |
 | Interface 说明 | `docs/interfaces/QuoteEvidenceLens.md`；在 CODE 实现后给出实际类型、一个真实 caller 与 A/B 数据变体例子，不伪造 Task 2 接入 |
 | LEARNING | `docs/learning/TASK1-LEARNING.md`；TESTS 裁决后编写，含 30 秒介绍、职责、体验链、3–5 难点、2–3 简历条目、8–12 问答和局限 |

@@ -2,7 +2,7 @@
 
 - 状态：Accepted；2026-09-07 用户审阅计划提交 `0060711` 后明确“开始实施”，完整实施合同及 CODE 已获确认。
 - 日期：2026-09-07。
-- 对应计划：[TASK1-PLAN v1.0](../plans/TASK1-PLAN.md)。本 ADR 冻结拟议组织方式，不表示业务已经实现。
+- 对应计划：[TASK1-PLAN v1.0](../plans/TASK1-PLAN.md)。CODE 已实现；H5 与构建证据见 [TESTS](../REVIEWS/TASK1-TESTS.md)，Android 设备仍未运行。
 
 ## 背景
 
@@ -27,6 +27,8 @@
 
 ## 验证与后续
 
-具体文件、公式、状态、命令、P/F/I/Q 验收项与回滚点均在唯一 Task 总计划维护，不另建 Feature 卡。C1 先验证锁定 Kuikly 的双图、点选、宽度、父滚动及返回；任何范围/公开合同变更回写计划与本 ADR。代码尚未执行，本 ADR 不提供运行通过声明。
+具体文件、公式、状态、命令、P/F/I/Q 验收项与回滚点均在唯一 Task 总计划维护，不另建 Feature 卡。C1–C4 已完成，技术夹具已移除；H5 实际运行和 Android 构建分开裁决。
 
-下一步：Codex 从 C0 环境隔离与 C1 交互探针实施，并按总计划持续完成 Task 1。
+实现备注：H5 通过 NotifyModule 的宿主扩展接收最小路线参数，popstate 回送同一 Pager；Android 使用锁定源码的 onBackPressed/BackPressModule。文本测量和混合输入兼容只在必要宿主/图形输入位置处理。KSP 增量会丢注册的复现已修复为关闭增量并核对生成入口。C5 仅新增可复现测试/录像脚本及工作区 FFmpeg 运行时（LGPLv2.1），无业务库或模块结构扩张。
+
+下一步：用户体验 Demo 并完成学习自测；之后独立确认 Task 2 PLAN，Android 运行仍需满足工作区配置约束。

@@ -13,11 +13,11 @@
 | 步骤 | 实际实施 | 证据与状态 |
 |---|---|---|
 | C0 | 补充进程级 TEMP/TMP、Java home/temp、npm prefix/config 与浏览器缓存/daemon 路径；doctor 检查工作区隔离 | VERIFIED；bootstrap/doctor 输出 CLI_ENV_OK；空壳 verify 全部构建成功，不代表新业务通过 |
-| C1 | 锁定 2.4.0 的源码与双图点选/滚动探针 | BACKLOG |
-| C2 | Mock 与证据事实、焦点状态 | BACKLOG |
-| C3 | 行情列表、详情与恢复 | BACKLOG |
-| C4 | 联动卡完整接入 | BACKLOG |
-| C5 | TESTS 后编写 LEARNING | BACKLOG |
+| C1 | 锁定 2.4.0 的源码与双图点选/滚动探针 | VERIFIED；328a1bf，见技术探针；夹具已从活动入口移除 |
+| C2 | Mock 与证据事实、焦点状态 | VERIFIED；db14587，A/B 算例与数据/引用/时效/状态验证 |
+| C3 | 行情列表、详情与恢复 | VERIFIED；f6669fa，12 个实体、返回位置、失败重试和旧请求隔离 |
+| C4 | 联动卡完整接入 | VERIFIED；与 C3 同批 f6669fa，完整 H5 行为验收通过 |
+| C5 | TESTS 后编写 LEARNING | TESTS 受限 VERIFIED；验收/录像脚本与证据提交 6f23a53；复盘已交付，用户掌握程度待自测 |
 
 ## 环境与真实性
 
@@ -27,4 +27,10 @@
 
 源码来源：KuiklyUI tag `2.4.0` 对应 `63cdb10b07065fac9692899dcd8f15bd1f4bc61b`。旧缓存 HEAD 不作为锁定源码证据；按 tag 提取到工作区缓存。公共源码缺失对象通过 Git 单次 OpenSSL 参数读取，未修改全局 Git 配置。
 
-下一步：执行 C1 双图、点选、父滚动和返回风险探针。
+后续补充：C3/C4 在同一完整页面构建后合并为聚焦业务提交；C1 的返回桥接由 C3 实际路由验收补全。增加 scripts 中生产服务、浏览器验收和录像入口，公开文件清单已经写回总计划，没有扩大产品范围。
+
+实际修复包括 H5 普通文本测量副本、混合设备鼠标/多指处理、反查入口顺序、浮点日槽边界和 KSP 增量丢失注册。最终一次非 Page 文件修改后的构建/浏览器回归证明注册保持；详见 [TESTS](../REVIEWS/TASK1-TESTS.md)。
+
+录像新增工具仅为工作区 FFmpeg build 1011（LGPLv2.1）及安装器附带的 Winldd v1007，均在 `.cache/browsers`。源码运行不需要这些工具；其用途和实际安装来源见证据索引。
+
+下一步：按运行说明体验 Demo，并完成学习自测；Android 设备与 Task 2 各自按原计划推进。
