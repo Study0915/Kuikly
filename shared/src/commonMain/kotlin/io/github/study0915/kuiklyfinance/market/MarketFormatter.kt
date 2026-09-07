@@ -5,7 +5,7 @@ import kotlin.math.floor
 
 object MarketFormatter {
     fun decimal(value: Double, signed: Boolean = false): String {
-        require(value.isFinite() && abs(value) < 9e13)
+        require(value.isFinite() && abs(value) < 9e16)
         val units = floor(abs(value) * 100.0 + 0.5 + 1e-9).toLong()
         val prefix = if (units == 0L) "" else if (value < 0) "-" else if (signed) "+" else ""
         return "$prefix${units / 100}.${(units % 100).toString().padStart(2, '0')}"
@@ -26,6 +26,7 @@ enum class Freshness(val text: String) {
 
 object MarketTime {
     const val STALE_AFTER_MS = 72L * 60 * 60 * 1000
+    // Freshness is a demonstration policy; every enum label still identifies historical Mock.
     fun freshness(asOf: Long, now: Long) = when {
         now < asOf -> Freshness.FUTURE
         now - asOf > STALE_AFTER_MS -> Freshness.STALE

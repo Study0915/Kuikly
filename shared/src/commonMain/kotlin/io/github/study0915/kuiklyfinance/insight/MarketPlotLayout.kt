@@ -29,7 +29,9 @@ data class MarketPlotLayout(val width: Float, val bars: List<MarketBar>) {
     fun hit(x: Float, y: Float): Int? {
         if (!valid || !x.isFinite() || !y.isFinite() || x < left || x >= right) return null
         if (y !in priceTop..priceBottom && y !in volumeTop..volumeBottom) return null
-        return ((x - left) / step).toInt().takeIf { it in bars.indices }
+        // Compare against the same computed boundaries that define the slots.
+        // Dividing back by step can round an exact boundary into its left slot.
+        return bars.indices.firstOrNull { x < left + (it + 1) * step }
     }
     companion object { const val HEIGHT = 348f }
 }

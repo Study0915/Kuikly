@@ -16,6 +16,12 @@ import com.tencent.kuikly.core.render.web.expand.components.KRRichTextView
 import com.tencent.kuikly.core.render.web.ktx.SizeF
 import com.tencent.kuikly.core.render.web.ktx.width
 import com.tencent.kuikly.core.render.web.runtime.web.expand.processor.RichTextProcessor
+import com.tencent.kuikly.core.render.web.IKuiklyRenderExport
+import com.tencent.kuikly.core.render.web.expand.module.KRNotifyModule
+import com.tencent.kuikly.core.render.web.ktx.KuiklyRenderCallback
+import com.tencent.kuikly.core.render.web.nvi.serialization.json.JSONObject
+import com.tencent.kuikly.core.render.web.context.KuiklyRenderCoreExecuteMode
+import com.tencent.kuikly.core.render.web.exception.ErrorReason
 
 /** 2.4.0 DOM measurement reinserts its plain-text scratch node into the live tree.
  * Keep measurement detached from rendered nodes; rich text retains the upstream path.
@@ -77,15 +83,79 @@ private class Task1WebDelegator : KuiklyRenderViewDelegatorDelegate {
         Pager.PAGER_EVENT_ROOT_VIEW_SIZE_CHANGED,
         mapOf("width" to window.innerWidth, "height" to window.innerHeight),
     )
+    override fun registerExternalModule(kuiklyRenderExport: IKuiklyRenderExport) {
+        kuiklyRenderExport.moduleExport(KRNotifyModule.MODULE_NAME) {
+            object : KRNotifyModule() {
+                override fun call(method: String, params: String?, callback: KuiklyRenderCallback?): Any? {
+                    if (method == "postNotify" && params != null) {
+                        val event = JSONObject(params)
+                        if (event.optString("eventName") == Task1Routes.HOST_ROUTE_EVENT) {
+                            val data = event.optJSONObject("data") ?: JSONObject(event.optString("data"))
+                            if (data.optString("route") == "detail") {
+                                pushDetail(data.optString("entityId"), data.optString("snapshotId"))
+                            } else if (window.history.state.asDynamic()?.financeDetail == true) window.history.back()
+                            return null
+                        }
+                    }
+                    return super.call(method, params, callback)
+                }
+            }
+        }
+    }
+    private fun pushDetail(entity: String, snapshot: String = "", date: String = "", evidence: String = "") {
+        val state = js("({})")
+        state.financeDetail = true; state.entityId = entity; state.snapshotId = snapshot; state.date = date; state.evidenceId = evidence
+        window.history.pushState(state, "")
+    }
+    fun historyChanged() {
+        val state = window.history.state.asDynamic()
+        if (state?.financeDetail == true) {
+            delegate.sendEvent(Task1Routes.HOST_OPEN_EVENT, mapOf(
+                "entityId" to state.entityId as String, "snapshotId" to state.snapshotId as String,
+                "date" to state.date as String, "evidenceId" to state.evidenceId as String))
+        } else delegate.sendEvent(Task1Routes.HOST_BACK_EVENT, emptyMap())
+    }
+    override fun onPageLoadComplete(isSucceed: Boolean, errorReason: ErrorReason?, executeMode: KuiklyRenderCoreExecuteMode) {
+        if (!isSucceed) return
+        val query = js("new URLSearchParams(window.location.search)")
+        val entity = query.get("entity") as? String ?: return
+        val snapshot = query.get("snapshot") as? String ?: ""
+        val date = query.get("date") as? String ?: ""
+        val evidence = query.get("evidence") as? String ?: ""
+        pushDetail(entity, snapshot, date, evidence)
+        historyChanged()
+    }
 }
 
 fun main() {
     installStandaloneHostCompatibility()
     val delegator = Task1WebDelegator()
+    window.history.replaceState(js("({financeDetail:false})"), "")
     delegator.attach()
     delegator.resume()
     document.getElementById("boot")?.remove()
     window.addEventListener("resize", { delegator.resize() })
+    window.addEventListener("popstate", { delegator.historyChanged() })
+    // On hybrid devices the renderer binds touch handlers but still receives mouse clicks.
+    // Keep the click fallback from turning a mouse drag into a point inspection.
+    var mouseOrigin: Pair<Double, Double>? = null
+    var mouseCancelled = false
+    fun trackMouse(x: Double, y: Double) {
+        mouseOrigin?.let { origin ->
+            if (kotlin.math.abs(x - origin.first) > 8 || kotlin.math.abs(y - origin.second) > 8) mouseCancelled = true
+        }
+    }
+    document.addEventListener("mousedown", { event ->
+        mouseOrigin = (event.asDynamic().clientX as Double) to (event.asDynamic().clientY as Double)
+        mouseCancelled = false
+    }, true)
+    document.addEventListener("mousemove", { event -> trackMouse(event.asDynamic().clientX as Double, event.asDynamic().clientY as Double) }, true)
+    document.addEventListener("mouseup", { event ->
+        trackMouse(event.asDynamic().clientX as Double, event.asDynamic().clientY as Double); mouseOrigin = null
+    }, true)
+    document.addEventListener("click", { event ->
+        if (mouseCancelled) { mouseCancelled = false; event.preventDefault(); event.stopImmediatePropagation() }
+    }, true)
     // The pinned web renderer reports one synthesized pointer even for multitouch.
     // Cancel that stream at the host before it can be mistaken for a single tap.
     var firstTouchTarget: EventTarget? = null
