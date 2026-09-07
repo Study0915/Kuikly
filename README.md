@@ -1,6 +1,6 @@
 # Kuikly Finance
 
-Kuikly 跨端股票 Demo 的重新开发工作区。当前活动工程是 Task 1 的 Android/H5 可编译空壳；旧版图表、行情、详情和 Mock AI 实现已隔离归档，不参与当前构建。
+Kuikly 跨端股票 Demo。当前 Task 1 已完成行情列表、个股详情，以及 K 线/成交量/AI 证据双向联动；使用历史 Mock。旧版实现只作归档，不参与活动构建。运行与操作见 [Task 1 使用说明](docs/TASK1-RUN.md)，实际结果见 [TESTS](docs/REVIEWS/TASK1-TESTS.md)。
 
 Shape Task 1/2 的原始题面与完成定义以 [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) 为准。Issue #1477 是独立历史/可选参考，不定义两题的 Must；通用图表、K 线和高级手势只有被用户选入 Task 总计划时才进入范围。
 
@@ -16,9 +16,9 @@ Shape Task 1/2 的原始题面与完成定义以 [docs/REQUIREMENTS.md](docs/REQ
 ## 当前状态
 
 - `[FACT]` 活动入口为 `finance_home`。
-- `[MOCK]` 当前只显示重启状态和投资免责声明，没有行情或 AI 服务。
-- `[VERIFIED]` H5 reset 空壳已在真实 Edge/Chromium 中完成页面、DOM、网络和控制台验收；完整构建门禁通过。
-- `[UNVERIFIED]` 新版行情、详情、AI 解读和 Task 2 尚未实现；可选图表能力同样尚未实现。
+- `[MOCK]` 12 个确定性股票样例；摘要由数值事实和有限模板生成，没有真实行情或模型服务。
+- `[VERIFIED]` 21 个共同逻辑单测、H5 59 项功能检查、7 项触摸检查及桌面鼠标/加载取消通过；JS/H5 和 Android Debug 构建通过。
+- `[UNVERIFIED]` Task 2 尚未实现；学习复盘已交付，用户掌握程度待自测。当前角色与阶段以 [workboard](docs/workboard.md) 为准。
 - `[UNVERIFIED]` Android 设备运行、iOS 和 HarmonyOS 未执行；APK 构建不等于设备运行。
 - `[DECISION]` Codex 负责两题 PLAN、TESTS、LEARNING 和 SUBMIT 准备；OpenCode 是两题默认 CODE 写入者，Codex 只有经用户确认后才备选接管。
 
