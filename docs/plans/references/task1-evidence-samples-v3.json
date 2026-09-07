@@ -1,0 +1,421 @@
+{
+  "purpose": "仅供方案设计与算例核对；非活动业务代码，非真实行情，尚未完成平台渲染验证。",
+  "snapshots": [
+    {
+      "entityId": "MOCK_A",
+      "name": "示例股票 A",
+      "snapshotId": "MOCK_A_20260904_v1",
+      "asOf": "2026-09-04T15:00:00+08:00",
+      "currency": "CNY",
+      "priceScale": 100,
+      "source": "MOCK",
+      "summary": "观察窗口内收盘价整体上升，但中途出现回落。",
+      "bars": [
+        {
+          "date": "2026-08-10",
+          "openMinor": 995,
+          "highMinor": 1005,
+          "lowMinor": 990,
+          "closeMinor": 1000,
+          "volumeShares": 900000
+        },
+        {
+          "date": "2026-08-11",
+          "openMinor": 1000,
+          "highMinor": 1016,
+          "lowMinor": 994,
+          "closeMinor": 1010,
+          "volumeShares": 950000
+        },
+        {
+          "date": "2026-08-12",
+          "openMinor": 1010,
+          "highMinor": 1027,
+          "lowMinor": 1005,
+          "closeMinor": 1020,
+          "volumeShares": 1000000
+        },
+        {
+          "date": "2026-08-13",
+          "openMinor": 1020,
+          "highMinor": 1025,
+          "lowMinor": 999,
+          "closeMinor": 1005,
+          "volumeShares": 880000
+        },
+        {
+          "date": "2026-08-14",
+          "openMinor": 1005,
+          "highMinor": 1036,
+          "lowMinor": 1000,
+          "closeMinor": 1030,
+          "volumeShares": 980000
+        },
+        {
+          "date": "2026-08-17",
+          "openMinor": 1030,
+          "highMinor": 1057,
+          "lowMinor": 1024,
+          "closeMinor": 1050,
+          "volumeShares": 1050000
+        },
+        {
+          "date": "2026-08-18",
+          "openMinor": 1050,
+          "highMinor": 1075,
+          "lowMinor": 1045,
+          "closeMinor": 1070,
+          "volumeShares": 1080000
+        },
+        {
+          "date": "2026-08-19",
+          "openMinor": 1070,
+          "highMinor": 1086,
+          "lowMinor": 1064,
+          "closeMinor": 1080,
+          "volumeShares": 1120000
+        },
+        {
+          "date": "2026-08-20",
+          "openMinor": 1080,
+          "highMinor": 1107,
+          "lowMinor": 1075,
+          "closeMinor": 1100,
+          "volumeShares": 1170000
+        },
+        {
+          "date": "2026-08-21",
+          "openMinor": 1100,
+          "highMinor": 1125,
+          "lowMinor": 1094,
+          "closeMinor": 1120,
+          "volumeShares": 1190000
+        },
+        {
+          "date": "2026-08-24",
+          "openMinor": 1120,
+          "highMinor": 1156,
+          "lowMinor": 1115,
+          "closeMinor": 1150,
+          "volumeShares": 1300000
+        },
+        {
+          "date": "2026-08-25",
+          "openMinor": 1150,
+          "highMinor": 1157,
+          "lowMinor": 1124,
+          "closeMinor": 1130,
+          "volumeShares": 1350000
+        },
+        {
+          "date": "2026-08-26",
+          "openMinor": 1130,
+          "highMinor": 1135,
+          "lowMinor": 1095,
+          "closeMinor": 1100,
+          "volumeShares": 1400000
+        },
+        {
+          "date": "2026-08-27",
+          "openMinor": 1100,
+          "highMinor": 1106,
+          "lowMinor": 1074,
+          "closeMinor": 1080,
+          "volumeShares": 1450000
+        },
+        {
+          "date": "2026-08-28",
+          "openMinor": 1080,
+          "highMinor": 1092,
+          "lowMinor": 1075,
+          "closeMinor": 1085,
+          "volumeShares": 1000000
+        },
+        {
+          "date": "2026-08-31",
+          "openMinor": 1085,
+          "highMinor": 1100,
+          "lowMinor": 1079,
+          "closeMinor": 1095,
+          "volumeShares": 1100000
+        },
+        {
+          "date": "2026-09-01",
+          "openMinor": 1095,
+          "highMinor": 1106,
+          "lowMinor": 1090,
+          "closeMinor": 1100,
+          "volumeShares": 1200000
+        },
+        {
+          "date": "2026-09-02",
+          "openMinor": 1100,
+          "highMinor": 1117,
+          "lowMinor": 1094,
+          "closeMinor": 1110,
+          "volumeShares": 1300000
+        },
+        {
+          "date": "2026-09-03",
+          "openMinor": 1110,
+          "highMinor": 1115,
+          "lowMinor": 1100,
+          "closeMinor": 1105,
+          "volumeShares": 1400000
+        },
+        {
+          "date": "2026-09-04",
+          "openMinor": 1105,
+          "highMinor": 1126,
+          "lowMinor": 1099,
+          "closeMinor": 1120,
+          "volumeShares": 1800000
+        }
+      ],
+      "evidence": [
+        {
+          "evidenceId": "E1",
+          "label": "区间表现",
+          "role": "SUPPORT",
+          "kind": "CLOSE_RETURN",
+          "startDate": "2026-08-10",
+          "endDate": "2026-09-04",
+          "expectedPercent": 12
+        },
+        {
+          "evidenceId": "E2",
+          "label": "中途回落",
+          "role": "LIMITATION",
+          "kind": "CLOSE_RETURN",
+          "startDate": "2026-08-24",
+          "endDate": "2026-08-27",
+          "expectedPercent": -6.09
+        },
+        {
+          "evidenceId": "E3",
+          "label": "量能观察",
+          "role": "OBSERVATION",
+          "kind": "VOLUME_RATIO",
+          "focusDate": "2026-09-04",
+          "baselineDates": [
+            "2026-08-28",
+            "2026-08-31",
+            "2026-09-01",
+            "2026-09-02",
+            "2026-09-03"
+          ],
+          "expectedBaselineShares": 1200000,
+          "expectedRatio": 1.5
+        }
+      ]
+    },
+    {
+      "entityId": "MOCK_B",
+      "name": "示例股票 B",
+      "snapshotId": "MOCK_B_20260904_v1",
+      "asOf": "2026-09-04T15:00:00+08:00",
+      "currency": "CNY",
+      "priceScale": 100,
+      "source": "MOCK",
+      "summary": "观察窗口内收盘价整体下降，但后段出现反弹。",
+      "bars": [
+        {
+          "date": "2026-08-10",
+          "openMinor": 1005,
+          "highMinor": 1010,
+          "lowMinor": 995,
+          "closeMinor": 1000,
+          "volumeShares": 1000000
+        },
+        {
+          "date": "2026-08-11",
+          "openMinor": 1000,
+          "highMinor": 1006,
+          "lowMinor": 984,
+          "closeMinor": 990,
+          "volumeShares": 1050000
+        },
+        {
+          "date": "2026-08-12",
+          "openMinor": 990,
+          "highMinor": 1007,
+          "lowMinor": 985,
+          "closeMinor": 1000,
+          "volumeShares": 990000
+        },
+        {
+          "date": "2026-08-13",
+          "openMinor": 1000,
+          "highMinor": 1005,
+          "lowMinor": 979,
+          "closeMinor": 985,
+          "volumeShares": 1030000
+        },
+        {
+          "date": "2026-08-14",
+          "openMinor": 985,
+          "highMinor": 991,
+          "lowMinor": 975,
+          "closeMinor": 980,
+          "volumeShares": 1100000
+        },
+        {
+          "date": "2026-08-17",
+          "openMinor": 980,
+          "highMinor": 987,
+          "lowMinor": 969,
+          "closeMinor": 975,
+          "volumeShares": 1070000
+        },
+        {
+          "date": "2026-08-18",
+          "openMinor": 975,
+          "highMinor": 980,
+          "lowMinor": 965,
+          "closeMinor": 970,
+          "volumeShares": 1080000
+        },
+        {
+          "date": "2026-08-19",
+          "openMinor": 970,
+          "highMinor": 986,
+          "lowMinor": 964,
+          "closeMinor": 980,
+          "volumeShares": 1020000
+        },
+        {
+          "date": "2026-08-20",
+          "openMinor": 980,
+          "highMinor": 987,
+          "lowMinor": 955,
+          "closeMinor": 960,
+          "volumeShares": 1140000
+        },
+        {
+          "date": "2026-08-21",
+          "openMinor": 960,
+          "highMinor": 965,
+          "lowMinor": 949,
+          "closeMinor": 955,
+          "volumeShares": 1150000
+        },
+        {
+          "date": "2026-08-24",
+          "openMinor": 955,
+          "highMinor": 961,
+          "lowMinor": 945,
+          "closeMinor": 950,
+          "volumeShares": 1190000
+        },
+        {
+          "date": "2026-08-25",
+          "openMinor": 950,
+          "highMinor": 957,
+          "lowMinor": 929,
+          "closeMinor": 935,
+          "volumeShares": 1250000
+        },
+        {
+          "date": "2026-08-26",
+          "openMinor": 935,
+          "highMinor": 940,
+          "lowMinor": 915,
+          "closeMinor": 920,
+          "volumeShares": 1300000
+        },
+        {
+          "date": "2026-08-27",
+          "openMinor": 920,
+          "highMinor": 926,
+          "lowMinor": 904,
+          "closeMinor": 910,
+          "volumeShares": 1280000
+        },
+        {
+          "date": "2026-08-28",
+          "openMinor": 910,
+          "highMinor": 932,
+          "lowMinor": 905,
+          "closeMinor": 925,
+          "volumeShares": 1100000
+        },
+        {
+          "date": "2026-08-31",
+          "openMinor": 925,
+          "highMinor": 940,
+          "lowMinor": 919,
+          "closeMinor": 935,
+          "volumeShares": 1000000
+        },
+        {
+          "date": "2026-09-01",
+          "openMinor": 935,
+          "highMinor": 956,
+          "lowMinor": 930,
+          "closeMinor": 950,
+          "volumeShares": 900000
+        },
+        {
+          "date": "2026-09-02",
+          "openMinor": 950,
+          "highMinor": 967,
+          "lowMinor": 944,
+          "closeMinor": 960,
+          "volumeShares": 1000000
+        },
+        {
+          "date": "2026-09-03",
+          "openMinor": 960,
+          "highMinor": 965,
+          "lowMinor": 950,
+          "closeMinor": 955,
+          "volumeShares": 1000000
+        },
+        {
+          "date": "2026-09-04",
+          "openMinor": 955,
+          "highMinor": 966,
+          "lowMinor": 949,
+          "closeMinor": 960,
+          "volumeShares": 800000
+        }
+      ],
+      "evidence": [
+        {
+          "evidenceId": "E1",
+          "label": "区间表现",
+          "role": "SUPPORT",
+          "kind": "CLOSE_RETURN",
+          "startDate": "2026-08-10",
+          "endDate": "2026-09-04",
+          "expectedPercent": -4
+        },
+        {
+          "evidenceId": "E2",
+          "label": "后段反弹",
+          "role": "LIMITATION",
+          "kind": "CLOSE_RETURN",
+          "startDate": "2026-08-27",
+          "endDate": "2026-09-04",
+          "expectedPercent": 5.49
+        },
+        {
+          "evidenceId": "E3",
+          "label": "量能观察",
+          "role": "OBSERVATION",
+          "kind": "VOLUME_RATIO",
+          "focusDate": "2026-09-04",
+          "baselineDates": [
+            "2026-08-28",
+            "2026-08-31",
+            "2026-09-01",
+            "2026-09-02",
+            "2026-09-03"
+          ],
+          "expectedBaselineShares": 1000000,
+          "expectedRatio": 0.8
+        }
+      ]
+    }
+  ]
+}

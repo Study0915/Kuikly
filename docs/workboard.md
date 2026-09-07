@@ -8,21 +8,28 @@
 
 | 阶段 | Owner | 前置条件 | 状态 | 唯一产物 / 完成条件 |
 |---|---|---|---|---|
-| T1-PLAN | Codex | 无 | BACKLOG | `docs/plans/TASK1-PLAN.md`；40/25/25/10 完整映射、2–4 个创新候选、用户选择与逐项验收计划 |
-| T1-CODE | OpenCode | T1-PLAN VERIFIED | BACKLOG | 按已确认计划实现并提交 CODE handoff；不得自行改变创新点或评分目标 |
-| T1-TESTS | Codex | T1-CODE handoff 完整 | BACKLOG | Windows 构建、自动测试、H5/Android 分级验证、评分证据与缺口报告 |
+| T1-PLAN | Codex | 用户指定联合设计 v3 编写正式计划 | WAITING_USER | [TASK1-PLAN v1.0](plans/TASK1-PLAN.md) 已形成；题面、40/25/25/10、文件/状态、环境隔离、技术探针和逐项验收合同待完整确认 |
+| T1-CODE | Codex | T1-PLAN VERIFIED | BACKLOG | 按已确认计划在 Windows 工作树实施并维护 CODE 实施记录；不得自行改变创新点或评分目标 |
+| T1-TESTS | Codex | T1-CODE 实施记录完整 | BACKLOG | Windows 构建、自动测试、H5/Android 分级验证、评分证据与缺口报告 |
 | T1-LEARNING | Codex | T1-TESTS VERIFIED | BACKLOG | 简历与面试版项目复盘；不写成 API 教程 |
 | T2-PLAN | Codex | T1-LEARNING VERIFIED | BACKLOG | `docs/plans/TASK2-PLAN.md`；独立完成 40/25/25/10 映射和用户决策门 |
-| T2-CODE | OpenCode | T2-PLAN VERIFIED | BACKLOG | 按已确认计划实现并提交 CODE handoff |
-| T2-TESTS | Codex | T2-CODE handoff 完整 | BACKLOG | Windows 构建、自动测试、端到端交互、评分证据与缺口报告 |
+| T2-CODE | Codex | T2-PLAN VERIFIED | BACKLOG | 按已确认计划在 Windows 工作树实施并维护 CODE 实施记录 |
+| T2-TESTS | Codex | T2-CODE 实施记录完整 | BACKLOG | Windows 构建、自动测试、端到端交互、评分证据与缺口报告 |
 | T2-LEARNING | Codex | T2-TESTS VERIFIED | BACKLOG | 简历与面试版项目复盘；能讲清职责、难点、方案、结果和边界 |
 | SUBMIT | Codex / 用户 | T1、T2 LEARNING 均 VERIFIED | BACKLOG | Codex 生成并核验本地提交候选；用户决定仓库、上传、提交和对外沟通 |
 
 ## 当前下一步
 
-1. Codex 编写 T1-PLAN，只提供创新候选、评分预测、成本与风险，不替用户选定具体创新。
-2. 用户确认核心创新、通用组件、AI 载体和删减线后，T1-PLAN 才能进入 `VERIFIED`。
-3. 再生成给 OpenCode 的 T1-CODE handoff。
+1. 用户审阅并确认 [TASK1-PLAN v1.0](plans/TASK1-PLAN.md) 的完整实施合同；方案方向沿用已指定的 v3，不重复要求选择创新候选。
+2. 确认后 T1-PLAN 进入 `VERIFIED`；Codex 在 `feature/task1-quote-evidence-lens` 记录确认版本、实际 HEAD、既存差异与允许路径后启动 T1-CODE。
+3. 实施先做 C0 工作区工具隔离，再做 C1 双图绘制、点选、滚动取消及返回探针；不把 APK 构建写成 Android 运行，不提前启动 Task 2。
+
+## 2026-09-07 PLAN 记录
+
+- 已将固定 20 日 K 线、成交量、十字光标和双向证据联动纳入正式计划；拟议包组织见 [ADR-013](decisions/ADR-013-task1-evidence-lens.md)。
+- 已核验两组设计 fixture 的 40 条行情和 6 条证据计算；该结果仅为算例核验，未进行业务构建、浏览器或设备运行。
+- 已创建 Task 短期分支，计划使用聚焦 commit；本轮不安装依赖、不改 base 环境，不将本机路径/配置或缓存加入 Git。
+- 开始时有既存流程文档差异。本轮 workboard 同步保留其 Codex 角色修改；其他非本轮文件继续保留原状，不自动整仓提交。
 
 ## 历史审计
 
@@ -32,9 +39,9 @@
 
 ## 更新规则
 
-- 每个 Task 只有一份总计划、一次 CODE handoff、一份 TESTS 报告和一份 LEARNING 报告，不再拆活动 Feature 任务卡。
+- 每个 Task 只有一份总计划、一份 CODE 实施记录、一份 TESTS 报告和一份 LEARNING 报告，不再拆活动 Feature 任务卡。
 - PLAN 未获用户确认时必须停在 `WAITING_USER`；任何 Agent 不得进入 CODE。
-- CODE 只有一个写入者。默认 OpenCode；切换 Codex 必须先由用户确认。
+- CODE 只有一个写入者：Codex。在用户明确重设角色并更新总计划与 ADR 前，Claude Code 与 OpenCode 不参与活动实施。
 - TESTS 的 `VERIFIED` 只能由 Codex 根据实际命令、交互和平台证据标记；构建成功不能冒充运行成功。
 - LEARNING 必须在 TESTS 后撰写，且不补写未经验证的成果。
 - SUBMIT 只有在两题 LEARNING 均 `VERIFIED` 后启动；本地 `SUBMIT_READY` 不等于已经上传、发布或获奖。
