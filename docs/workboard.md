@@ -9,8 +9,8 @@
 | 阶段 | Owner | 前置条件 | 状态 | 唯一产物 / 完成条件 |
 |---|---|---|---|---|
 | T1-PLAN | Codex | 用户审阅计划提交后明确“开始实施” | VERIFIED | [TASK1-PLAN v1.0](plans/TASK1-PLAN.md) 已于 2026-09-07 获确认；确认时提交 `0060711` |
-| T1-CODE | Codex | T1-PLAN VERIFIED | IN_PROGRESS | 2026-09-08 用户授权交互与工程深化；按总计划 D1–D4 改进，基线 3309d2f |
-| T1-TESTS | Codex | T1-CODE 实施记录完整 | BACKLOG | 原 21 单测、H5 59+7 与桌面检查为上一版证据；深化版本待重新验证，设备 UNVERIFIED |
+| T1-CODE | Codex | T1-PLAN VERIFIED | VERIFIED | 2026-09-08 D1–D4 深化完成；会话隔离、上下文恢复、逐日导航、计算明细；最终业务 e6bb182 |
+| T1-TESTS | Codex | T1-CODE 实施记录完整 | VERIFIED | [TESTS](REVIEWS/TASK1-TESTS.md)：32 单测、59 原有 H5、23 深化、7 触摸、4 桌面检查通过；设备 UNVERIFIED |
 | T1-LEARNING | Codex / 用户自测 | T1-TESTS VERIFIED | WAITING_USER | [复盘材料](learning/TASK1-LEARNING.md) 已编写核对；用户独立讲述能力尚待自测，不能由代理代签 |
 | T2-PLAN | Codex | T1-LEARNING VERIFIED | BACKLOG | `docs/plans/TASK2-PLAN.md`；独立完成 40/25/25/10 映射和用户决策门 |
 | T2-CODE | Codex | T2-PLAN VERIFIED | BACKLOG | 按已确认计划在 Windows 工作树实施并维护 CODE 实施记录 |
@@ -20,7 +20,7 @@
 
 ## 当前下一步
 
-1. 按 [使用说明](TASK1-RUN.md) 体验列表→详情→证据反查→缺量恢复，观看本地约 90 秒录像。
+1. 按 [使用说明](TASK1-RUN.md) 体验深化版：证据→端点/样本→逐日导航→计算明细→缺量后的后退/前进恢复。约 90 秒录像是 2026-09-07 首版；本轮以实际 Demo 和新截图为准。
 2. 用户按 [学习复盘](learning/TASK1-LEARNING.md) 自测能否讲清实现与边界，再推进 Task 2 PLAN；本轮不提前创建聊天代码或提交包。
 3. Android 设备运行单独待验证：先证明 ADB/设备配置落点满足工作区约束，不把 APK 构建申报为设备运行。
 4. 分支 `feature/task1-quote-evidence-lens`；本轮均为聚焦本地提交，既存流程文档差异继续保留，没有 push、PR、merge、tag 或外发。

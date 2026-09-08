@@ -1,5 +1,29 @@
 # Task 1 验收证据
 
+## 2026-09-08 深化版
+
+最终业务 `e6bb182`；[当前测试裁决](../../REVIEWS/TASK1-TESTS.md)。32 单测、59 原有 H5、23 深化、7 触摸、4 桌面检查通过。全部是历史 Mock；设备仍未运行。
+
+| 截图 | 核对点 |
+|---|---|
+| [日期导航 320](deepening/navigation-320.png) | 前后交易日、窗口位置、小屏点击区域 |
+| [单日计算 390](deepening/day-facts-390.png) | OHLCV、前收分母、已有依据 |
+| [回落双图](deepening/evidence-chart-390.png) | 两图同一区间与起止点 |
+| [区间公式](deepening/return-formula-390.png) | 11.50 → 10.80、-6.09%、端点入口 |
+| [量能明细](deepening/volume-breakdown-390.png) | 五个样本、600 / 5 = 120、180 / 120 = 1.50 |
+| [恢复缺量](deepening/restored-missing.png) | 后退/前进及刷新后仍为缺量快照的 09-02 |
+
+最终构建产物：
+
+| 产物 | 相对路径 | 字节 / SHA-256 |
+|---|---|---|
+| H5 JS | `h5App/build/kotlin-webpack/js/productionExecutable/h5App.js` | 459,255 / `1832826D9F57E09430590730BF93C8D9E085FB71499DE821D66AEF5E9FCF8E30` |
+| Android Debug APK | `androidApp/build/outputs/apk/debug/androidApp-debug.apk` | 6,590,739 / `3523410DB739B131913942C24DD9D26CCD5FF1AC05B9A22CDEE62C443BADAA6A` |
+
+原始记录集中在 `.cache/task1-improvements-20260908`：`verify-final.log`、`h5-final.log`、`touch-final.log`、`mouse-final.log`、`deepening-final.log`、`artifacts.json`。截图由 `test-task1-deepening.js` 真实操作浏览器产生，已目检；本轮未重新录像，下方约 90 秒录像仅表示首版。无新增安装或外部服务调用。
+
+## 首版证据（2026-09-07，历史记录）
+
 2026-09-07，业务提交 `f6669fa`。全部为历史 Mock；[测试裁决](../../REVIEWS/TASK1-TESTS.md)。
 
 ## 已入 Git 的截图

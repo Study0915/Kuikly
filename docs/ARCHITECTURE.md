@@ -40,6 +40,8 @@
 
 ## 验证基线
 
+2026-09-08 在既有包内深化：`insight/LensPresentation.kt` 集中提供面向 UI 的事实与导航投影；`ui/FinanceSession.kt` 封装请求代次、成功文档与选择的原子更新。旧 View 的回调不能引用旧文档修改新状态。H5 将当前快照与焦点写入同一历史条目和 URL，详情顶部显示实际数据场景。没有新增框架/业务依赖或 Gradle module；依据见总计划 D1–D4 与 ADR-013。
+
 - `:KuiklyChart:jsNodeTest`（空 module 当前允许 SKIPPED；不构成图表能力完成证据）
 - `:shared:compileKotlinJs`
 - `:h5App:jsBrowserProductionWebpack`

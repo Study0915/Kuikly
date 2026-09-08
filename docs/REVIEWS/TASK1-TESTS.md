@@ -1,5 +1,35 @@
 # Task 1 TESTS
 
+## 2026-09-08 深化验证
+
+Owner：Windows Codex；分支 `feature/task1-quote-evidence-lens`。实施基线 `3309d2f`，主要业务提交 `ea72928`、`bf8824f`，最终概览文案修复 `e6bb182`。**总计划 D1–D4 已完成；T1-CODE VERIFIED，T1-TESTS 在 Android 设备未运行的平台限制下 VERIFIED。** 下方首版记录保留为历史证据。
+
+| 检查 | 本次结果 | 原始证据 |
+|---|---|---|
+| 工作区环境 | doctor 输出 CLI_ENV_OK；零新增安装；14 个既存 tracked 差异哈希不变 | `.cache/task1-improvements-20260908/preexisting-files.json` |
+| 最终 verify | JS/H5 production、Android Debug 构建成功，JS/Android 页面注册检查通过 | `.cache/task1-improvements-20260908/verify-final.log` |
+| 共同逻辑（JVM） | 32 tests、0 failures、0 errors | `shared/build/test-results/testDebugUnitTest/` |
+| 原有 H5 全链路 | 59 项 PASS，含 A–L 列表位置恢复、异常、两屏宽及无外部请求 | `.cache/task1-improvements-20260908/h5-final.log` |
+| 桌面输入/加载 | 4 项 PASS：点击、拖动取消、Loading 可见、返回忽略晚响应 | `.cache/task1-improvements-20260908/mouse-final.log` |
+| 最终触摸流 | 7 项 PASS：真实父滚动、多指/cancel、轴与间隙、快速点选 | `.cache/task1-improvements-20260908/touch-final.log` |
+| 最终深化交互 | 23 项 PASS：20 日遍历、周末/边界、样本回查、A/B 计算式、历史/刷新/新标签页/概览恢复 | `.cache/task1-improvements-20260908/deepening-final.log` |
+| 视觉复核 | 320/390 CSS px 日期导航、计算明细与缺量恢复无重叠/截断 | [本轮截图](../evidence/task1/README.md) |
+
+版本对应：59 项完整 H5 和桌面回归运行在 `bf8824f`；随后 `e6bb182` 只调整“有效证据尚未选中”的概览提示，并增加单测。最终构建/32 单测在 `e6bb182`；触摸及深化检查在相同最终构建补验。没有将上一版录像或首版 21 单测冒充本次证据。
+
+新增单测拆分：FinanceSessionTest 5 项、LensPresentationTest 6 项；既有 21 项保留。覆盖旧挂载、同文档重开、离页/加载取消、实体/快照不匹配、空文档、独立 caller、20 日边界与周末、端点/前收分母、两组五日均量、关联顺序、缺量/无解读和显式概览。
+
+实际问题与修复：
+
+1. 缺量→后退→前进在旧版恢复完整数据，已用真实浏览器复现。现在进入详情 pushState，场景/焦点变化 replaceState；刷新保留当前条目，直接承接地址可返回真实首页。
+2. 原 View 回调捕获旧文档却使用当前 lens，文档键检查不足以防止旧挂载影响新状态。FinanceSession 用挂载的请求代次过滤，并原子更新文档与选择，失败/空结果不能进入 Ready。
+3. 事实和关联原先在多个 UI 属性重复查找。LensPresenter 按选择形成一份展示投影，集中提供计算式、日期导航、样本和关联入口。此项没有性能基准，不声称速度提升比例。
+4. 长列表按需渲染时，屏幕外演示面板不一定已在 DOM。测试改为实际滚动后选择场景；页面顶部也显示当前数据场景，方便用户立即识别恢复的是哪种快照。没有放宽数据和焦点断言。
+
+范围与平台边界：全部仍为固定 20 日历史 Mock；没有真实模型、行情 API、Task 2 caller、缩放或多周期。Android 只通过 Debug 构建，设备/模拟器未运行；iOS/鸿蒙未验证。32 个测试在 JVM 上执行，不等于各平台分别运行 32 项。构建仍有锁定 AGP 与 compileSdk、webpack 包体大小提示，不宣称零警告。
+
+## 首版验证记录（2026-09-07）
+
 日期：2026-09-07。实施者/验收者：Windows Codex。业务提交：`f6669fa`；分支：`feature/task1-quote-evidence-lens`。
 
 ## 裁决

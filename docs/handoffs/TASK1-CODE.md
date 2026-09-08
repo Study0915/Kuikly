@@ -10,6 +10,12 @@
 
 ## 步骤记录
 
+2026-09-08 深化：用户选择“交互与工程一起深化”，基线 `3309d2f`。范围及允许路径先提交 `0d9d6ce`，随后 `ea72928` 修复会话和历史恢复，`bf8824f` 完成日期导航、证据计算明细和共享展示投影。对应总计划 D1–D4，未扩大周期、手势、平台或 Task 2 范围；最终验证和截图见 TESTS 的 2026-09-08 记录。
+
+页面现在由 FinanceSession 持有当前 FinanceContent；旧挂载事件、旧请求及不匹配/空文档不能形成有效详情。H5 区分 push/replace/back，恢复实际 snapshot 和 focus，并以实际快照反查演示场景。LensPresenter 从已验证事实产生计算式、日期邻居、样本入口与关联顺序，QuoteEvidenceLens 只渲染投影并发出既有动作。
+
+本轮没有安装任何依赖，继续使用既有工作区运行时。开始时 14 个既存 tracked 差异的 SHA-256 已保存并再次逐项核对无变化；未读取或提交既存 untracked 兼容入口。新原始日志放在 `.cache/task1-improvements-20260908`。
+
 | 步骤 | 实际实施 | 证据与状态 |
 |---|---|---|
 | C0 | 补充进程级 TEMP/TMP、Java home/temp、npm prefix/config 与浏览器缓存/daemon 路径；doctor 检查工作区隔离 | VERIFIED；bootstrap/doctor 输出 CLI_ENV_OK；空壳 verify 全部构建成功，不代表新业务通过 |

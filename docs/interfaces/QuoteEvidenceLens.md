@@ -19,18 +19,22 @@ QuoteEvidenceLens(resolved, { state }, tap) { action ->
 }
 ```
 
-`QuoteEvidenceLens` 不依赖 FinanceHomePage、导航、消息或宿主。内部封装摘要、按钮、事实、已有证据反查、Canvas 和点选。caller 提供 `PlotTap`，父 List 滚动时调用 `cancel()`；文档替换/页面销毁时调用 `reset()`。这一个小型取消接口用于让外层滚动拥有手势裁决权。
+上例只适用于文档不变的独立卡片。异步换页的 Task 1 caller 使用 `FinanceSession`：一次加载产生唯一 FinanceRequest；成功后 FinanceContent 原子持有 document/lens。挂载的 View 回传该 request，session 用当前文档处理事件；旧文档和同文档上一次挂载的事件均被拒绝。不能把旧闭包捕获的 document 与当前 lens 混用。
+
+`QuoteEvidenceLens` 不依赖 FinanceHomePage、导航、消息或宿主。内部封装摘要、按钮、事实、已有证据反查、Canvas 和点选。`LensPresenter` 每实例缓存一个选择的纯展示投影，集中提供计算过程、样本/端点入口、稳定排序的关联与前后交易日；多个响应式属性读取不会重复计算关联。caller 提供 `PlotTap`，父 List 滚动时调用 `cancel()`；文档替换/页面销毁时调用 `reset()`。这一个小型取消接口用于让外层滚动拥有手势裁决权。
 
 ## 事实与标记
 
 | 焦点 | 事实 | 图形 |
 |---|---|---|
-| 整体/局部证据 | 起止收盘、区间变化、适用限制 | 双图同一区间、价格端点方标 |
-| 量能证据 | 目标量、前五日均量、倍数、样本日期 | 五日浅色范围、目标竖线及量柱 |
+| 整体/局部证据 | 起止收盘、区间变化、计算式、适用限制；端点可点选 | 双图同一区间、价格端点方标 |
+| 量能证据 | 目标量、五日明细/合计/均量、倍数；样本/目标可点选 | 五日浅色范围、目标竖线及量柱 |
 | 单日 | OHLC、成交量、相对前收变化 | 双图同日竖线，价格收盘横线 |
 | Overview | 无可用解释或失效原因 | 保留合法原始行情，不伪造高亮 |
 
 反查顺序：目标日 → 局部区间 → 比较样本 → 整体观察。只有整体关联时明确没有单日解读。相关入口恢复完整证据，并不把区间变化当成单日解释。
+
+日期导航使用窗口内有序交易日，不按自然日加减。日检视以当前日为锚点；证据模式以结束日/目标日为锚点，中央按钮明确“检视”，点击后进入 DayInspect；前后按钮也提交同一个 InspectDay 动作。窗口边界按钮不可操作，单击不会越界或绕回。
 
 ## caller 与导航
 
@@ -40,7 +44,7 @@ Task 1 只有一个正式详情 caller，A–L 与异常快照共用同一实现
 
 唯一 Pager 为 `finance_home`。首页 caller 保存列表偏移。H5 宿主用 NotifyModule 扩展接收路线变化，以 history 保存最小实体/快照/焦点参数；popstate 回送同一路由。Android 使用锁定版本的 `onBackPressed` 与 BackPressModule 消费合同。两端实际验证状态以 TESTS 为准。
 
-H5 支持可复现承接地址参数 `entity`、`snapshot`、`date`、`evidence`；evidence 与 date 同时给出时 evidence 优先。刷新允许重新加载 Mock，不保证恢复旧进程状态。宿主不保存数据文档或像素位置。
+H5 支持可复现承接地址参数 `entity`、`snapshot`、`date`、`evidence`、`overview=1`；显式 overview 优先，其次 evidence、date。进入详情 pushState，当前快照/选择变化 replaceState，前进和刷新按参数重新加载 Mock。刷新保留当前历史条目；首次直接打开承接地址会建立可返回的真实首页条目。宿主不保存数据文档或像素位置；“首次失败”演示重新载入时重新执行该场景的首次请求规则。
 
 ## 兼容性与边界
 
