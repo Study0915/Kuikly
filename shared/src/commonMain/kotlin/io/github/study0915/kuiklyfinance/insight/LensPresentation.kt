@@ -69,7 +69,8 @@ class LensPresenter(private val doc: ResolvedDocument) {
                     fact.samples.map { LensLink("样本 ${it.date.takeLast(5)} · ${Format.volume(it.volumeShares)} ›", LensAction.InspectDay(it.date)) } +
                         LensLink("目标 ${fact.target.date.takeLast(5)} · ${Format.volume(fact.target.volumeShares)} ›", LensAction.InspectDay(fact.target.date)))
             }
-            null -> result("行情概览", state.notice ?: "暂无可用解读，可点图检视原始行情。")
+            null -> result("行情概览", state.notice ?: if (doc.evidence.any { it.available })
+                "点选上方依据查看计算过程，或检视一个交易日。" else "暂无可用解读，可点图检视原始行情。")
         }
     }
 }

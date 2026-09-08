@@ -7,6 +7,14 @@ class LensPresentationTest {
     private fun doc(id: String = "MOCK_A", scenario: DemoScenario = DemoScenario.COMPLETE) =
         EvidenceResolver.resolve((MockMarketProvider().load(id, scenario = scenario) as MarketLoad.Ready).document, 1788764400001L)
 
+    @Test fun explicitOverviewDoesNotClaimValidEvidenceIsUnavailable() {
+        val doc = doc()
+        val view = LensPresenter(doc).present(LensState.initial(doc, LensFocus.Overview))
+        assertEquals("行情概览", view.title)
+        assertTrue(view.value.contains("点选上方依据")); assertFalse(view.value.contains("暂无可用解读"))
+        assertEquals(PlotMark(), view.mark)
+    }
+
     @Test fun dateNavigationVisitsAllTradingDaysAndStopsAtWindowEdges() {
         val doc = doc(); val presenter = LensPresenter(doc)
         doc.bars.forEachIndexed { i, bar ->
