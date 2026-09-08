@@ -8,6 +8,10 @@ async (page) => {
   page.on('pageerror', onError); page.on('request', onRequest);
   const check = (ok, text) => { if (!ok) throw new Error(text); checks.push(text); };
   const label = text => page.getByLabel(text, { exact: true });
+  const chooseScenario = async text => {
+    await label('个股详情').evaluate(el => { el.scrollTop = el.scrollHeight; });
+    await label(text).click();
+  };
   const waitText = text => page.waitForFunction(t => document.body.innerText.includes(t), text);
   const facts = () => label('当前行情事实').innerText();
   const waitFact = text => page.waitForFunction(t => document.querySelector('[aria-label="当前行情事实"]')?.innerText.includes(t), text);
@@ -69,27 +73,28 @@ async (page) => {
     check((await facts()).includes('比较样本 · 量能观察'), 'I03: baseline association');
     await label('比较样本 · 量能观察 ›').click(); await waitText('量能倍数 1.50 倍');
     await label('当前行情事实').scrollIntoViewIfNeeded(); await shot('t1-volume-facts');
-    await label('量能缺失').click(); await waitText('成交量缺失：2026-09-02');
+    await chooseScenario('量能缺失'); await waitText('成交量缺失：2026-09-02');
     check(!(await page.locator('body').innerText()).includes('1.50'), 'I05: missing-volume summary has no stale ratio');
     await label('量能观察 · 暂不可用').click({ force: true });
     check((await facts()).includes('区间变化 +12.00%'), 'I05: unavailable evidence cannot replace valid focus');
     await touchDay(17, true); await waitText('检视 2026-09-02');
     check((await facts()).includes('成交量 缺失'), 'Q01: missing volume is inspectable and distinct from zero');
     await label('当前行情事实').scrollIntoViewIfNeeded(); await shot('t1-missing-volume');
-    await label('完整行情').click(); await waitText('当前：完整行情');
+    await chooseScenario('完整行情'); await waitText('当前：完整行情');
     check((await page.locator('body').innerText()).includes('1.50'), 'I05: complete snapshot restores ratio');
-    await label('首次失败').click(); await waitText('演示：首次请求失败');
+    await chooseScenario('首次失败'); await waitText('演示：首次请求失败');
     await shot('t1-error'); await label('重试当前股票').click(); await label('当前行情事实').waitFor();
     check((await page.locator('body').innerText()).includes('示例股票 A / MOCK_A'), 'F06: retry preserves entity');
-    await label('空行情').click(); await waitText('暂无演示行情');
+    await chooseScenario('空行情'); await waitText('暂无演示行情');
     check(await plot().count() === 0, 'F06: empty has no fake chart');
     await label('恢复完整演示行情').click(); await label('当前行情事实').waitFor();
-    await label('暂无解读').click(); await waitText('该股票暂无 AI 解读');
+    await chooseScenario('暂无解读'); await waitText('该股票暂无 AI 解读');
     await touchDay(11); await waitText('检视 2026-08-25');
     check((await facts()).includes('收 11.30') && (await facts()).includes('没有针对该日的单独解读'), 'F06/I04: known entity without AI retains data');
-    await label('无效引用').click(); await waitText('区间引用无效');
+    await chooseScenario('无效引用'); await waitText('区间引用无效');
     check(await label('中途回落 · 暂不可用').count() === 1, 'Q02: invalid reference disabled with reason');
-    await label('长文说明').click(); await waitText('当前：长文说明');
+    await chooseScenario('长文说明'); await waitText('当前：长文说明');
+    await label('个股详情').evaluate(el => { el.scrollTop = el.scrollHeight; });
     await page.setViewportSize({ width: 320, height: 844 });
     await page.getByText(/^解读边界：/).scrollIntoViewIfNeeded(); await shot('t1-long-text-320');
     check((await page.getByText(/^解读边界：/).innerText()).endsWith('不能据此推断买卖原因。'), 'Q04: complete long text retained');
@@ -105,7 +110,7 @@ async (page) => {
     await page.goBack(); await label('行情列表，12 支示例股票').waitFor();
     check(await label('当前行情事实').count() === 0, 'F03: browser back returns to list');
     await page.goForward(); await waitText('示例股票 B / MOCK_B'); await label('当前行情事实').waitFor();
-    check((await facts()).includes('-4.00%'), 'F03: browser forward restores the routed entity');
+    check((await facts()).includes('检视 2026-09-02') && (await facts()).includes('局部反弹'), 'F03: browser forward restores entity and current day');
     for (const [query, expected] of [
       ['?entity=UNKNOWN', '无法识别该股票：UNKNOWN'],
       ['?entity=MOCK_B&snapshot=unavailable', '原快照不可用：MOCK_B / unavailable'],
