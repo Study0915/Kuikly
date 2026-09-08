@@ -21,9 +21,12 @@ class MockMarketProvider {
     fun snapshotId(entityId: String, scenario: DemoScenario = DemoScenario.COMPLETE): String =
         "${entityId}_20260904_${scenario.name.lowercase()}_v1"
 
+    fun scenarioForSnapshot(entityId: String, snapshotId: String): DemoScenario? =
+        DemoScenario.entries.firstOrNull { snapshotId(entityId, it) == snapshotId }
+
     fun load(entityId: String, explicitSnapshot: String? = null, scenario: DemoScenario = DemoScenario.COMPLETE, attempt: Int = 0): MarketLoad {
         if (entityId !in entityIds) return MarketLoad.UnknownEntity(entityId)
-        val selected = if (explicitSnapshot == null) scenario else DemoScenario.entries.firstOrNull { snapshotId(entityId, it) == explicitSnapshot }
+        val selected = if (explicitSnapshot == null) scenario else scenarioForSnapshot(entityId, explicitSnapshot)
             ?: return MarketLoad.SnapshotUnavailable(entityId, explicitSnapshot)
         if (selected == DemoScenario.FAIL_ONCE && attempt == 0) return MarketLoad.Failed("演示：首次请求失败，重试将加载同一股票。")
         if (selected == DemoScenario.EMPTY) return MarketLoad.Empty

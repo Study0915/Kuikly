@@ -34,11 +34,10 @@ internal fun ViewContainer<*, *>.FinanceAction(label: String, action: () -> Unit
 @Page(Task1Routes.FINANCE_HOME, supportInLocal = true)
 class FinanceHomePage : Pager() {
     private val provider = MockMarketProvider()
-    private val requests = FinanceRequests()
+    private val session = FinanceSession()
     private var route by observable<FinanceRoute>(FinanceRoute.Home)
     private var load by observable<MarketLoad>(MarketLoad.Loading)
-    private var model: ResolvedDocument? = null
-    private var lens by observable<LensUiState?>(null)
+    private var content by observable<FinanceContent?>(null)
     private var scenario = DemoScenario.COMPLETE
     private var attempt = 0
     private var homeOffset = 0f
@@ -55,11 +54,11 @@ class FinanceHomePage : Pager() {
                     FinanceAction("‹ 返回行情列表") { ctx.back() }
                 }
                 vif({ ctx.load is MarketLoad.Ready }) {
-                    val doc = ctx.model!!
-                    FinanceDetail(doc, { ctx.lens!! }, ctx.tap, ctx.scenario,
+                    val mounted = ctx.content!!
+                    FinanceDetail(mounted.document, { ctx.content?.takeIf { it.request == mounted.request }?.lens ?: mounted.lens }, ctx.tap, ctx.scenario,
                         onScroll = { ctx.tap.cancel() },
-                        onAction = { event -> ctx.lens = LensState.reduce(doc, ctx.lens!!, doc.key, event) },
-                        onScenario = { selected -> ctx.switchScenario(selected) })
+                        onAction = { event -> ctx.dispatch(mounted.request, event) },
+                        onScenario = { selected -> if (ctx.session.accepts(mounted.request)) ctx.switchScenario(selected) })
                 }
                 velse { ctx.loadState(this) }
             }
@@ -126,40 +125,60 @@ class FinanceHomePage : Pager() {
     }
 
     private fun open(detail: FinanceRoute.Detail, notifyHost: Boolean = true) {
-        route = detail; scenario = DemoScenario.COMPLETE; attempt = 0
-        if (notifyHost) notifyRoute("detail", detail.entityId, detail.snapshotId)
+        route = detail
+        scenario = detail.snapshotId?.let { provider.scenarioForSnapshot(detail.entityId, it) } ?: DemoScenario.COMPLETE
+        attempt = 0
+        if (notifyHost) notifyRoute("push")
         request()
     }
     private fun switchScenario(selected: DemoScenario) {
         val current = route as? FinanceRoute.Detail ?: return
         scenario = selected; attempt = 0
         route = current.copy(snapshotId = provider.snapshotId(current.entityId, selected), focus = null)
+        notifyRoute("replace")
         request()
     }
     private fun request() {
         val detail = route as? FinanceRoute.Detail ?: return
-        val ticket = requests.begin(detail, scenario, attempt)
-        load = MarketLoad.Loading; tap.reset()
+        val ticket = session.begin(detail, scenario, attempt)
+        load = MarketLoad.Loading; content = null; tap.reset()
         setTimeout(150) {
-            if (!requests.accepts(ticket)) return@setTimeout
+            if (!session.accepts(ticket)) return@setTimeout
             val result = provider.load(detail.entityId, detail.snapshotId, ticket.scenario, ticket.attempt)
-            if (!requests.accepts(ticket)) return@setTimeout
+            if (!session.accepts(ticket)) return@setTimeout
             if (result is MarketLoad.Ready) {
                 val resolved = EvidenceResolver.resolve(result.document, DateTime.currentTimestamp())
-                model = resolved; lens = LensState.initial(resolved, detail.focus)
+                content = session.complete(ticket, resolved)
                 load = if (resolved.error == null) result else MarketLoad.Failed(resolved.error)
+                content?.let { syncSelection(it) }
             } else load = result
         }
     }
     private fun back(notifyHost: Boolean = true): Boolean {
         if (route == FinanceRoute.Home) return false
-        requests.cancel(); tap.reset(); route = FinanceRoute.Home; load = MarketLoad.Loading
-        if (notifyHost) notifyRoute("home")
+        session.cancel(); tap.reset(); route = FinanceRoute.Home; load = MarketLoad.Loading; content = null
+        if (notifyHost) notifyRoute("back")
         return true
     }
-    private fun notifyRoute(destination: String, entity: String = "", snapshot: String? = null) {
+    private fun dispatch(origin: FinanceRequest, action: LensAction) {
+        val before = content
+        val next = session.dispatch(origin, action)
+        if (next == before) return
+        content = next
+        next?.let { syncSelection(it) }
+    }
+    private fun syncSelection(current: FinanceContent) {
+        route = FinanceRoute.Detail(current.document.key.entityId, current.document.key.snapshotId, current.lens.focus)
+        notifyRoute("replace")
+    }
+    private fun notifyRoute(operation: String) {
+        val detail = route as? FinanceRoute.Detail
         acquireModule<NotifyModule>(NotifyModule.MODULE_NAME).postNotify(Task1Routes.HOST_ROUTE_EVENT,
-            JSONObject().put("route", destination).put("entityId", entity).put("snapshotId", snapshot ?: ""))
+            JSONObject().put("route", if (detail == null) "home" else "detail").put("operation", operation)
+                .put("entityId", detail?.entityId ?: "").put("snapshotId", detail?.snapshotId ?: "")
+                .put("date", (detail?.focus as? LensFocus.DayInspect)?.date ?: "")
+                .put("evidenceId", (detail?.focus as? LensFocus.EvidenceFocus)?.evidenceId ?: "")
+                .put("overview", if (detail?.focus == LensFocus.Overview) "1" else ""))
     }
     override fun onReceivePagerEvent(pagerEvent: String, eventData: JSONObject) {
         super.onReceivePagerEvent(pagerEvent, eventData)
@@ -168,10 +187,10 @@ class FinanceHomePage : Pager() {
             Task1Routes.HOST_BACK_EVENT -> back(false)
             Task1Routes.HOST_OPEN_EVENT -> {
                 val evidence = eventData.optString("evidenceId"); val date = eventData.optString("date")
-                val focus = when { evidence.isNotEmpty() -> LensFocus.EvidenceFocus(evidence); date.isNotEmpty() -> LensFocus.DayInspect(date); else -> null }
+                val focus = when { eventData.optString("overview") == "1" -> LensFocus.Overview; evidence.isNotEmpty() -> LensFocus.EvidenceFocus(evidence); date.isNotEmpty() -> LensFocus.DayInspect(date); else -> null }
                 open(FinanceRoute.Detail(eventData.optString("entityId"), eventData.optString("snapshotId").ifEmpty { null }, focus), false)
             }
         }
     }
-    override fun pageWillDestroy() { requests.cancel(); tap.reset(); super.pageWillDestroy() }
+    override fun pageWillDestroy() { session.cancel(); tap.reset(); super.pageWillDestroy() }
 }
