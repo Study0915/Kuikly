@@ -149,7 +149,7 @@ class FinanceHomePage : Pager() {
             if (result is MarketLoad.Ready) {
                 val resolved = EvidenceResolver.resolve(result.document, DateTime.currentTimestamp())
                 content = session.complete(ticket, resolved)
-                load = if (resolved.error == null) result else MarketLoad.Failed(resolved.error)
+                load = if (content != null) result else MarketLoad.Failed(resolved.error ?: "行情快照为空或与当前请求不匹配。")
                 content?.let { syncSelection(it) }
             } else load = result
         }

@@ -52,4 +52,14 @@ class FinanceSessionTest {
         assertEquals(LensFocus.DayInspect("2026-09-02"), content.lens.focus)
         assertFalse(content.document.summary.contains("1.50"))
     }
+
+    @Test fun readyStateRequiresPlotDataAndTheRequestedEntity() {
+        val session = FinanceSession()
+        val ticket = session.begin(FinanceRoute.Detail("MOCK_A"), DemoScenario.COMPLETE, 0)
+        assertNull(session.complete(ticket, document("MOCK_B")))
+        val original = document().document
+        val empty = EvidenceResolver.resolve(EvidenceDocument(original.snapshot.withBars("empty", emptyList()), emptyList()), 1788764400001L)
+        assertNull(session.complete(ticket, empty))
+        assertNull(session.content)
+    }
 }

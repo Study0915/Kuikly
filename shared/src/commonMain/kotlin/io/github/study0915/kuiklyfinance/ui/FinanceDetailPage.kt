@@ -18,6 +18,7 @@ internal fun ViewContainer<*, *>.FinanceDetail(
         View {
             attr { padding(20f); backgroundColor(Color.WHITE); marginBottom(12f) }
             FinanceText({ "${snapshot.name}  /  ${snapshot.entityId}" }, 19f)
+            FinanceText({ "当前：${scenario.label} · 历史 Mock" }, 12f, financeBlue)
             FinanceText({ MarketFormatter.price(latest.closeMinor) + " 元" }, 38f)
             FinanceText({ "当日${MarketFormatter.direction(change)} ${MarketFormatter.decimal((latest.closeMinor - bars[bars.lastIndex - 1].closeMinor) / 100.0, true)} 元 · ${MarketFormatter.percent(change)}" }, 15f, if (change >= 0) Color(0xFFB94B40L) else Color(0xFF188579L))
             FinanceText({ "开盘 ${MarketFormatter.price(latest.openMinor)}   最高 ${MarketFormatter.price(latest.highMinor)}   最低 ${MarketFormatter.price(latest.lowMinor)}" }, 13f)

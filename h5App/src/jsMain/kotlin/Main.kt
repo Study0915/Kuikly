@@ -103,7 +103,8 @@ private class Task1WebDelegator : KuiklyRenderViewDelegatorDelegate {
                                 // popstate has already changed the active entry. Never let a late
                                 // render notification turn the home entry back into a detail entry.
                                 val replace = data.optString("operation") == "replace"
-                                if (!replace || window.history.state.asDynamic()?.financeDetail == true) {
+                                val current = window.history.state.asDynamic()
+                                if (!replace || (current?.financeDetail == true && current.entityId == data.optString("entityId"))) {
                                     writeDetail(data.optString("entityId"), data.optString("snapshotId"),
                                         data.optString("date"), data.optString("evidenceId"), data.optString("overview"), replace)
                                 }

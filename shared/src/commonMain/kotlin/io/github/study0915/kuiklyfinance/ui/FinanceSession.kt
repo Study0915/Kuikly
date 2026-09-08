@@ -20,7 +20,7 @@ class FinanceSession {
     fun accepts(request: FinanceRequest) = requests.accepts(request)
 
     fun complete(request: FinanceRequest, document: ResolvedDocument): FinanceContent? {
-        if (!accepts(request) || document.error != null || document.key.entityId != request.route.entityId ||
+        if (!accepts(request) || !document.canPlot || document.key.entityId != request.route.entityId ||
             (request.route.snapshotId != null && document.key.snapshotId != request.route.snapshotId)) return null
         return FinanceContent(request, document, LensState.initial(document, request.route.focus)).also { content = it }
     }
