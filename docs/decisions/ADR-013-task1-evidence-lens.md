@@ -27,6 +27,8 @@
 
 ## 验证与后续
 
+2026-09-08 深化决定：用户授权在现有合同内同时改善交互和工程。新增纯 `LensPresentation` 投影，将事实文案、计算式、关联顺序及交易日导航集中于 insight；caller 使用 `FinanceSession` 原子持有文档与 LensUiState，以请求代次拦截旧 View 事件（即使文档 key 相同也不能串会话）。H5 对进入详情 pushState，对当前快照/焦点变化 replaceState，popstate 只恢复最小参数。页面滚动仍由 caller 管理，没有新增通用状态框架或 Gradle module。
+
 具体文件、公式、状态、命令、P/F/I/Q 验收项与回滚点均在唯一 Task 总计划维护，不另建 Feature 卡。C1–C4 已完成，技术夹具已移除；H5 实际运行和 Android 构建分开裁决。
 
 实现备注：H5 通过 NotifyModule 的宿主扩展接收最小路线参数，popstate 回送同一 Pager；Android 使用锁定源码的 onBackPressed/BackPressModule。文本测量和混合输入兼容只在必要宿主/图形输入位置处理。KSP 增量会丢注册的复现已修复为关闭增量并核对生成入口。C5 仅新增可复现测试/录像脚本及工作区 FFmpeg 运行时（LGPLv2.1），无业务库或模块结构扩张。

@@ -12,6 +12,21 @@
 
 ## 1. 输入、基线与已验证边界
 
+### 2026-09-08 深化实施补充
+
+用户在 v1.0 已完成后要求“task1进行深度提高式改进”，并选择“交互与工程一起深化”。本次授权用于现有合同内的深化：不增加周期、手势种类、真实 API、Task 2 或 Gradle module。Owner 仍为 Windows Codex，基线 `3309d2f`，分支 `feature/task1-quote-evidence-lens`。开始时 14 个 tracked 既存修改及一个 untracked 文件均保留，文件哈希另存工作区缓存。
+
+| 实施项 | 用户可见结果 / 工程目标 | 验收与评分映射 |
+|---|---|---|
+| D1 页面会话一致性 | 文档与选择原子更新；旧请求、旧卡片事件和离页后事件不能改变新页面 | caller 单测及快速返回回归；功能 40 / 工程 25 |
+| D2 导航恢复 | 浏览器后退→前进恢复实际快照、日期/证据；恢复缺量快照时标签与数据一致；选择仅替换当前历史条目 | H5 真实后退/前进与刷新；功能 40 / 工程 25 |
+| D3 核对体验 | 前一日/后一日与窗口首尾边界；证据定位起止日/样本日；明确计算式、比较样本及解释边界 | A/B 算例、缺量与 320/390 屏宽实测；功能 40 / AI 25 |
+| D4 共享模块深化 | 纯展示投影集中处理事实、关联顺序、逐日导航，UI 不重复查找/拼接领域规则 | 公共逻辑测试、H5 和 Android 构建；工程 25 / AI 25 |
+
+允许路径：既有 `shared/src/commonMain` / `commonTest` 的 market、insight、navigation、ui 包，`h5App/src/jsMain` 宿主，`scripts/test-task1-*` 与同任务验证脚本，现有 Task 1 总计划、CODE、TESTS、LEARNING、接口/架构说明和证据目录。内部新增文件为 `LensPresentation.kt`、`FinanceSession.kt` 与相应测试；职责决定同步 ADR-013。安装需求为零，复用工作区运行时；缓存和新增验收产物置于 `.cache/task1-improvements-20260908`。
+
+执行顺序：记录范围 → 会话与导航修复 → 展示投影与交互 → `scripts/verify.ps1` → 既有 H5/touch/mouse 回归及 D1–D4 新检查 → 视觉检查、学习材料、聚焦 commit。10% Bonus 本次仍不申领；设备运行继续单独标为未验证。
+
 | 项目 | 固定内容 |
 |---|---|
 | 需求权威 | [REQUIREMENTS](../REQUIREMENTS.md)；评分依据 [evaluation-pipeline](../evaluation-pipeline.md) |

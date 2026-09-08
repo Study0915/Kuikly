@@ -9,8 +9,8 @@
 | 阶段 | Owner | 前置条件 | 状态 | 唯一产物 / 完成条件 |
 |---|---|---|---|---|
 | T1-PLAN | Codex | 用户审阅计划提交后明确“开始实施” | VERIFIED | [TASK1-PLAN v1.0](plans/TASK1-PLAN.md) 已于 2026-09-07 获确认；确认时提交 `0060711` |
-| T1-CODE | Codex | T1-PLAN VERIFIED | VERIFIED | [CODE 实施记录](handoffs/TASK1-CODE.md)；C0–C4 完成，业务提交 f6669fa |
-| T1-TESTS | Codex | T1-CODE 实施记录完整 | VERIFIED | [TESTS](REVIEWS/TASK1-TESTS.md)；21 单测、H5 59+7 与桌面检查通过；Android 构建通过，设备 UNVERIFIED |
+| T1-CODE | Codex | T1-PLAN VERIFIED | IN_PROGRESS | 2026-09-08 用户授权交互与工程深化；按总计划 D1–D4 改进，基线 3309d2f |
+| T1-TESTS | Codex | T1-CODE 实施记录完整 | BACKLOG | 原 21 单测、H5 59+7 与桌面检查为上一版证据；深化版本待重新验证，设备 UNVERIFIED |
 | T1-LEARNING | Codex / 用户自测 | T1-TESTS VERIFIED | WAITING_USER | [复盘材料](learning/TASK1-LEARNING.md) 已编写核对；用户独立讲述能力尚待自测，不能由代理代签 |
 | T2-PLAN | Codex | T1-LEARNING VERIFIED | BACKLOG | `docs/plans/TASK2-PLAN.md`；独立完成 40/25/25/10 映射和用户决策门 |
 | T2-CODE | Codex | T2-PLAN VERIFIED | BACKLOG | 按已确认计划在 Windows 工作树实施并维护 CODE 实施记录 |
