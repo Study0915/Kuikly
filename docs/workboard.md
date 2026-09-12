@@ -12,11 +12,11 @@
 | T1-CODE | Codex | T1-PLAN VERIFIED | VERIFIED | 2026-09-08 D1–D4 深化完成；会话隔离、上下文恢复、逐日导航、计算明细；最终业务 e6bb182 |
 | T1-TESTS | Codex | T1-CODE 实施记录完整 | VERIFIED | [TESTS](REVIEWS/TASK1-TESTS.md)：32 单测、59 原有 H5、23 深化、7 触摸、4 桌面检查通过；设备 UNVERIFIED |
 | T1-LEARNING | Codex / 用户自测 | T1-TESTS VERIFIED | VERIFIED | 2026-09-12核对[复盘材料](learning/TASK1-LEARNING.md)，个人讲述能力仍未验证；用户授权自主推进，见ADR-014 |
-| T2-PLAN | Codex | T1-LEARNING VERIFIED | VERIFIED | [TASK2-PLAN](plans/TASK2-PLAN.md) v1.0，依据本轮自主决策授权，计划提交25514f5 |
+| T2-PLAN | Codex | T1-LEARNING VERIFIED | VERIFIED | [TASK2-PLAN](plans/TASK2-PLAN.md) v1.1，延续自主决策授权；初版计划25514f5，优化计划随972167b保存 |
 | T2-CODE | Codex | T2-PLAN VERIFIED | VERIFIED | [CODE记录](handoffs/TASK2-CODE.md)，优化业务972167b；比较对象、草稿和阅读位置已修复 |
 | T2-TESTS | Codex | T2-CODE 实施记录完整 | VERIFIED | [TESTS](REVIEWS/TASK2-TESTS.md)：53共同逻辑、32H5、11会话/触摸、32桌面；新增17项触摸/桌面各通过；Task1全93项通过 |
 | T2-LEARNING | Codex | T2-TESTS VERIFIED | VERIFIED | [复盘](learning/TASK2-LEARNING.md)材料已核对；个人掌握程度未代签 |
-| SUBMIT | Codex / 用户 | T1、T2 LEARNING 均 VERIFIED | VERIFIED | 本地候选文件清单/ZIP逐项SHA、隐私扫描、独立源码构建与导出预览均通过；外部提交未执行 |
+| SUBMIT | Codex / 用户 | T1、T2 LEARNING 均 VERIFIED | VERIFIED | r3本地候选174项文件/ZIP哈希、文档链接、隐私扫描与导出预览通过；构建/UI/录像收据一致；外部提交未执行 |
 
 ## 当前下一步
 
