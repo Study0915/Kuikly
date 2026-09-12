@@ -1,0 +1,55 @@
+# Task 2 总计划 v1.0
+
+2026-09-12，Owner：Windows Codex。授权：用户要求自主完成并持续完善两题至约 90 分以上，常规选项不再询问。依据 REQUIREMENTS 与 ADR-014。T1-LEARNING 材料已核对；个人学习未代签。
+
+## 目标与评分
+
+输入问题 → 用户消息/响应状态 → Markdown 与证据卡 → 精确行情详情 → 返回原会话 → 追问/比较/异常恢复。
+
+| 维度 | 目标区间 | 实现与可见结果 | 直接验收与提交证据 | 状态 |
+|---|---:|---|---|---|
+| R-FUNC 40 | 37–39 | 输入、记录、Markdown、卡片、详情、空/失败/取消/重试/未知/返回 | JVM + H5 主链路与视频 | SELECTED |
+| R-ENG 25 | 23–24 | typed blocks、会话隔离、证据合同、A/B 两卡复用、Task 1 共用详情 | 接口与隔离/安全/路由测试 | SELECTED |
+| R-AI 25 | 23–24 | 结论/依据/数值/风险/时效；带实体追问；同窗口比较 | UI交互、缺量/未知恢复 | SELECTED |
+| R-BONUS 10 | 5–7 | 窄屏/触摸/桌面、历史恢复、最新回答导航、环境可复现 | 实际浏览器检查与构建；设备未跑不计 | SELECTED |
+
+这是工作目标，不是老师成绩。最终自评只依据实际证据；不足约90分时优先补功能/工程/AI载体。
+
+## 创新取舍
+
+| 候选 | 用户价值与20秒效果 | 成本/风险 | 选择及删减线 |
+|---|---|---|---|
+| 可追溯证据问答 | 点理由到正确实体/快照/区间，再回原消息 | 中；路由/异步隔离 | 主线，不删 |
+| A/B同窗口对比 | 同种卡片两组数值，分别打开详情 | 中；串线 | 选定；先单股后对比 |
+| 真实模型/实时行情 | 更开放的输入 | 鉴权/数据时效/网络 | 放弃；Mock透明 |
+| 语音与更多平台 | 额外交互 | 环境/设备成本 | 放弃，不阻塞核心 |
+
+## 文件、接口、状态与实现顺序
+
+1. 基线 `1515a8e2ca835e06898c121f93be33035befdfce`，分支 `feature/task2-evidence-chat`；先提交本计划、ADR-014、T1学习核对。保留初始差异。
+2. `chat/ChatModels.kt`：Request、Turn、AnswerBlock.Markdown/EvidenceCard、Reply/Failure；卡片持有 ResolvedDocument。`ChatSession.kt`：trim、500字上限、单pending、20轮上限、代次/取消/原位重试/reset；草稿与记录返回保留。
+3. `chat/MockChatProvider.kt`：A–L、比较A/B、风险/量能追问；未知返回支持范围；缺量/首次失败可复现。通过 EvidenceResolver 生成事实，不从Markdown解析实体。`SafeMarkdown.kt`：common受限parser，标题/列表/引用/段落、粗体/代码；不执行HTML/链接/图片，长度有界。
+4. `ui/FinanceChatView.kt`：消息容器、Markdown renderer、EvidenceAnswerCard，呈现结论/依据/风险/时间/详情/追问；聊天列表与底部输入分离。A/B数据证明同一卡片复用。
+5. `navigation/FinanceRoute.kt`、`ui/FinanceHomePage.kt`：内部Chat与Detail返回来源；行情请求与聊天请求分别隔离；首页增加问答入口。`h5App/.../Main.kt`：history加Chat/origin；URL不含问题；返回/前进正确，刷新清空会话并明确告知。
+6. TESTS：doctor、verify、JVM、H5主链路/边界/窄屏/输入/历史/触摸、Android APK、Task1全部浏览器回归；失败返回CODE，不拿文案掩盖。
+7. TESTS通过后写LEARNING、最终评分审计、两题最新视频、README与本地候选包。
+
+允许路径：shared/src、h5App/src、必要androidApp配置、scripts、两题docs和README本轮明确段落；工具/日志仅`.cache`。禁止archive、无关文件、系统配置、全局环境、密钥/真实数据与外部操作。结构变化先更新本计划和ADR。依赖锁定Kuikly2.4.0，不引入KuiklyMarkdown，故不触发其探针。
+
+## 验收与退出条件
+
+| 验收 | 期望 | 失败判据 |
+|---|---|---|
+| doctor/verify | 工作区CLI，JS production + JVM + APK | 失败或缺页注册 |
+| Session unit | 空/超长拒绝、重复/迟到隔离、取消/重试同消息、reset | 串会话/重复/错实体 |
+| Provider unit | A/B数值一致、比较两卡、未知不伪造、缺量不补样本 | 文本/证据不符 |
+| Markdown unit/UI | 格式可见，HTML/图片/链接不执行 | 远程请求/可执行DOM |
+| H5 | 输入发送/loading/失败retry/详情/返回草稿消息与位置/清空 | 错页、消息丢失、按钮失效 |
+| 窄屏/长会话 | 320/390/桌面可用，底部输入不被内容挤走 | 横溢、不能滚动/发送 |
+| Task1回归 | 原H5/深化/触摸/鼠标脚本通过 | 既有链路退化 |
+
+键盘H5 visualViewport与Android resize分别处理与验证；无设备证据不声称设备输入已验证。所有状态有恢复动作，未知实体不跳详情。取消/reset使旧响应无效，重试固定原问题和上下文。未来provider仍须返回typed blocks。
+
+## 学习与交付
+
+报告包含30秒介绍、职责、typed blocks、请求隔离、恢复、Markdown安全、复用、真实测试与10个面试问答。视频先写脚本：输入→证据→详情→返回→比较/缺量→失败重试；字幕同步。包包含源码、说明、两题证据/录像、版本/校验值，排除缓存、归档、个人配置；只本地准备。
