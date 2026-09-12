@@ -11,19 +11,19 @@
 | T1-PLAN | Codex | 用户审阅计划提交后明确“开始实施” | VERIFIED | [TASK1-PLAN v1.0](plans/TASK1-PLAN.md) 已于 2026-09-07 获确认；确认时提交 `0060711` |
 | T1-CODE | Codex | T1-PLAN VERIFIED | VERIFIED | 2026-09-08 D1–D4 深化完成；会话隔离、上下文恢复、逐日导航、计算明细；最终业务 e6bb182 |
 | T1-TESTS | Codex | T1-CODE 实施记录完整 | VERIFIED | [TESTS](REVIEWS/TASK1-TESTS.md)：32 单测、59 原有 H5、23 深化、7 触摸、4 桌面检查通过；设备 UNVERIFIED |
-| T1-LEARNING | Codex / 用户自测 | T1-TESTS VERIFIED | WAITING_USER | [复盘材料](learning/TASK1-LEARNING.md) 已编写核对；用户独立讲述能力尚待自测，不能由代理代签 |
-| T2-PLAN | Codex | T1-LEARNING VERIFIED | BACKLOG | `docs/plans/TASK2-PLAN.md`；独立完成 40/25/25/10 映射和用户决策门 |
-| T2-CODE | Codex | T2-PLAN VERIFIED | BACKLOG | 按已确认计划在 Windows 工作树实施并维护 CODE 实施记录 |
+| T1-LEARNING | Codex / 用户自测 | T1-TESTS VERIFIED | VERIFIED | 2026-09-12核对[复盘材料](learning/TASK1-LEARNING.md)，个人讲述能力仍未验证；用户授权自主推进，见ADR-014 |
+| T2-PLAN | Codex | T1-LEARNING VERIFIED | VERIFIED | [TASK2-PLAN](plans/TASK2-PLAN.md) v1.0，依据本轮自主决策授权，计划提交25514f5 |
+| T2-CODE | Codex | T2-PLAN VERIFIED | IN_PROGRESS | [CODE记录](handoffs/TASK2-CODE.md)：证据问答、typed blocks、Markdown与详情返回 |
 | T2-TESTS | Codex | T2-CODE 实施记录完整 | BACKLOG | Windows 构建、自动测试、端到端交互、评分证据与缺口报告 |
 | T2-LEARNING | Codex | T2-TESTS VERIFIED | BACKLOG | 简历与面试版项目复盘；能讲清职责、难点、方案、结果和边界 |
 | SUBMIT | Codex / 用户 | T1、T2 LEARNING 均 VERIFIED | BACKLOG | Codex 生成并核验本地提交候选；用户决定仓库、上传、提交和对外沟通 |
 
 ## 当前下一步
 
-1. 按 [使用说明](TASK1-RUN.md) 体验深化版：证据→端点/样本→逐日导航→计算明细→缺量后的后退/前进恢复。约 90 秒录像是 2026-09-07 首版；本轮以实际 Demo 和新截图为准。
-2. 用户按 [学习复盘](learning/TASK1-LEARNING.md) 自测能否讲清实现与边界，再推进 Task 2 PLAN；本轮不提前创建聊天代码或提交包。
+1. Codex 完成 Task 2 证据问答、详情承接和两题联合回归；约90分目标需以新测试和演示证据自评，不能视为老师实际评分。
+2. 两题测试完成后更新学习材料、录制最新演示与准备本地候选；用户个人讲述能力另记未验证。
 3. Android 设备运行单独待验证：先证明 ADB/设备配置落点满足工作区约束，不把 APK 构建申报为设备运行。
-4. 分支 `feature/task1-quote-evidence-lens`；本轮均为聚焦本地提交，既存流程文档差异继续保留，没有 push、PR、merge、tag 或外发。
+4. 分支 `feature/task2-evidence-chat`，基于既有 Task 1 HEAD 创建；聚焦本地提交，初始差异保留，没有 push、PR、merge、tag 或外发。
 
 ## 2026-09-07 PLAN 记录
 

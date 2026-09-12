@@ -69,7 +69,7 @@ private class Task1WebDelegator : KuiklyRenderViewDelegatorDelegate {
 
     fun prepareHistory() {
         // A reload keeps the existing detail entry; a first deep link gets a real home entry.
-        if (window.history.state.asDynamic()?.financeDetail != true) {
+        if (window.history.state.asDynamic()?.financeDetail != true && window.history.state.asDynamic()?.financeChat != true) {
             window.history.replaceState(js("({financeDetail:false})"), "", routeUrl())
         }
     }
@@ -89,8 +89,9 @@ private class Task1WebDelegator : KuiklyRenderViewDelegatorDelegate {
     fun detach() = delegate.onDetach()
     fun resize() = delegate.sendEvent(
         Pager.PAGER_EVENT_ROOT_VIEW_SIZE_CHANGED,
-        mapOf("width" to window.innerWidth, "height" to window.innerHeight),
+        mapOf("width" to window.innerWidth, "height" to viewportHeight()),
     )
+    private fun viewportHeight(): Int = (window.asDynamic().visualViewport?.height as? Double)?.toInt() ?: window.innerHeight
     override fun registerExternalModule(kuiklyRenderExport: IKuiklyRenderExport) {
         kuiklyRenderExport.moduleExport(KRNotifyModule.MODULE_NAME) {
             object : KRNotifyModule() {
@@ -106,9 +107,11 @@ private class Task1WebDelegator : KuiklyRenderViewDelegatorDelegate {
                                 val current = window.history.state.asDynamic()
                                 if (!replace || (current?.financeDetail == true && current.entityId == data.optString("entityId"))) {
                                     writeDetail(data.optString("entityId"), data.optString("snapshotId"),
-                                        data.optString("date"), data.optString("evidenceId"), data.optString("overview"), replace)
+                                        data.optString("date"), data.optString("evidenceId"), data.optString("overview"), replace, data.optString("fromChat"))
                                 }
-                            } else if (window.history.state.asDynamic()?.financeDetail == true) window.history.back()
+                            } else if (data.optString("operation") == "back") {
+                                if (window.history.state.asDynamic()?.financeDetail == true || window.history.state.asDynamic()?.financeChat == true) window.history.back()
+                            } else if (data.optString("route") == "chat") writeChat()
                             return null
                         }
                     }
@@ -117,19 +120,24 @@ private class Task1WebDelegator : KuiklyRenderViewDelegatorDelegate {
             }
         }
     }
-    private fun routeUrl(entity: String = "", snapshot: String = "", date: String = "", evidence: String = "", overview: String = ""): String {
+    private fun routeUrl(entity: String = "", snapshot: String = "", date: String = "", evidence: String = "", overview: String = "", fromChat: String = "", chat: Boolean = false): String {
         val query = js("new URLSearchParams(window.location.search)")
-        listOf("entity", "snapshot", "date", "evidence", "overview").forEach { query.delete(it) }
-        mapOf("entity" to entity, "snapshot" to snapshot, "date" to date, "evidence" to evidence, "overview" to overview)
+        listOf("entity", "snapshot", "date", "evidence", "overview", "fromChat", "page").forEach { query.delete(it) }
+        mapOf("entity" to entity, "snapshot" to snapshot, "date" to date, "evidence" to evidence, "overview" to overview,
+            "fromChat" to fromChat, "page" to if (chat) "chat" else "")
             .filterValues { it.isNotEmpty() }.forEach { (key, value) -> query.set(key, value) }
         val encoded = query.toString() as String
         return window.location.pathname + (if (encoded.isEmpty()) "" else "?$encoded") + window.location.hash
     }
-    private fun writeDetail(entity: String, snapshot: String = "", date: String = "", evidence: String = "", overview: String = "", replace: Boolean = false) {
+    private fun writeChat() {
+        window.history.pushState(js("({financeChat:true})"), "", routeUrl(chat = true))
+    }
+    private fun writeDetail(entity: String, snapshot: String = "", date: String = "", evidence: String = "", overview: String = "", replace: Boolean = false, fromChat: String = "") {
         val state = js("({})")
         state.financeDetail = true; state.entityId = entity; state.snapshotId = snapshot; state.date = date; state.evidenceId = evidence
         state.overview = overview
-        val url = routeUrl(entity, snapshot, date, evidence, overview)
+        state.fromChat = fromChat
+        val url = routeUrl(entity, snapshot, date, evidence, overview, fromChat)
         if (replace) window.history.replaceState(state, "", url) else window.history.pushState(state, "", url)
     }
     fun historyChanged() {
@@ -138,21 +146,25 @@ private class Task1WebDelegator : KuiklyRenderViewDelegatorDelegate {
             delegate.sendEvent(Task1Routes.HOST_OPEN_EVENT, mapOf(
                 "entityId" to (state.entityId as? String ?: ""), "snapshotId" to (state.snapshotId as? String ?: ""),
                 "date" to (state.date as? String ?: ""), "evidenceId" to (state.evidenceId as? String ?: ""),
-                "overview" to (state.overview as? String ?: "")))
-        } else delegate.sendEvent(Task1Routes.HOST_BACK_EVENT, emptyMap())
+                "overview" to (state.overview as? String ?: ""), "fromChat" to (state.fromChat as? String ?: "")))
+        } else if (state?.financeChat == true) delegate.sendEvent(Task1Routes.HOST_CHAT_EVENT, emptyMap())
+        else delegate.sendEvent(Task1Routes.HOST_BACK_EVENT, emptyMap())
     }
     override fun onPageLoadComplete(isSucceed: Boolean, errorReason: ErrorReason?, executeMode: KuiklyRenderCoreExecuteMode) {
         if (!isSucceed) return
-        if (window.history.state.asDynamic()?.financeDetail == true) { historyChanged(); return }
+        if (window.history.state.asDynamic()?.financeDetail == true || window.history.state.asDynamic()?.financeChat == true) { historyChanged(); return }
         // Pass the runtime query as data to the native constructor.
         val ctor = js("URLSearchParams")
         val params = js("Reflect").construct(ctor, arrayOf(initialQuery))
+        if (params.get("page") == "chat") { writeChat(); historyChanged(); return }
         val entity = params.get("entity") as? String ?: return
         val snapshot = params.get("snapshot") as? String ?: ""
         val date = params.get("date") as? String ?: ""
         val evidence = params.get("evidence") as? String ?: ""
         val overview = params.get("overview") as? String ?: ""
-        writeDetail(entity, snapshot, date, evidence, overview)
+        val fromChat = params.get("fromChat") as? String ?: ""
+        if (fromChat == "1") writeChat()
+        writeDetail(entity, snapshot, date, evidence, overview, fromChat = fromChat)
         historyChanged()
     }
 }
@@ -165,6 +177,7 @@ fun main() {
     delegator.resume()
     document.getElementById("boot")?.remove()
     window.addEventListener("resize", { delegator.resize() })
+    window.asDynamic().visualViewport?.addEventListener("resize", { _: dynamic -> delegator.resize() })
     window.addEventListener("popstate", { delegator.historyChanged() })
     // On hybrid devices the renderer binds touch handlers but still receives mouse clicks.
     // Keep the click fallback from turning a mouse drag into a point inspection.

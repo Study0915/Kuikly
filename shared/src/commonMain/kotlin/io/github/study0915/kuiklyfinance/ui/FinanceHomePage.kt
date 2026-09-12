@@ -15,6 +15,7 @@ import com.tencent.kuikly.core.directives.velse
 import io.github.study0915.kuiklyfinance.insight.*
 import io.github.study0915.kuiklyfinance.market.*
 import io.github.study0915.kuiklyfinance.navigation.FinanceRoute
+import io.github.study0915.kuiklyfinance.chat.*
 
 internal val financeInk = Color(0xFF183342L)
 internal val financeMuted = Color(0xFF677C87L)
@@ -42,16 +43,23 @@ class FinanceHomePage : Pager() {
     private var attempt = 0
     private var homeOffset = 0f
     private val tap = PlotTap()
+    private val chat = ChatController()
+    private val chatProvider: ChatProvider = MockChatProvider(provider)
 
     override fun body(): ViewBuilder {
         val ctx = this
         return {
             attr { backgroundColor(Color(0xFFF1F5F7L)) }
             vif({ ctx.route == FinanceRoute.Home }) { ctx.home(this) }
-            velse {
+            vif({ ctx.route == FinanceRoute.Chat }) {
+                FinanceChat(ctx.chat, { delay, action -> ctx.setTimeout(delay) { action() } },
+                    { ctx.answer(it) }, { ctx.open(it) }, { ctx.back() })
+            }
+            vif({ ctx.route is FinanceRoute.Detail }) {
                 View {
                     attr { padding(12f); backgroundColor(Color.WHITE) }
-                    FinanceAction("‹ 返回行情列表") { ctx.back() }
+                    vif({ (ctx.route as? FinanceRoute.Detail)?.fromChat == true }) { FinanceAction("‹ 返回问答会话") { ctx.back() } }
+                    velse { FinanceAction("‹ 返回行情列表") { ctx.back() } }
                 }
                 vif({ ctx.load is MarketLoad.Ready }) {
                     val mounted = ctx.content!!
@@ -72,6 +80,7 @@ class FinanceHomePage : Pager() {
             FinanceText({ "行情观察" }, 26f)
             FinanceText({ "12 支示例股票 · 历史 Mock" }, 13f, financeMuted)
             FinanceText({ "从一段解读，回到它的行情依据。" }, 14f, financeBlue)
+            FinanceAction("打开证据问答") { ctx.route = FinanceRoute.Chat; ctx.notifyRoute("push") }
         }
         parent.List {
             val list = this
@@ -156,9 +165,18 @@ class FinanceHomePage : Pager() {
     }
     private fun back(notifyHost: Boolean = true): Boolean {
         if (route == FinanceRoute.Home) return false
-        session.cancel(); tap.reset(); route = FinanceRoute.Home; load = MarketLoad.Loading; content = null
+        val destination = if ((route as? FinanceRoute.Detail)?.fromChat == true) FinanceRoute.Chat else FinanceRoute.Home
+        session.cancel(); tap.reset(); route = destination; load = MarketLoad.Loading; content = null
         if (notifyHost) notifyRoute("back")
         return true
+    }
+    private fun answer(ticket: ChatRequest) {
+        chat.sync()
+        setTimeout(600) {
+            if (!chat.session.accepts(ticket)) return@setTimeout
+            val result = chatProvider.reply(ticket, DateTime.currentTimestamp())
+            chat.session.complete(ticket, result); chat.sync()
+        }
     }
     private fun dispatch(origin: FinanceRequest, action: LensAction) {
         val before = content
@@ -168,13 +186,15 @@ class FinanceHomePage : Pager() {
         next?.let { syncSelection(it) }
     }
     private fun syncSelection(current: FinanceContent) {
-        route = FinanceRoute.Detail(current.document.key.entityId, current.document.key.snapshotId, current.lens.focus)
+        route = FinanceRoute.Detail(current.document.key.entityId, current.document.key.snapshotId, current.lens.focus,
+            fromChat = (route as? FinanceRoute.Detail)?.fromChat == true)
         notifyRoute("replace")
     }
     private fun notifyRoute(operation: String) {
         val detail = route as? FinanceRoute.Detail
         acquireModule<NotifyModule>(NotifyModule.MODULE_NAME).postNotify(Task1Routes.HOST_ROUTE_EVENT,
-            JSONObject().put("route", if (detail == null) "home" else "detail").put("operation", operation)
+            JSONObject().put("route", if (route == FinanceRoute.Chat) "chat" else if (detail == null) "home" else "detail").put("operation", operation)
+                .put("fromChat", if (detail?.fromChat == true) "1" else "")
                 .put("entityId", detail?.entityId ?: "").put("snapshotId", detail?.snapshotId ?: "")
                 .put("date", (detail?.focus as? LensFocus.DayInspect)?.date ?: "")
                 .put("evidenceId", (detail?.focus as? LensFocus.EvidenceFocus)?.evidenceId ?: "")
@@ -184,13 +204,19 @@ class FinanceHomePage : Pager() {
         super.onReceivePagerEvent(pagerEvent, eventData)
         when (pagerEvent) {
             "onBackPressed" -> acquireModule<BackPressModule>(BackPressModule.MODULE_NAME).backHandle(back())
-            Task1Routes.HOST_BACK_EVENT -> back(false)
+            Task1Routes.HOST_BACK_EVENT -> {
+                session.cancel(); tap.reset(); route = FinanceRoute.Home; load = MarketLoad.Loading; content = null
+            }
+            Task1Routes.HOST_CHAT_EVENT -> {
+                session.cancel(); tap.reset(); route = FinanceRoute.Chat; load = MarketLoad.Loading; content = null
+            }
             Task1Routes.HOST_OPEN_EVENT -> {
                 val evidence = eventData.optString("evidenceId"); val date = eventData.optString("date")
                 val focus = when { eventData.optString("overview") == "1" -> LensFocus.Overview; evidence.isNotEmpty() -> LensFocus.EvidenceFocus(evidence); date.isNotEmpty() -> LensFocus.DayInspect(date); else -> null }
-                open(FinanceRoute.Detail(eventData.optString("entityId"), eventData.optString("snapshotId").ifEmpty { null }, focus), false)
+                open(FinanceRoute.Detail(eventData.optString("entityId"), eventData.optString("snapshotId").ifEmpty { null }, focus,
+                    fromChat = eventData.optString("fromChat") == "1"), false)
             }
         }
     }
-    override fun pageWillDestroy() { session.cancel(); tap.reset(); super.pageWillDestroy() }
+    override fun pageWillDestroy() { session.cancel(); chat.session.reset(); chat.jumpToLatest = null; tap.reset(); super.pageWillDestroy() }
 }
