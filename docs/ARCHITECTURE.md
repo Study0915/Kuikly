@@ -2,6 +2,8 @@
 
 ## 当前状态
 
+2026-09-12更新：Task2证据问答已实现并通过[专项验收](REVIEWS/TASK2-TESTS.md)。`finance_home`仍是唯一Pager，内部Home/Chat/Detail路由；shared新增chat包。Markdown与EvidenceCard显式分离；ChatSession管理请求代次与原位重试，ChatController保存草稿、列表位置及每条消息展开状态。聊天卡消费Task1的EvidenceResolver/LensPresenter/MarketPlot，承接页复用FinanceDetail/QuoteEvidenceLens。结构与授权见[ADR-014](decisions/ADR-014-evidence-chat.md)、[接口](interfaces/EvidenceChat.md)。下文Task1基线说明中的“Task2待实现”仅描述当时边界。
+
 活动工程已完成 Task 1 行情与证据联动原型，从 reset scaffold 独立实现，未迁移旧归档：
 
 - `KuiklyChart/`：仅保留可编译的空 module；它不代表 Task 1 必须交付图表，也不冻结任何图表类型。

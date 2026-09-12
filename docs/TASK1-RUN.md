@@ -37,7 +37,7 @@
 - `/?entity=UNKNOWN`：未知实体。
 - `/?entity=MOCK_B&snapshot=unavailable`：保留股票及原快照错误。
 
-这些是导航合同的演示入口；Task 2 聊天页面尚未实现。
+这些是导航合同的演示入口；Task 2 已通过首页“打开证据问答”接入同一详情，见[问答使用说明](TASK2-RUN.md)。
 
 ## 验证与文件
 
@@ -64,4 +64,4 @@ $taskCli = rg --files --hidden --no-ignore .cache/npm/_npx -g playwright-cli.js 
 
 必须检查输出 `TASK1_H5_PASS` / `TASK1_TOUCH_PASS` / `TASK1_DEEPENING_PASS` / `TASK1_MOUSE_PASS`，不能仅看外层 PowerShell 的退出码。桌面鼠标另用 hasTouch=false 的 profile 验收。脚本会实际操作浏览器并覆盖工作区内同名截图；不会调用外部服务。
 
-下一步：按推荐路径体验原型，使用学习复盘自测；Android 设备和 Task 2 保持独立验收。
+下一步：按推荐路径体验两题，使用学习复盘自测；当前联合验收见[Task 2 TESTS](REVIEWS/TASK2-TESTS.md)，Android设备仍未验证。

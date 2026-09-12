@@ -6,6 +6,7 @@ const port = Number(process.argv[2] || 18761);
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('Invalid local port');
 const files = {
   '/': ['h5App/src/jsMain/resources/index.html', 'text/html; charset=utf-8'],
+  '/demo-frame.html': ['scripts/demo-frame.html', 'text/html; charset=utf-8'],
   '/h5App.js': ['h5App/build/kotlin-webpack/js/productionExecutable/h5App.js', 'text/javascript; charset=utf-8'],
   '/h5App.js.map': ['h5App/build/kotlin-webpack/js/productionExecutable/h5App.js.map', 'application/json'],
 };

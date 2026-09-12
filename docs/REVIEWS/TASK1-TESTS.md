@@ -1,5 +1,9 @@
 # Task 1 TESTS
 
+## 2026-09-12 两题集成回归
+
+当前业务`66c9ab0`，Task2已新增真实聊天caller。共享49项JVM测试与H5/Android构建通过；Task1 59项H5、7触摸、23深化回归通过，桌面4项在本轮集成构建通过。完整版本边界与[证据](TASK2-TESTS.md)对应。Task1原有数值、状态与导航没有被聊天集成改变；个人学习、Android设备/iOS/鸿蒙仍未验证。下方2026-09-08及首版内容为历史记录，不再代表Task2当前状态。
+
 ## 2026-09-08 深化验证
 
 Owner：Windows Codex；分支 `feature/task1-quote-evidence-lens`。实施基线 `3309d2f`，主要业务提交 `ea72928`、`bf8824f`，最终概览文案修复 `e6bb182`。**总计划 D1–D4 已完成；T1-CODE VERIFIED，T1-TESTS 在 Android 设备未运行的平台限制下 VERIFIED。** 下方首版记录保留为历史证据。

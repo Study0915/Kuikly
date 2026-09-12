@@ -38,9 +38,9 @@ QuoteEvidenceLens(resolved, { state }, tap) { action ->
 
 ## caller 与导航
 
-Task 1 只有一个正式详情 caller，A–L 与异常快照共用同一实现；C1 双实例夹具已从活动入口移除。Task 2 的真实第二 caller 尚未实现，不能宣称完成跨题集成。
+Task1的详情caller覆盖A–L与异常快照。2026-09-12 Task2已接入：EvidenceAnswerCard复用同一事实/presenter层，展开走势调用MarketPlot，精确承接调用FinanceDetail/QuoteEvidenceLens；单股票、A/B比较与缺量均有运行证据。C1临时夹具不计当前复用成果。
 
-`FinanceRoute.Detail(entityId, snapshotId?, focus?)` 为承接合同。显式不存在的 snapshot 不换最新；省略 snapshot 才使用完整 Mock。`FinanceRequests` 用递增请求票据阻止晚到结果覆写离开或新请求。
+`FinanceRoute.Detail(entityId, snapshotId?, focus?, fromChat=false)`为承接合同。显式不存在的snapshot不换最新；省略snapshot才使用完整Mock。FinanceRequests用请求票据拒绝晚到结果，fromChat决定返回原会话或列表。Task2聊天上下文的独立合同见[EvidenceChat](EvidenceChat.md)。
 
 唯一 Pager 为 `finance_home`。首页 caller 保存列表偏移。H5 宿主用 NotifyModule 扩展接收路线变化，以 history 保存最小实体/快照/焦点参数；popstate 回送同一路由。Android 使用锁定版本的 `onBackPressed` 与 BackPressModule 消费合同。两端实际验证状态以 TESTS 为准。
 

@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-12",
+  "codeCommit": "66c9ab0",
+  "jvm": {
+    "errors": 0,
+    "failures": 0,
+    "tests": 49
+  },
+  "task1": {
+    "deepening": 23,
+    "desktop": 4,
+    "touch": 7,
+    "h5": 59
+  },
+  "task2": {
+    "desktop": 32,
+    "sessionAndTouch": 11,
+    "h5": 32
+  },
+  "data": "deterministic historical Mock",
+  "androidDevice": "UNVERIFIED",
+  "artifacts": [
+    {
+      "path": "h5App/build/kotlin-webpack/js/productionExecutable/h5App.js",
+      "bytes": 507711,
+      "sha256": "3C4DFEE0F4132E49C3D605DD8160C64AD48F8D0AC559B0ED519A6FA9ED2AEBBC"
+    },
+    {
+      "path": "androidApp/build/outputs/apk/debug/androidApp-debug.apk",
+      "bytes": 6590739,
+      "sha256": "19F8F5A0C7EEA406BADFB963931BD8F4E9099975FE494030EC87B3F06711E6B0"
+    }
+  ]
+}
