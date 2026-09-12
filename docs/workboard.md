@@ -16,12 +16,12 @@
 | T2-CODE | Codex | T2-PLAN VERIFIED | VERIFIED | [CODE记录](handoffs/TASK2-CODE.md)，业务66c9ab0 |
 | T2-TESTS | Codex | T2-CODE 实施记录完整 | VERIFIED | [TESTS](REVIEWS/TASK2-TESTS.md)：49共同逻辑、32H5、11会话/触摸、32桌面；Task1回归通过 |
 | T2-LEARNING | Codex | T2-TESTS VERIFIED | VERIFIED | [复盘](learning/TASK2-LEARNING.md)材料已核对；个人掌握程度未代签 |
-| SUBMIT | Codex / 用户 | T1、T2 LEARNING 均 VERIFIED | IN_PROGRESS | 视频与评分审计完成，独立源码构建通过；正在核验候选ZIP与清单，不执行外部操作 |
+| SUBMIT | Codex / 用户 | T1、T2 LEARNING 均 VERIFIED | VERIFIED | 本地候选文件清单/ZIP逐项SHA、隐私扫描、独立源码构建与导出预览均通过；外部提交未执行 |
 
 ## 当前下一步
 
 1. 两题实现、联合回归、学习材料与最新视频已完成；[评分审计](submit/SCORING-AUDIT.md)内部自评约90/91，实际老师评分未知。
-2. Codex核验本地候选文件与ZIP，用户随后预览并决定外部提交；个人讲述能力另记未验证。
+2. 本地候选已核验；用户预览视频与Demo，练习讲述并决定外部提交。个人讲述能力另记未验证。
 3. Android 设备运行单独待验证：先证明 ADB/设备配置落点满足工作区约束，不把 APK 构建申报为设备运行。
 4. 分支 `feature/task2-evidence-chat`，基于既有 Task 1 HEAD 创建；聚焦本地提交，初始差异保留，没有 push、PR、merge、tag 或外发。
 
