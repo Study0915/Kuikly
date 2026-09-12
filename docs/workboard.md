@@ -13,14 +13,14 @@
 | T1-TESTS | Codex | T1-CODE 实施记录完整 | VERIFIED | [TESTS](REVIEWS/TASK1-TESTS.md)：32 单测、59 原有 H5、23 深化、7 触摸、4 桌面检查通过；设备 UNVERIFIED |
 | T1-LEARNING | Codex / 用户自测 | T1-TESTS VERIFIED | VERIFIED | 2026-09-12核对[复盘材料](learning/TASK1-LEARNING.md)，个人讲述能力仍未验证；用户授权自主推进，见ADR-014 |
 | T2-PLAN | Codex | T1-LEARNING VERIFIED | VERIFIED | [TASK2-PLAN](plans/TASK2-PLAN.md) v1.0，依据本轮自主决策授权，计划提交25514f5 |
-| T2-CODE | Codex | T2-PLAN VERIFIED | VERIFIED | [CODE记录](handoffs/TASK2-CODE.md)，业务66c9ab0 |
-| T2-TESTS | Codex | T2-CODE 实施记录完整 | VERIFIED | [TESTS](REVIEWS/TASK2-TESTS.md)：49共同逻辑、32H5、11会话/触摸、32桌面；Task1回归通过 |
+| T2-CODE | Codex | T2-PLAN VERIFIED | VERIFIED | [CODE记录](handoffs/TASK2-CODE.md)，优化业务972167b；比较对象、草稿和阅读位置已修复 |
+| T2-TESTS | Codex | T2-CODE 实施记录完整 | VERIFIED | [TESTS](REVIEWS/TASK2-TESTS.md)：53共同逻辑、32H5、11会话/触摸、32桌面；新增17项触摸/桌面各通过；Task1全93项通过 |
 | T2-LEARNING | Codex | T2-TESTS VERIFIED | VERIFIED | [复盘](learning/TASK2-LEARNING.md)材料已核对；个人掌握程度未代签 |
 | SUBMIT | Codex / 用户 | T1、T2 LEARNING 均 VERIFIED | VERIFIED | 本地候选文件清单/ZIP逐项SHA、隐私扫描、独立源码构建与导出预览均通过；外部提交未执行 |
 
 ## 当前下一步
 
-1. 两题实现、联合回归、学习材料与最新视频已完成；[评分审计](submit/SCORING-AUDIT.md)内部自评约90/91，实际老师评分未知。
+1. 两题持续优化、联合回归、学习材料与最新视频已完成；12项版本门禁反例通过，源码/运行产物/测试/录像绑定。[评分审计](submit/SCORING-AUDIT.md)保守自评约90/91，实际老师评分未知。
 2. 本地候选已核验；用户预览视频与Demo，练习讲述并决定外部提交。个人讲述能力另记未验证。
 3. Android 设备运行单独待验证：先证明 ADB/设备配置落点满足工作区约束，不把 APK 构建申报为设备运行。
 4. 分支 `feature/task2-evidence-chat`，基于既有 Task 1 HEAD 创建；聚焦本地提交，初始差异保留，没有 push、PR、merge、tag 或外发。

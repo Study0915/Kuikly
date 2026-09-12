@@ -1,11 +1,11 @@
 # 两题本地交付说明
 
-日期：2026-09-12。业务版本`66c9ab0`，分支`feature/task2-evidence-chat`。两题实现、TESTS、学习材料与最新演示已完成；最终本地候选位于`.cache/submission-20260912-r2/`及同名ZIP。包外SHA文件与包内MANIFEST记录确切文件版本。首轮归档、导出预览和隐私检查已通过，r2同步最终阶段状态。未推送、PR、合并、发布、报名提交或外发。
+日期：2026-09-12。业务版本`972167b`，分支`feature/task2-evidence-chat`。本轮修复比较对象替换、日期/数量误判、快捷追问丢失草稿和长会话定位；最新本地候选位于`.cache/submission-20260912-r3/`及同名ZIP。r2历史包保留。包外SHA与包内MANIFEST记录确切文件版本，validation包含构建/UI/录像收据。未推送、PR、合并、发布、报名提交或外发。
 
 ## 先看什么
 
-1. `videos/task1.webm`：87.64秒，行情→依据→单日/样本→缺量→B复用→失败重试。
-2. `videos/task2.webm`：99.12秒，输入→Markdown+卡片→精确详情→返回→A/B→追问→缺量→未知→重试→共享图形。
+1. `videos/task1.webm`：87.68秒，行情→依据→单日/样本→缺量→B复用→失败重试。
+2. `videos/task2.webm`：99.12秒，输入→Markdown+卡片→精确详情→返回→A/B→追问保留草稿→缺量→C/Z范围提示→重试→共享图形。
 3. `source/README.md`与[评分审计](SCORING-AUDIT.md)：内部自评T1约90、T2约91；实际老师评分未知。
 4. `preview/serve.cjs`：已有Node环境运行`node preview/serve.cjs`，打开`http://127.0.0.1:18770/`，无需先构建。
 
@@ -17,11 +17,13 @@
 
 在Windows PowerShell中，将完整JDK17、Node.js、Android command-line tools分别解压到`source/.cache/jdk17`、`.cache/node`、`.cache/android-sdk/cmdline-tools/latest`。然后运行`bootstrap-cli.ps1`、`doctor.ps1`、`verify.ps1`。bootstrap将所需Yarn1.22.17和缺失SDK包安装在工作区；首次构建需要固定依赖下载，不要求全局Gradle或改系统PATH。
 
-2026-09-12已在独立源码目录、无原项目构建产物的条件下复验：共用工作区依赖缓存，JS/H5与Android构建分别成功（1m25s、29s），49项JVM测试通过；H5产物SHA与活动目录完全一致。这证明本地源码完整性，不冒充第二台机器全新联网安装验证。
+2026-09-12已在独立源码目录、无该目录项目构建产物的条件下复验：共用工作区依赖与Gradle构建缓存，JS/H5与Android构建成功，53项JVM结果通过；源码输入指纹与H5产物SHA均与活动目录完全一致。Android APK的SHA不同，部分DEX条目不同，不声称APK逐字节可复现。该复验不冒充第二台机器全新联网安装或实际设备运行。
 
 ## 验收范围
 
-49个共同逻辑测试；T1 59/7/23/4项H5/触摸/深化/鼠标；T2 32项H5、11项会话/触摸和独立32项桌面通过。详情见[Task2测试报告](../REVIEWS/TASK2-TESTS.md)。APK解包检查包含ChatSession、FinanceChatView和FinanceHomePage。
+53个共同逻辑测试；T1 59/7/23/4项H5/触摸/深化/鼠标；T2 32项H5、11项会话/触摸和独立32项桌面通过。新增17项对象、草稿和可见位置检查在触摸/桌面各通过。详情见[Task2测试报告](../REVIEWS/TASK2-TESTS.md)。
+
+12项[交付门禁检查](../evidence/task2/receipt-gates.json)在隔离副本通过：修改源码、加入未跟踪业务文件、替换JS、同源码重建不同JS、改变测试/证据、缺少完成录像或修改视频均被拒绝；文档编辑不会无故使业务构建失效。打包要求全部构建/测试/录制输入纳入导出范围，并检查包内Markdown链接。
 
 H5与APK版本、截图及JSON结果位于源码的`docs/evidence/task2`。原始包含本机路径的构建日志只留在忽略目录，不放入候选。
 
@@ -31,6 +33,6 @@ H5与APK版本、截图及JSON结果位于源码的`docs/evidence/task2`。原�
 
 原仓库初始14个tracked修改及未跟踪CLAUDE.md保留；本轮聚焦提交没有整仓纳入旧差异。候选会携带必要文档的当前内容，MANIFEST逐文件哈希为准。
 
-本地验收结论：SUBMIT_READY。ZIP内每个清单文件均复核长度与SHA；排除缓存/归档/密钥路径，文本未发现本机用户目录或已知Token格式；导出的独立预览实际跑通“问题B→业务卡→+5.49%详情”。这不代表外部提交已获授权。
+本地候选以成功的CANDIDATE_ARCHIVE_VERIFIED输出和包外SHA为准。ZIP内每个清单文件复核长度与SHA，另外核对导出的源码指纹、JS/APK及验证收据。原始含本机路径的日志不进入包。外部提交仍需用户决定。
 
 下一步：用户预览视频与Demo，练习讲述，并决定是否对外提交；当前无需额外环境安装。

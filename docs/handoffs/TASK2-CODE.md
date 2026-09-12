@@ -7,3 +7,5 @@ Owner：Windows Codex。2026-09-12。计划 TASK2-PLAN v1.0，授权与结构依
 顺序：common模型/会话/Markdown/provider及测试 → UI/卡片 → 路由/宿主 → verify/两题浏览器 → 学习与本地提交。未push、未merge、未PR、未tag、未release、未外发。
 
 当前：CODE VERIFIED，业务提交66c9ab0；新增typed blocks、请求票据、受限Markdown、A/B与缺量卡、共享图形/详情、Chat history与返回状态。49项JVM、Task2主链路/长会话/桌面、Task1回归与两端构建通过，详见TASK2-TESTS。设备运行仍未验证。下一步：LEARNING与本地SUBMIT准备。
+
+持续优化批次：2026-09-12，基线 d2203e4，计划 v1.1，业务提交972167b，CODE/TESTS VERIFIED。实体解析、草稿/列表和Markdown保真修复通过53项JVM与两题完整浏览器回归；新增17项在触摸和桌面各通过。构建/UI/录像收据用于交付版本绑定；允许路径与初始差异保护不变。命令：scripts/verify.ps1、scripts/test-ui.ps1、新增意图/草稿/导航浏览器检查、record-demos、test-receipts与prepare-submission。评分证据要求与退出条件见总计划v1.1；最新本地交付以DELIVERY为准。

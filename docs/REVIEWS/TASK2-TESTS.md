@@ -1,20 +1,46 @@
 # Task 2 TESTS · 2026-09-12
 
-Owner：Windows Codex。分支`feature/task2-evidence-chat`；业务提交`66c9ab0`。CODE/TESTS VERIFIED，在明确的平台限制下通过。原始日志在`.cache/task2-evidence/`；可随源码携带的结果与截图见[证据目录](../evidence/task2/README.md)。
+Owner：Windows Codex。分支`feature/task2-evidence-chat`；当前业务提交`972167b`，初版为`66c9ab0`。本轮按计划v1.1修复独立审查和浏览器复现的问题。原始日志在`.cache/task2-evidence/`；可随源码携带的结果与截图见[证据目录](../evidence/task2/README.md)。
 
 | 检查 | 实际结果 | 直接证据 |
 |---|---|---|
 | 工作区环境 | doctor CLI_ENV_OK；复用工作区JDK/Node/SDK/Gradle/Playwright，未新增全局安装 | use-cli-env.ps1、doctor执行记录 |
-| JS与H5 | compileKotlinJs、production webpack、页面注册通过 | verify-release.log，BUILD SUCCESSFUL 43s |
-| JVM与Android APK | 49 tests，0 failures/errors；assembleDebug与页面注册通过 | testDebugUnitTest XML、verify-release.log，BUILD SUCCESSFUL 39s |
+| JS与H5 | compileKotlinJs、production webpack、页面注册通过 | refinement-verify.log，build收据 |
+| JVM与Android APK | 53 tests，0 failures/errors；assembleDebug与页面注册通过 | testDebugUnitTest XML、build收据 |
 | Task2 H5 | 32项通过，输入/内容/详情/草稿/前进后退/风险追问/缺量/取消/重试/恶意文本/窄屏 | h5-final.json |
 | Task2长会话与触摸 | 11项通过，20轮上限与早期记录、离页完成、父滚动、精确日期、展开状态返回 | session-final.json |
 | Task2桌面 | hasTouch=false独立浏览器，32项通过 | task2-desktop-final.json |
+| Task2优化回归 | 17项在触摸与桌面各通过：对象忠实性、日期/数量、草稿、真实可见位置、离页恢复 | refinement-touch.json、refinement-desktop.json |
 | Task1回归 | 59 H5、7触摸、23深化、4鼠标通过 | task1-*-final.json |
 | 视觉核对 | 320/390/1024宽度，输入固定可见，文字无横向溢出；缺量无错误倍数 | chat-*.png、missing-volume.png |
 | 外部资源 | 专项测试没有外部请求和未捕获运行错误 | H5与桌面结果errors/external为空 |
 
-本轮新增17个JVM测试：ChatSession 6、MockChatProvider 7、SafeMarkdown 4；原Task1的32项保留。JVM测试数量不冒充各平台单独运行次数。Task1鼠标4项在卡片展开保持改动前的集成构建执行，后续只改ChatController/聊天卡，不涉及该鼠标路径；最终两题主链路与Task1其余89项均在66c9ab0构建复验。
+当前JVM构成：原Task1的32项，ChatSession 6、MockChatProvider 10、SafeMarkdown 5，共53项。本批新增4项覆盖错误比较、未知上下文、日期/数量和代码围栏保真。JVM数量不冒充各平台运行次数。Task1全部93项与Task2全部检查在当前H5产物上重跑，统一runner核验localhost实际返回的JS与构建SHA相同。
+
+## Standards
+
+独立规范审查以`git diff 1515a8e...d2203e4`为固定范围，依据AGENTS、ARCHITECTURE和EvidenceChat合同，发现2项：
+
+1. **P1，合同违反**：比较对象不足时自动补成A/B；“比较 C”或“比较 A 和 M”返回非用户指定的股票。违反未知实体不伪造的合同。已改为明确提示，比较必须指定两只不同的受支持实体。
+2. **P2，正确性判断**：快捷追问共用输入框发送路径，清空另一个尚未发送的草稿。已按发送来源分别处理，并通过草稿→追问→详情→返回→发送的浏览器链路。
+
+未发现必须增加依赖、改模块或重构归档的规范问题。复核又发现旧滚动回调可跨新会话及历史重试执行，现同时检查视图代次和当前末条请求，恢复不覆盖用户主动导航。
+
+## Spec
+
+独立需求审查使用同一diff，依据REQUIREMENTS、总计划和EvidenceChat合同，发现3项：
+
+1. **P1**：比较对象被补入或忽略；已修复，包含重复、超量与范围外对象回归。
+2. **P2**：无边界六位数字正则把20260904和1000000股当股票代码；改为完整token和数量单位判别，A股票与有效日期/数量组合不再被误拒。
+3. **P2**：已声明支持的代码围栏丢失缩进和空行；解析保留原文，字面标记不转成HTML。由JVM测试验证，未声称Mock当前输出此类代码块。
+
+未发现需要增加的题面Must或应删的明显范围扩张。审查计数：Standards 2项（最严重P1对象替换），Spec 3项（最严重P1对象替换）；两条审查轴保留各自判断，同一缺陷没有重复计为两次产品收益。
+
+## 本轮运行中追加修复
+
+“最新回答”由100000像素的末尾跳转改为真实消息位置。长会话返回时分批布局曾造成定位失败，现对最多20轮先测量锚点，DOM仍按可见范围创建；新增测试直接断言问题和摘要位于列表可见区域。离开后的完成回调、快速重新进入与新会话不会再操作旧List。
+
+完整PowerShell runner还修复了Task1历史结果使用`status`字段、Task2使用`result`字段的兼容问题，以及原生参数中会话名需显式引号的差异。两种浏览器使用独立工作区profile；PASS必须来自结构化结果，不只看进程退出码。
 
 ## 真实修复
 
@@ -27,8 +53,8 @@ Owner：Windows Codex。分支`feature/task2-evidence-chat`；业务提交`66c9a
 
 ## 不申报的能力
 
-交付复核：独立源码目录共用工作区依赖缓存，从无项目build产物起构建通过（H5 1m25s、Android 29s），49项JVM测试通过；H5 SHA与活动构建一致。APK的DEX中确认含ChatSession、FinanceChatView和FinanceHomePage。两段最新视频分别87.64s/99.12s，全片解码与核心帧目检通过。此项不代表第二台机器全新安装或Android设备运行。
+初版r2的独立源码构建与87.64s/99.12s录像属于66c9ab0历史证据；当前批次的源码复现、录像与候选核验以[交付说明](../submit/DELIVERY.md)和最新收据为准。没有将r2旧录像作为新版验收。
 
 Android设备/模拟器、原生键盘、iOS、鸿蒙、真实API、真实模型、性能基准、真实投资效果均未验证。H5缩小视口只能证明布局响应，不能证明手机系统键盘。会话刷新清空、20轮/500字上限、受限Markdown均为可见合同。锁定工具链存在AGP/compileSdk与webpack大小提示，不声称零警告。
 
-下一步：学习材料核对、最新演示和本地候选包；外部发布与老师实际评分未知。
+下一步：按最新交付说明预览本地候选；外部发布、老师实际评分与个人讲述能力仍由用户决定或另行验证。

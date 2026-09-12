@@ -8,7 +8,7 @@ Shape Task 1/2 的原始题面与完成定义以 [docs/REQUIREMENTS.md](docs/REQ
 
 - `[FACT]` 活动入口为 `finance_home`。
 - `[MOCK]` 12 个确定性股票样例；摘要由数值事实和有限模板生成，没有真实行情或模型服务。
-- `[VERIFIED]` 49 项共同逻辑测试；Task 1 的 59/7/23/4 项 H5/触摸/深化/桌面检查，Task 2 的 32 项 H5、11 项会话/触摸及独立 32 项桌面检查通过；H5 production 与 Android Debug 构建通过。
+- `[VERIFIED]` 53 项共同逻辑测试；Task 1 的 59/7/23/4 项 H5/触摸/深化/桌面检查，Task 2 的 32 项 H5、11 项会话/触摸及独立 32 项桌面检查通过；新增 17 项对象、草稿与阅读位置检查在触摸/桌面各通过。H5 production 与 Android Debug 构建通过。
 - `[VERIFIED]` 两题实现、测试和学习材料已完成；最新带字幕演示与本地候选见 [交付说明](docs/submit/DELIVERY.md)。个人掌握程度未代签。
 - `[UNVERIFIED]` Android 设备运行、iOS 和 HarmonyOS 未执行；APK 构建不等于设备运行。
 - `[DECISION]` Codex 负责两题 PLAN、TESTS、LEARNING 和 SUBMIT 准备；OpenCode 是两题默认 CODE 写入者，Codex 只有经用户确认后才备选接管。
@@ -29,6 +29,8 @@ Shape Task 1/2 的原始题面与完成定义以 [docs/REQUIREMENTS.md](docs/REQ
 ```
 
 手工调用 Wrapper 前执行 `. .\scripts\use-cli-env.ps1`。H5 生产预览使用 `.\scripts\run-h5.ps1 -Production`；运行后打开 http://127.0.0.1:18761/。浏览器回归见 `.\scripts\test-ui.ps1`。
+
+交付准备按 `verify → test-ui -Task Both → record-demos → test-receipts → prepare-submission` 执行，见 [脚本说明](scripts/README.md)。构建输入、运行产物、交互检查和录像通过工作区收据绑定；源码或证据变动后，旧收据不能继续用于新包。
 
 ## 活动模块
 

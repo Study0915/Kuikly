@@ -1,34 +1,58 @@
 {
   "date": "2026-09-12",
-  "codeCommit": "66c9ab0",
+  "codeCommit": "972167b",
+  "buildFingerprint": "E4056768F25706F40E62BA9F36A6A418AC19BEC57D82B4FA7BCFAD99BAD89AF1",
   "jvm": {
-    "errors": 0,
-    "failures": 0,
-    "tests": 49
+    "failures": 0.0,
+    "tests": 53.0,
+    "errors": 0.0
   },
   "task1": {
-    "deepening": 23,
     "desktop": 4,
+    "h5": 59,
     "touch": 7,
-    "h5": 59
+    "deepening": 23
   },
   "task2": {
-    "desktop": 32,
+    "refinementTouch": 17,
     "sessionAndTouch": 11,
-    "h5": 32
+    "desktop": 32,
+    "h5": 32,
+    "refinementDesktop": 17
   },
   "data": "deterministic historical Mock",
   "androidDevice": "UNVERIFIED",
   "artifacts": [
     {
-      "path": "h5App/build/kotlin-webpack/js/productionExecutable/h5App.js",
-      "bytes": 507711,
-      "sha256": "3C4DFEE0F4132E49C3D605DD8160C64AD48F8D0AC559B0ED519A6FA9ED2AEBBC"
+      "path": "androidApp/build/outputs/apk/debug/androidApp-debug.apk",
+      "sha256": "C026E935DEC938CB6EF7735B804B0974D9803951923650B171774C753501CEF6"
     },
     {
-      "path": "androidApp/build/outputs/apk/debug/androidApp-debug.apk",
-      "bytes": 6590739,
-      "sha256": "19F8F5A0C7EEA406BADFB963931BD8F4E9099975FE494030EC87B3F06711E6B0"
+      "path": "h5App/build/kotlin-webpack/js/productionExecutable/h5App.js",
+      "sha256": "9A59CB34954BF2B1593383DEE7074B970C2E1A97AC94D9898AFA746C913C1982"
     }
-  ]
+  ],
+  "sourceReproduction": {
+    "jvm": {
+      "tests": 53.0,
+      "errors": 0.0,
+      "failures": 0.0
+    },
+    "environment": "Separate source directory, shared workspace dependency and Gradle build caches; not a new-machine installation",
+    "sourceFingerprintMatches": true,
+    "androidBuild": "PASS",
+    "apkBitIdentical": false,
+    "h5HashMatches": true
+  },
+  "videos": [
+    {
+      "path": ".cache/task2-evidence/task1-final.webm",
+      "sha256": "8169A94DE7818E91FC06394646FDFB5177DB481E4E04120D186DC31A97B6252F"
+    },
+    {
+      "path": ".cache/task2-evidence/task2-final.webm",
+      "sha256": "B12900E3C516F17CAA2456CF0F0BA7AB3A1D85ED7CF82CF490C61AF62AD17AC5"
+    }
+  ],
+  "receiptGateChecks": 12
 }
