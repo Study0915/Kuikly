@@ -25,4 +25,10 @@ class SafeMarkdownTest {
         assertTrue(SafeMarkdown.parse("x\n".repeat(10000)).size <= 160)
         assertTrue(SafeMarkdown.parse("x".repeat(20000)).flatMap { it.spans }.sumOf { it.text.length } <= 12000)
     }
+    @Test fun fencedCodePreservesIndentationBlankLinesAndLiteralMarkup() {
+        val source = "```kotlin\n  if (ready) {\n\n    **literal** <tag>\n  }\n```"
+        val lines = SafeMarkdown.parse(source)
+        assertEquals(listOf("  if (ready) {", "", "    **literal** <tag>", "  }"), lines.map { it.spans.single().text })
+        assertTrue(lines.all { it.kind == MarkdownKind.CODE && it.spans.single().code })
+    }
 }

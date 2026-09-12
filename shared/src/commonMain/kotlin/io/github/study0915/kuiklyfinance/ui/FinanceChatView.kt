@@ -12,8 +12,13 @@ internal fun ViewContainer<*, *>.FinanceChat(
     chat: ChatController, later: (Int, () -> Unit) -> Unit, onRequest: (ChatRequest) -> Unit,
     onDetail: (FinanceRoute.Detail) -> Unit, onHome: () -> Unit,
 ) {
-    fun send(question: String = chat.draft, entity: String? = null) {
-        chat.begin(question, entity)?.let { onRequest(it); later(60) { chat.jumpToLatest?.invoke() } }
+    val mounted = chat.attachView()
+    val turnViews = mutableMapOf<Int, DeclarativeBaseView<*, *>>()
+    fun send(question: String, entity: String? = null, fromDraft: Boolean = false) {
+        chat.begin(question, entity, fromDraft)?.let { ticket ->
+            onRequest(ticket)
+            later(60) { if (chat.acceptsView(mounted) && chat.session.turns.lastOrNull()?.request == ticket) chat.jumpToLatest?.invoke() }
+        }
     }
     View {
         attr { padding(12f, 16f, 8f, 16f); backgroundColor(Color.WHITE) }
@@ -26,9 +31,19 @@ internal fun ViewContainer<*, *>.FinanceChat(
     }
     List {
         val list = this
-        attr { flex(1f); accessibility("问答会话记录") }
-        event { scroll { chat.offset = it.offsetY } }
-        chat.jumpToLatest = { list.setContentOffset(0f, 100000f, false) }
+        var navigationRevision = 0
+        // At most 20 turns: measure all anchors on mount; DOM rendering remains virtualized.
+        attr { flex(1f); firstContentLoadMaxIndex(ChatSession.MAX_TURNS + 2); accessibility("问答会话记录") }
+        event { scroll { if (chat.acceptsView(mounted)) chat.offset = it.offsetY } }
+        chat.jumpToLatest = {
+            if (chat.acceptsView(mounted)) {
+                navigationRevision++
+                val latest = chat.turns.lastOrNull()?.request?.turnId
+                val top = turnViews[latest]?.frame?.y ?: 0f
+                val maxOffset = ((list.contentView?.frame?.height ?: 0f) - list.frame.height).coerceAtLeast(0f)
+                list.setContentOffset(0f, top.coerceIn(0f, maxOffset), false)
+            }
+        }
         View {
             attr { margin(12f); padding(16f); backgroundColor(Color(0xFF183342L)); borderRadius(12f) }
             FinanceText({ "让每个结论，都有可核对的依据。" }, 20f, Color.WHITE)
@@ -38,6 +53,7 @@ internal fun ViewContainer<*, *>.FinanceChat(
         }
         vfor({ chat.turns }) { turn ->
             View {
+            turnViews[turn.request.turnId] = this
             View {
                 attr { margin(4f, 12f, 12f, 36f); padding(14f); backgroundColor(Color(0xFFDCEBF1L)); borderRadius(12f); accessibility("问题 ${turn.request.turnId}") }
                 FinanceText({ "你 · ${turn.request.turnId.toString().padStart(2, '0')}" }, 11f, financeBlue)
@@ -65,7 +81,11 @@ internal fun ViewContainer<*, *>.FinanceChat(
         }
         View { attr { height(16f) } }
         val restore = chat.offset
-        later(60) { list.setContentOffset(0f, restore, false) }
+        val restoreFirstTurn = chat.turns.firstOrNull()?.request?.turnId
+        later(60) {
+            if (chat.acceptsView(mounted) && navigationRevision == 0 && chat.turns.firstOrNull()?.request?.turnId == restoreFirstTurn)
+                list.setContentOffset(0f, restore, false)
+        }
     }
     View {
         attr { padding(8f, 12f, 10f, 12f); backgroundColor(Color.WHITE); accessibility("问答输入区") }
@@ -83,13 +103,13 @@ internal fun ViewContainer<*, *>.FinanceChat(
             View {
                 attr { width(64f); height(58f); marginLeft(8f); allCenter(); borderRadius(8f)
                     backgroundColor(if (chat.pending) Color(0xFF92A9B3L) else financeBlue); accessibility("发送问题") }
-                event { click { send() } }
+                event { click { send(chat.draft, fromDraft = true) } }
                 FinanceText({ if (chat.pending) "等待中" else "发送" }, 15f, Color.WHITE)
             }
         }
         View {
             attr { flexDirectionRow(); justifyContentSpaceBetween() }
-            View { attr { padding(9f, 2f, 9f, 2f); accessibility("新建会话") }; event { click { chat.reset(); chat.jumpToLatest?.invoke() } }; FinanceText({ "新会话" }, 12f, financeBlue) }
+            View { attr { padding(9f, 2f, 9f, 2f); accessibility("新建会话") }; event { click { chat.reset(); turnViews.clear(); chat.jumpToLatest?.invoke() } }; FinanceText({ "新会话" }, 12f, financeBlue) }
             View { attr { padding(9f, 2f, 9f, 2f); accessibility("定位最新回答") }; event { click { chat.jumpToLatest?.invoke() } }; FinanceText({ "最新回答 ↓" }, 12f, financeBlue) }
             View {
                 attr { padding(9f, 2f, 9f, 2f); accessibility("切换回答场景") }

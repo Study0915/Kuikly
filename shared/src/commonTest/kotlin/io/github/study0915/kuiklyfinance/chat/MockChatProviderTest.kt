@@ -19,6 +19,24 @@ class MockChatProviderTest {
         assertEquals(1.5, (cards[0].document.evidence.last().fact as EvidenceFact.Volume).ratio, 0.001)
         assertEquals(0.8, (cards[1].document.evidence.last().fact as EvidenceFact.Volume).ratio, 0.001)
     }
+    @Test fun incompleteDuplicateAndOversizeComparisonsNeverInventOrDropEntities() {
+        listOf("比较", "比较 C", "比较 A 和 A", "比较 A B C", "比较 C 和 Z", "比较 A 和 M").forEach { q ->
+            assertTrue(cards(q).isEmpty(), q)
+            assertTrue(cards(q, "MOCK_B").isEmpty(), "context must not fill missing comparison: $q")
+        }
+        assertEquals(listOf("MOCK_C", "MOCK_D"), cards("对比 C 和 D").map { it.document.key.entityId })
+        assertTrue(cards("分析 A 和 B").isEmpty(), "multiple objects require explicit comparison")
+    }
+    @Test fun unsupportedLettersAndCodesCannotFallBackToKnownContext() {
+        listOf("分析 M", "分析 Z 的风险", "分析 MOCK_AZ", "比较 A 和 600519", "查看 600519").forEach { q ->
+            assertTrue(cards(q, "MOCK_A").isEmpty(), q)
+        }
+    }
+    @Test fun datesAndQuantitiesDoNotMasqueradeAsStockCodes() {
+        listOf("分析 A 在 20260904 的风险", "分析 A 在 2026-09-04 的风险", "分析 A，成交量1000000股", "分析 A，成交量 100000 股").forEach { q ->
+            assertEquals("MOCK_A", cards(q).single().document.key.entityId, q)
+        }
+    }
     @Test fun explicitEntityOverridesFollowUpContext() {
         assertEquals("MOCK_A", cards("分析 A", "MOCK_B").single().document.key.entityId)
         assertEquals("MOCK_B", cards("这只股票有什么风险？", "MOCK_B").single().document.key.entityId)

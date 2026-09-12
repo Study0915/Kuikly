@@ -19,8 +19,13 @@ internal class ChatController {
     var scenario by observable(DemoScenario.COMPLETE)
     var offset = 0f
     var jumpToLatest: (() -> Unit)? = null
+    private var viewGeneration = 0
     private val cards = mutableMapOf<Pair<Int, DocumentKey>, AnswerCardState>()
     fun cardState(turn: Int, key: DocumentKey) = cards.getOrPut(turn to key) { AnswerCardState() }
+    fun attachView(): Int { detachView(); return viewGeneration }
+    fun acceptsView(generation: Int) = generation == viewGeneration
+    fun currentView() = viewGeneration
+    fun detachView() { viewGeneration++; jumpToLatest = null }
 
     fun sync() {
         if (session.turns.isEmpty()) turns.clear()
@@ -29,9 +34,9 @@ internal class ChatController {
         }
         notice = session.notice; pending = session.pending != null
     }
-    fun begin(question: String = draft, entity: String? = null): ChatRequest? {
+    fun begin(question: String, entity: String? = null, fromDraft: Boolean = false): ChatRequest? {
         val ticket = session.send(question, entity, scenario)
-        if (ticket != null) draft = ""
+        if (ticket != null && fromDraft) draft = ""
         sync(); return ticket
     }
     fun reset() { session.reset(); cards.clear(); draft = ""; offset = 0f; sync() }

@@ -134,6 +134,7 @@ class FinanceHomePage : Pager() {
     }
 
     private fun open(detail: FinanceRoute.Detail, notifyHost: Boolean = true) {
+        if (route == FinanceRoute.Chat) chat.detachView()
         route = detail
         scenario = detail.snapshotId?.let { provider.scenarioForSnapshot(detail.entityId, it) } ?: DemoScenario.COMPLETE
         attempt = 0
@@ -165,17 +166,22 @@ class FinanceHomePage : Pager() {
     }
     private fun back(notifyHost: Boolean = true): Boolean {
         if (route == FinanceRoute.Home) return false
+        if (route == FinanceRoute.Chat) chat.detachView()
         val destination = if ((route as? FinanceRoute.Detail)?.fromChat == true) FinanceRoute.Chat else FinanceRoute.Home
         session.cancel(); tap.reset(); route = destination; load = MarketLoad.Loading; content = null
         if (notifyHost) notifyRoute("back")
         return true
     }
     private fun answer(ticket: ChatRequest) {
+        val mounted = chat.currentView()
         chat.sync()
         setTimeout(600) {
             if (!chat.session.accepts(ticket)) return@setTimeout
             val result = chatProvider.reply(ticket, DateTime.currentTimestamp())
             chat.session.complete(ticket, result); chat.sync()
+            setTimeout(60) {
+                if (chat.acceptsView(mounted) && chat.session.turns.lastOrNull()?.request == ticket) chat.jumpToLatest?.invoke()
+            }
         }
     }
     private fun dispatch(origin: FinanceRequest, action: LensAction) {
@@ -205,6 +211,7 @@ class FinanceHomePage : Pager() {
         when (pagerEvent) {
             "onBackPressed" -> acquireModule<BackPressModule>(BackPressModule.MODULE_NAME).backHandle(back())
             Task1Routes.HOST_BACK_EVENT -> {
+                if (route == FinanceRoute.Chat) chat.detachView()
                 session.cancel(); tap.reset(); route = FinanceRoute.Home; load = MarketLoad.Loading; content = null
             }
             Task1Routes.HOST_CHAT_EVENT -> {
@@ -218,5 +225,5 @@ class FinanceHomePage : Pager() {
             }
         }
     }
-    override fun pageWillDestroy() { session.cancel(); chat.session.reset(); chat.jumpToLatest = null; tap.reset(); super.pageWillDestroy() }
+    override fun pageWillDestroy() { session.cancel(); chat.session.reset(); chat.detachView(); tap.reset(); super.pageWillDestroy() }
 }

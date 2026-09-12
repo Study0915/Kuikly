@@ -11,9 +11,9 @@ object SafeMarkdown {
         return source.take(12000).lines().take(160).mapNotNull { raw ->
             val line = raw.trim()
             if (line.startsWith("```")) { fenced = !fenced; return@mapNotNull null }
+            if (fenced) return@mapNotNull MarkdownLine(MarkdownKind.CODE, listOf(MarkdownSpan(raw, code = true)))
             if (line.isEmpty()) return@mapNotNull null
             val kind = when {
-                fenced -> MarkdownKind.CODE
                 Regex("^#{1,3} ").containsMatchIn(line) -> MarkdownKind.HEADING
                 line.startsWith("- ") || Regex("^\\d+\\. ").containsMatchIn(line) -> MarkdownKind.BULLET
                 line.startsWith("> ") -> MarkdownKind.QUOTE
@@ -25,7 +25,7 @@ object SafeMarkdown {
                 MarkdownKind.QUOTE -> line.drop(2)
                 else -> line
             }
-            MarkdownLine(kind, if (fenced) listOf(MarkdownSpan(content, code = true)) else inline(content))
+            MarkdownLine(kind, inline(content))
         }
     }
 

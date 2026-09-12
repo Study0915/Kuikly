@@ -9,19 +9,30 @@ class MockChatProvider(private val market: MockMarketProvider = MockMarketProvid
         if (request.scenario == DemoScenario.FAIL_ONCE && request.attempt == 0)
             return ChatReply.Failed("演示：回答暂时不可用。重试会保留原问题与股票。")
         val question = request.question.uppercase()
-        val explicit = Regex("(?:^|[^A-Z0-9_])(?:MOCK_|股票\\s*|示例\\s*)?([A-L])(?=$|[^A-Z0-9_])").findAll(question)
-            .map { "MOCK_${it.groupValues[1]}" }.distinct().toList()
-        val unknown = Regex("MOCK_([A-Z0-9]+)").findAll(question).any { it.value !in market.entityIds }
-            || Regex("\\d{6}").containsMatchIn(question)
+        // Read whole ASCII tokens: an eight-digit date or quantity is not a six-digit stock code.
+        // Keep unsupported single letters too, so "C 和 Z" cannot silently become a C answer.
+        val tokens = Regex("[A-Z0-9_]+").findAll(question).toList()
+        val explicit = tokens.mapNotNull { token -> when {
+            token.value.startsWith("MOCK_") -> token.value
+            token.value.length == 1 && token.value[0] in 'A'..'Z' -> "MOCK_${token.value}"
+            else -> null
+        } }.distinct()
+        val unknown = explicit.any { it !in market.entityIds } || tokens.any { token ->
+            token.value.length == 6 && token.value.all { it.isDigit() } &&
+                !Regex("^(股|手|元|万|亿|倍)").containsMatchIn(question.substring(token.range.last + 1).trimStart())
+        }
         val compare = listOf("比较", "对比").any { it in question }
-        val ids = if (unknown) emptyList() else when {
-            compare -> if (explicit.size >= 2) explicit.take(2) else listOf("MOCK_A", "MOCK_B")
-            explicit.isNotEmpty() -> explicit.take(1)
+        if (unknown) return prompt("暂无匹配的演示股票", "问题包含演示范围外的股票。仅支持 **示例股票 A–L**，请更正后再试。")
+        if (compare && explicit.size != 2) return prompt("请指定两只不同的演示股票",
+            "同窗口对比需要明确的两个对象，例如 **比较 C 和 D**。当前不会补入其他股票，也不会忽略多出的对象。")
+        if (!compare && explicit.size > 1) return prompt("请选择单股分析或双股对比",
+            "单股分析请指定一只股票；要看两只股票，请输入 **比较 A 和 B**。")
+        val ids = when {
+            explicit.isNotEmpty() -> explicit
             request.entityContext in market.entityIds -> listOf(request.entityContext!!)
             else -> emptyList()
         }
-        if (ids.isEmpty()) return ChatReply.Ready(listOf(AnswerBlock.Markdown(
-            "## 暂无匹配的演示股票\n仅支持 **示例股票 A–L**。试试“分析 A”“比较 A 和 B”或从卡片继续追问。\n> 这是离线 Mock 问答，不查询真实股票或实时资讯。")))
+        if (ids.isEmpty()) return prompt("暂无匹配的演示股票", "仅支持 **示例股票 A–L**。试试“分析 A”“比较 A 和 B”或从卡片继续追问。")
         val scenario = when {
             "缺量" in question || "缺失" in question -> DemoScenario.MISSING_VOLUME
             request.scenario == DemoScenario.FAIL_ONCE -> DemoScenario.COMPLETE
@@ -42,4 +53,7 @@ class MockChatProvider(private val market: MockMarketProvider = MockMarketProvid
         blocks += docs.map { AnswerBlock.EvidenceCard(it) }
         return ChatReply.Ready(blocks)
     }
+
+    private fun prompt(title: String, detail: String) = ChatReply.Ready(listOf(AnswerBlock.Markdown(
+        "## $title\n$detail\n> 这是离线 Mock 问答，不查询真实股票或实时资讯。")))
 }
