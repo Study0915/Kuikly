@@ -29,6 +29,13 @@ if (-not (Test-Path -LiteralPath (Join-Path $nodeTarget "node.exe"))) {
 
 . (Join-Path $PSScriptRoot "use-cli-env.ps1")
 
+# The Windows Kotlin/JS build explicitly uses this workspace Yarn executable.
+$workspaceYarn = Join-Path $cacheRoot 'npm\yarn-runtime\node_modules\.bin\yarn.cmd'
+if (-not (Test-Path -LiteralPath $workspaceYarn)) {
+    & (Join-Path $nodeTarget 'npm.cmd') install --prefix (Join-Path $cacheRoot 'npm\yarn-runtime') --no-audit --no-fund --ignore-scripts yarn@1.22.17
+    if ($LASTEXITCODE -ne 0) { throw 'Workspace Yarn installation failed.' }
+}
+
 $requiredSdkPackages = @(
     "build-tools;30.0.3",
     "platform-tools",

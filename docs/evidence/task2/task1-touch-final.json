@@ -1,0 +1,1 @@
+{"status":"TASK1_TOUCH_PASS","checks":["P04: vertical touch scroll never selects a day","P04: parent list actually scrolls","P04: multitouch cancels selection","P04: touchcancel cancels selection","P02: price axis does not select","P02: panel gap does not select","P04: rapid taps resolve to the last selected date"]}

@@ -6,23 +6,33 @@
 
 ## 当前阶段
 
-| 阶段 | Owner | 前置条件 | 状态 | 唯一产物 / 完成条件 |
-|---|---|---|---|---|
-| T1-PLAN | Codex | 无 | BACKLOG | `docs/plans/TASK1-PLAN.md`；40/25/25/10 完整映射、2–4 个创新候选、用户选择与逐项验收计划 |
-| T1-CODE | OpenCode | T1-PLAN VERIFIED | BACKLOG | 按已确认计划实现并提交 CODE handoff；不得自行改变创新点或评分目标 |
-| T1-TESTS | Codex | T1-CODE handoff 完整 | BACKLOG | Windows 构建、自动测试、H5/Android 分级验证、评分证据与缺口报告 |
-| T1-LEARNING | Codex | T1-TESTS VERIFIED | BACKLOG | 简历与面试版项目复盘；不写成 API 教程 |
-| T2-PLAN | Codex | T1-LEARNING VERIFIED | BACKLOG | `docs/plans/TASK2-PLAN.md`；独立完成 40/25/25/10 映射和用户决策门 |
-| T2-CODE | OpenCode | T2-PLAN VERIFIED | BACKLOG | 按已确认计划实现并提交 CODE handoff |
-| T2-TESTS | Codex | T2-CODE handoff 完整 | BACKLOG | Windows 构建、自动测试、端到端交互、评分证据与缺口报告 |
-| T2-LEARNING | Codex | T2-TESTS VERIFIED | BACKLOG | 简历与面试版项目复盘；能讲清职责、难点、方案、结果和边界 |
-| SUBMIT | Codex / 用户 | T1、T2 LEARNING 均 VERIFIED | BACKLOG | Codex 生成并核验本地提交候选；用户决定仓库、上传、提交和对外沟通 |
+2026-09-13：用户批准联合视觉与提交改版，基线 485964c，计划 602bc15，业务 c25eeed。当前本地实现与验收见下表；最终候选封存以 DELIVERY 和包外 SHA 为准，公开入口仍待同步。
+
+| 阶段 | Owner | 状态 | 当前产物 / 边界 |
+|---|---|---|---|
+| T1-PLAN | Codex / 用户确认 | VERIFIED | [TASK1-PLAN](plans/TASK1-PLAN.md) 含联合视觉范围，ADR-015 记录结构增量 |
+| T1-CODE | Codex | VERIFIED | [CODE](handoffs/TASK1-CODE.md)：共享主题、紧凑行情、首屏图表、折叠计算与文档状态 |
+| T1-TESTS | Codex | VERIFIED | [TESTS](REVIEWS/TASK1-TESTS.md)：53 共同逻辑、66 H5 / 7 触摸 / 33 深化 / 4 鼠标；设备未验证 |
+| T1-LEARNING | Codex / 用户自测 | VERIFIED | [复盘](learning/TASK1-LEARNING.md) 已更新；个人掌握程度未代签 |
+| T2-PLAN | Codex / 用户确认 | VERIFIED | [TASK2-PLAN](plans/TASK2-PLAN.md) 含联合视觉与正式登记要求 |
+| T2-CODE | Codex | VERIFIED | [CODE](handoffs/TASK2-CODE.md)：紧凑证据卡、统一输入和导航、旧状态保护 |
+| T2-TESTS | Codex | VERIFIED | [TESTS](REVIEWS/TASK2-TESTS.md)：39 H5 / 11 会话 / 39 桌面，17 优化检查触摸/桌面各通过 |
+| T2-LEARNING | Codex / 用户自测 | VERIFIED | [复盘](learning/TASK2-LEARNING.md) 已核对；无真机和真实模型声明 |
+| SUBMIT | Codex | VERIFIED | 新版 README、截图、88.44 / 92.64 秒录像、登记候选及本地 r4；封存记录见 [DELIVERY](submit/DELIVERY.md)；外部提交未执行 |
 
 ## 当前下一步
 
-1. Codex 编写 T1-PLAN，只提供创新候选、评分预测、成本与风险，不替用户选定具体创新。
-2. 用户确认核心创新、通用组件、AI 载体和删减线后，T1-PLAN 才能进入 `VERIFIED`。
-3. 再生成给 OpenCode 的 T1-CODE handoff。
+1. 本地成果、233 项浏览器检查、53 JVM 和新录像已绑定；旧 90/91 数字自评撤下，按[评分证据](submit/SCORING-AUDIT.md)讲述具体功能与边界。
+2. 公开仓库已 public，但 main 仍为 24cedfe 旧空壳；feature/task2-evidence-chat 尚未公开。最终提交前必须匿名核对正确代码、README、截图、视频全部可访问。
+3. 用户决定推送、合并、PR、发布和实际登记。本轮没有执行这些外部动作。9 月 14 日要求不按深夜预留时间。
+4. Android 设备/键盘、iOS/HarmonyOS、真实接口与个人讲述另行验证。依赖与临时文件全部限制在工作区，本轮无新增安装。
+
+## 2026-09-07 PLAN 记录
+
+- 已将固定 20 日 K 线、成交量、十字光标和双向证据联动纳入正式计划；拟议包组织见 [ADR-013](decisions/ADR-013-task1-evidence-lens.md)。
+- 已核验两组设计 fixture 的 40 条行情和 6 条证据计算；该结果仅为算例核验，未进行业务构建、浏览器或设备运行。
+- 已创建 Task 短期分支，计划使用聚焦 commit；本轮不安装依赖、不改 base 环境，不将本机路径/配置或缓存加入 Git。
+- 开始时有既存流程文档差异。本轮 workboard 同步保留其 Codex 角色修改；其他非本轮文件继续保留原状，不自动整仓提交。
 
 ## 历史审计
 
@@ -32,9 +42,9 @@
 
 ## 更新规则
 
-- 每个 Task 只有一份总计划、一次 CODE handoff、一份 TESTS 报告和一份 LEARNING 报告，不再拆活动 Feature 任务卡。
+- 每个 Task 只有一份总计划、一份 CODE 实施记录、一份 TESTS 报告和一份 LEARNING 报告，不再拆活动 Feature 任务卡。
 - PLAN 未获用户确认时必须停在 `WAITING_USER`；任何 Agent 不得进入 CODE。
-- CODE 只有一个写入者。默认 OpenCode；切换 Codex 必须先由用户确认。
+- CODE 只有一个写入者：Codex。在用户明确重设角色并更新总计划与 ADR 前，Claude Code 与 OpenCode 不参与活动实施。
 - TESTS 的 `VERIFIED` 只能由 Codex 根据实际命令、交互和平台证据标记；构建成功不能冒充运行成功。
 - LEARNING 必须在 TESTS 后撰写，且不补写未经验证的成果。
 - SUBMIT 只有在两题 LEARNING 均 `VERIFIED` 后启动；本地 `SUBMIT_READY` 不等于已经上传、发布或获奖。

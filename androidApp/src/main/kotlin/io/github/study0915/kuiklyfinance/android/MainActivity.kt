@@ -2,9 +2,11 @@ package io.github.study0915.kuiklyfinance.android
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Build
 import android.view.KeyEvent
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import com.tencent.kuikly.core.render.android.adapter.IKRLogAdapter
 import com.tencent.kuikly.core.render.android.adapter.KuiklyRenderAdapterManager
 import com.tencent.kuikly.core.render.android.expand.KuiklyRenderViewBaseDelegator
@@ -16,12 +18,16 @@ class MainActivity : AppCompatActivity(), KuiklyRenderViewBaseDelegatorDelegate 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.statusBarColor = Color.rgb(7, 17, 31)
-        window.navigationBarColor = Color.rgb(7, 17, 31)
+        window.statusBarColor = Color.WHITE
+        window.navigationBarColor = if (Build.VERSION.SDK_INT >= 26) Color.WHITE else Color.rgb(23, 33, 47)
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = true
+            isAppearanceLightNavigationBars = true
+        }
         KuiklyRenderAdapterManager.krLogAdapter = AndroidLogAdapter
 
         val container = FrameLayout(this).apply {
-            setBackgroundColor(Color.rgb(7, 17, 31))
+            setBackgroundColor(Color.rgb(245, 247, 250))
         }
         setContentView(container)
 

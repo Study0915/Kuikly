@@ -1,0 +1,1 @@
+{"status":"TASK1_MOUSE_PASS","checks":["desktop click selects day","mouse drag cancels click fallback","loading is visible","back ignores late response"]}

@@ -1,0 +1,70 @@
+{
+  "date": "2026-09-13",
+  "codeCommit": "c25eeed",
+  "baseline": "485964c",
+  "buildFingerprint": "594DBB539D7CCDC8E9D399B20C7BCAB66931A7C1AEDF99E6BA40F74BFB96D5EF",
+  "buildResult": "PASS",
+  "uiResult": "PASS",
+  "jvm": {
+    "tests": 53,
+    "failures": 0,
+    "errors": 0
+  },
+  "task1": {
+    "h5": 66,
+    "touch": 7,
+    "deepening": 33,
+    "desktop": 4
+  },
+  "task2": {
+    "h5": 39,
+    "sessionAndTouch": 11,
+    "desktop": 39,
+    "refinementTouch": 17,
+    "refinementDesktop": 17
+  },
+  "browserChecksTotal": 233,
+  "data": "deterministic historical Mock",
+  "androidDevice": "UNVERIFIED",
+  "artifacts": [
+    {
+      "path": "androidApp/build/outputs/apk/debug/androidApp-debug.apk",
+      "sha256": "CE80DEFEF5B374714984837F444C9DFE2F087413BFF062FBE35FCD6DDAB7F0D0"
+    },
+    {
+      "path": "h5App/build/kotlin-webpack/js/productionExecutable/h5App.js",
+      "sha256": "47527C0D6D06488197030DB53F214CBFB78A71D3B368748AFF375A04449BFD50"
+    }
+  ],
+  "sourceReproduction": {
+    "currentVersion": "Exported source and artifact fingerprint verified by prepare-submission; no new separate-directory build claimed",
+    "historicalR3": "2026-09-12 source export built with shared workspace caches; not evidence for the visual rebuild"
+  },
+  "videos": [
+    {
+      "path": "docs/demo/task1.webm",
+      "durationSeconds": 88.44,
+      "sha256": "56BF23C6AE73E25D470D501118032119D55F57750A72549632A368B8C257E48E",
+      "fullyDecoded": true,
+      "keyframesInspected": [
+        25,
+        46,
+        59
+      ]
+    },
+    {
+      "path": "docs/demo/task2.webm",
+      "durationSeconds": 92.64,
+      "sha256": "A6DB64A916CEEC7F24BDABF4EE469E7E2BD14102BC5B7A9E5BF5313AFAB0D804",
+      "fullyDecoded": true,
+      "keyframesInspected": [
+        25,
+        58,
+        89
+      ]
+    }
+  ],
+  "recordingResult": "PASS",
+  "receiptGateChecks": 12,
+  "pathBase": "repository root"
+}

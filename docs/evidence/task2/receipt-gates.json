@@ -1,0 +1,18 @@
+{
+  "result": "RECEIPT_GATES_PASS",
+  "count": 12,
+  "checks": [
+    "matching build, UI and recordings accepted",
+    "changed source rejected",
+    "untracked source included in fingerprint",
+    "documentation edit does not invalidate business build",
+    "replaced JS rejected by build receipt",
+    "same-source different JS invalidates UI",
+    "same-source different JS invalidates recordings",
+    "changed UI test script rejected",
+    "empty UI evidence rejected",
+    "changed UI evidence rejected",
+    "unfinished recording rejected",
+    "changed video rejected"
+  ]
+}

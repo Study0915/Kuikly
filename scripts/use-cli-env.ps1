@@ -11,6 +11,7 @@ $projectNode = Join-Path $projectCache "node"
 $projectAndroidSdk = Join-Path $projectCache "android-sdk"
 $projectAndroidHome = Join-Path $projectCache "android"
 $projectUserHome = Join-Path $projectCache "user-home"
+$projectTemp = Join-Path $projectCache "tmp"
 
 $requiredFiles = @(
     (Join-Path $projectJdk "bin\java.exe"),
@@ -30,6 +31,10 @@ $directories = @(
     $projectAndroidHome,
     (Join-Path $projectUserHome ".android"),
     (Join-Path $projectCache "npm"),
+    (Join-Path $projectCache "npm\prefix"),
+    (Join-Path $projectCache "browsers"),
+    (Join-Path $projectCache "playwright"),
+    $projectTemp,
     (Join-Path $projectCache "xdg\cache"),
     (Join-Path $projectCache "xdg\config"),
     (Join-Path $projectCache "xdg\data"),
@@ -44,6 +49,18 @@ $env:GRADLE_USER_HOME = Join-Path $projectCache "gradle"
 $env:COREPACK_HOME = Join-Path $projectCache "npm\corepack"
 $env:YARN_CACHE_FOLDER = Join-Path $projectCache "npm\yarn"
 $env:npm_config_cache = Join-Path $projectCache "npm"
+$env:npm_config_prefix = Join-Path $projectCache "npm\prefix"
+$env:npm_config_userconfig = Join-Path $projectCache "npm\user.npmrc"
+$env:npm_config_globalconfig = Join-Path $projectCache "npm\global.npmrc"
+$env:TEMP = $projectTemp
+$env:TMP = $projectTemp
+# Process-only settings also cover sdkmanager and Gradle worker JVMs.
+$env:JAVA_TOOL_OPTIONS = "-Duser.home=`"$projectUserHome`" -Djava.io.tmpdir=`"$projectTemp`""
+$env:PLAYWRIGHT_BROWSERS_PATH = Join-Path $projectCache "browsers"
+# The pinned Playwright CLI reads this override for daemon sessions on Windows.
+$env:PWTEST_DAEMON_SESSION_DIR = Join-Path $projectCache "playwright"
+$env:NO_UPDATE_NOTIFIER = "1"
+$env:PIP_CACHE_DIR = Join-Path $projectCache "pip"
 $env:npm_config_offline = "false"
 $env:XDG_CACHE_HOME = Join-Path $projectCache "xdg\cache"
 $env:XDG_CONFIG_HOME = Join-Path $projectCache "xdg\config"
@@ -74,6 +91,7 @@ $KuiklyGradleArgs = @(
     "--max-workers=1",
     "-Pkotlin.compiler.execution.strategy=in-process",
     "-Duser.home=$projectUserHome",
+    "-Djava.io.tmpdir=$projectTemp",
     "-Dorg.gradle.jvmargs=-Xmx512m -Xms128m -Xss256k -XX:ActiveProcessorCount=1 -XX:TieredStopAtLevel=1 -Dfile.encoding=UTF-8",
     "--stacktrace"
 )
