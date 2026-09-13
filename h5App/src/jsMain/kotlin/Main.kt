@@ -15,6 +15,7 @@ import com.tencent.kuikly.core.render.web.processor.KuiklyProcessor
 import com.tencent.kuikly.core.render.web.expand.components.KRRichTextView
 import com.tencent.kuikly.core.render.web.ktx.SizeF
 import com.tencent.kuikly.core.render.web.ktx.width
+import com.tencent.kuikly.core.render.web.ktx.height
 import com.tencent.kuikly.core.render.web.runtime.web.expand.processor.RichTextProcessor
 import com.tencent.kuikly.core.render.web.IKuiklyRenderExport
 import com.tencent.kuikly.core.render.web.expand.module.KRNotifyModule
@@ -79,7 +80,7 @@ private class Task1WebDelegator : KuiklyRenderViewDelegatorDelegate {
             "root",
             Task1Routes.FINANCE_HOME,
             mapOf("host" to "h5", "mock" to 1),
-            SizeI(window.innerWidth, window.innerHeight),
+            rootSize(),
         )
         KuiklyProcessor.richTextProcessor = StandaloneTextProcessor
     }
@@ -87,10 +88,15 @@ private class Task1WebDelegator : KuiklyRenderViewDelegatorDelegate {
     fun resume() = delegate.onResume()
     fun pause() = delegate.onPause()
     fun detach() = delegate.onDetach()
-    fun resize() = delegate.sendEvent(
-        Pager.PAGER_EVENT_ROOT_VIEW_SIZE_CHANGED,
-        mapOf("width" to window.innerWidth, "height" to viewportHeight()),
-    )
+    fun resize() {
+        val size = rootSize()
+        delegate.sendEvent(Pager.PAGER_EVENT_ROOT_VIEW_SIZE_CHANGED, mapOf("width" to size.width, "height" to size.height))
+    }
+    private fun rootSize(): SizeI {
+        val root = document.getElementById("root") as HTMLElement
+        root.style.height = "${viewportHeight()}px"
+        return SizeI(root.clientWidth, root.clientHeight)
+    }
     private fun viewportHeight(): Int = (window.asDynamic().visualViewport?.height as? Double)?.toInt() ?: window.innerHeight
     override fun registerExternalModule(kuiklyRenderExport: IKuiklyRenderExport) {
         kuiklyRenderExport.moduleExport(KRNotifyModule.MODULE_NAME) {

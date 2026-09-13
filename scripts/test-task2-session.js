@@ -19,7 +19,7 @@ async (page) => {
     check((await label('问题 1').innerText()).includes('未知问题 1'),'first turn can still be read after 20 turns');
     await label('定位最新回答').click();await label('问题 20').waitFor();
     check((await label('问题 20').innerText()).includes('未知问题 20'),'latest answer navigation reaches retained last turn');
-    await label('新建会话').click();await label('股票问题输入').fill('分析 A');await label('发送问题').click();
+    await label('演示设置').click(); await label('新建会话').click();await label('股票问题输入').fill('分析 A');await label('发送问题').click();
     await label('返回行情').click();await label('打开证据问答').waitFor();
     await page.waitForTimeout(750);await label('打开证据问答').click();await label('A 行情证据卡').waitFor();
     check((await label('A 行情证据卡').innerText()).includes('11.20'),'reply completes while chat is unmounted and resumes safely');

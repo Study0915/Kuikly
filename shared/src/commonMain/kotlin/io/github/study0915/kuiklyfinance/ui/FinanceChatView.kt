@@ -21,13 +21,28 @@ internal fun ViewContainer<*, *>.FinanceChat(
         }
     }
     View {
-        attr { padding(12f, 16f, 8f, 16f); backgroundColor(Color.WHITE) }
+        attr { padding(4f, 16f, 4f, 16f); backgroundColor(Color.WHITE) }
         View {
             attr { flexDirectionRow(); justifyContentSpaceBetween(); alignItemsCenter() }
-            FinanceText({ "证据问答" }, 24f)
-            View { attr { accessibility("返回行情"); padding(12f) }; event { click { onHome() } }; FinanceText({ "行情 ›" }, 14f, financeBlue) }
+            FinanceText({ "证据问答" }, 22f, strong = true)
+            FinanceIconAction("演示设置", FinanceIcon.MORE) { chat.demoPanelOpen = !chat.demoPanelOpen }
         }
-        FinanceText({ "历史 Mock · 先提问，再核对依据" }, 12f, financeMuted)
+        FinanceText({ "历史 Mock · 结论与行情，一起核对" }, 12f, financeMuted)
+    }
+    vif({ chat.demoPanelOpen }) {
+        View {
+            attr { padding(12f, 16f, 12f, 16f); backgroundColor(FinanceTheme.tint); accessibility("演示设置面板") }
+            View { attr { flexDirectionRow(); alignItemsCenter(); justifyContentSpaceBetween() }
+                FinanceText({ "回答场景" }, 16f, strong = true)
+                FinanceAction("关闭演示设置", FinanceActionStyle.QUIET) { chat.demoPanelOpen = false }
+            }
+            View {
+                attr { height(48f); justifyContentCenter(); accessibility("切换回答场景") }
+                event { click { chat.scenario = if (chat.scenario == DemoScenario.COMPLETE) DemoScenario.FAIL_ONCE else DemoScenario.COMPLETE; chat.demoPanelOpen = false } }
+                FinanceText({ if (chat.scenario == DemoScenario.COMPLETE) "正常演示 · 点击改为首次失败" else "首次失败 · 点击恢复正常演示" }, 14f, financeBlue)
+            }
+            FinanceAction("新建会话", FinanceActionStyle.QUIET) { chat.reset(); turnViews.clear(); chat.demoPanelOpen = false; chat.jumpToLatest?.invoke() }
+        }
     }
     List {
         val list = this
@@ -45,23 +60,26 @@ internal fun ViewContainer<*, *>.FinanceChat(
             }
         }
         View {
-            attr { margin(12f); padding(16f); backgroundColor(Color(0xFF183342L)); borderRadius(12f) }
-            FinanceText({ "让每个结论，都有可核对的依据。" }, 20f, Color.WHITE)
-            FinanceText({ "支持示例股票 A–L。回答由规则模板生成，不连接真实模型。会话仅在本次打开期间保留，刷新会清空。" }, 12f, Color(0xFFCDDFE7L))
-            FinanceAction("分析 A 的走势") { send("分析 A 的走势") }
-            FinanceAction("比较 A 和 B") { send("比较 A 和 B") }
+            attr { padding(20f, 16f, 16f, 16f) }
+            FinanceText({ "让每个结论，都有依据。" }, 21f, strong = true)
+            FinanceText({ "提问 A–L，点击回答中的数值回看行情。" }, 13f, financeMuted)
+            View { attr { flexDirectionRow(); marginTop(8f) }
+                View { attr { flex(1f); marginRight(8f) }; FinanceAction("分析 A 的走势") { send("分析 A 的走势") } }
+                View { attr { flex(1f) }; FinanceAction("比较 A 和 B") { send("比较 A 和 B") } }
+            }
+            View { attr { marginTop(8f) }; FinanceText({ "规则模板生成 · 不连接真实模型 · 刷新清空会话" }, 12f, financeMuted) }
         }
         vfor({ chat.turns }) { turn ->
             View {
             turnViews[turn.request.turnId] = this
             View {
-                attr { margin(4f, 12f, 12f, 36f); padding(14f); backgroundColor(Color(0xFFDCEBF1L)); borderRadius(12f); accessibility("问题 ${turn.request.turnId}") }
-                FinanceText({ "你 · ${turn.request.turnId.toString().padStart(2, '0')}" }, 11f, financeBlue)
+                attr { margin(4f, 16f, 16f, 48f); padding(12f, 16f, 12f, 16f); backgroundColor(FinanceTheme.tint); borderRadius(14f); accessibility("问题 ${turn.request.turnId}") }
+                FinanceText({ "你 · ${turn.request.turnId.toString().padStart(2, '0')}" }, 12f, financeBlue)
                 FinanceText({ turn.request.question }, 16f)
             }
             View {
-                attr { margin(0f, 12f, 18f, 12f); padding(16f); backgroundColor(Color.WHITE); borderRadius(12f); accessibility("回答 ${turn.request.turnId}") }
-                FinanceText({ "证据助手 · Mock" }, 12f, financeBlue)
+                attr { margin(0f, 16f, 24f, 16f); accessibility("回答 ${turn.request.turnId}") }
+                FinanceText({ "证据助手 · Mock" }, 12f, financeBlue, true)
                 when (turn.status) {
                     TurnStatus.PENDING -> {
                         FinanceText({ "正在整理行情依据…" }, 16f)
@@ -88,12 +106,12 @@ internal fun ViewContainer<*, *>.FinanceChat(
         }
     }
     View {
-        attr { padding(8f, 12f, 10f, 12f); backgroundColor(Color.WHITE); accessibility("问答输入区") }
+        attr { padding(8f, 16f, 8f, 16f); backgroundColor(Color.WHITE); accessibility("问答输入区") }
         vif({ chat.notice.isNotEmpty() }) { FinanceText({ chat.notice }, 12f, Color(0xFFB94B40L)) }
         View {
             attr { flexDirectionRow(); alignItemsCenter() }
             View {
-                attr { flex(1f); padding(8f); backgroundColor(Color(0xFFF1F5F7L)); borderRadius(8f) }
+                attr { flex(1f); padding(8f, 12f, 8f, 12f); backgroundColor(FinanceTheme.background); borderRadius(14f) }
                 TextArea {
                 attr { height(42f)
                     text(chat.draft); placeholder("输入问题，如：分析 A 的风险"); fontSize(15f); color(financeInk); accessibility("股票问题输入") }
@@ -101,31 +119,25 @@ internal fun ViewContainer<*, *>.FinanceChat(
                 }
             }
             View {
-                attr { width(64f); height(58f); marginLeft(8f); allCenter(); borderRadius(8f)
-                    backgroundColor(if (chat.pending) Color(0xFF92A9B3L) else financeBlue); accessibility("发送问题") }
+                attr { width(64f); height(58f); marginLeft(8f); allCenter(); borderRadius(14f)
+                    backgroundColor(if (chat.pending) financeMuted else financeBlue); accessibility("发送问题") }
                 event { click { send(chat.draft, fromDraft = true) } }
                 FinanceText({ if (chat.pending) "等待中" else "发送" }, 15f, Color.WHITE)
             }
         }
         View {
-            attr { flexDirectionRow(); justifyContentSpaceBetween() }
-            View { attr { padding(9f, 2f, 9f, 2f); accessibility("新建会话") }; event { click { chat.reset(); turnViews.clear(); chat.jumpToLatest?.invoke() } }; FinanceText({ "新会话" }, 12f, financeBlue) }
-            View { attr { padding(9f, 2f, 9f, 2f); accessibility("定位最新回答") }; event { click { chat.jumpToLatest?.invoke() } }; FinanceText({ "最新回答 ↓" }, 12f, financeBlue) }
-            View {
-                attr { padding(9f, 2f, 9f, 2f); accessibility("切换回答场景") }
-                event { click { chat.scenario = if (chat.scenario == DemoScenario.COMPLETE) DemoScenario.FAIL_ONCE else DemoScenario.COMPLETE } }
-                FinanceText({ if (chat.scenario == DemoScenario.COMPLETE) "正常演示" else "首次失败" }, 12f, financeBlue)
-            }
+            attr { flexDirectionRow(); alignItemsCenter(); justifyContentSpaceBetween() }
+            View { attr { flex(1f) }; FinanceText({ Task1ShellContract.DISCLAIMER }, 12f, financeMuted) }
+            View { attr { padding(4f); height(48f); justifyContentCenter(); accessibility("定位最新回答") }; event { click { chat.jumpToLatest?.invoke() } }; FinanceText({ "最新 ↓" }, 12f, financeBlue) }
         }
-        FinanceText({ Task1ShellContract.DISCLAIMER }, 10f, financeMuted)
     }
 }
 
 internal fun ViewContainer<*, *>.SafeMarkdownView(source: String) {
     SafeMarkdown.parse(source).forEach { line ->
         RichText {
-            attr { fontSize(if (line.kind == MarkdownKind.HEADING) 20f else 14f); lineHeight(23f); lines(0)
-                color(if (line.kind == MarkdownKind.QUOTE) financeMuted else financeInk); marginTop(8f); fontFamily("sans-serif") }
+            attr { fontSize(if (line.kind == MarkdownKind.HEADING) 18f else 15f); lineHeight(24f); lines(0)
+                color(if (line.kind == MarkdownKind.QUOTE) financeMuted else financeInk); marginTop(8f); fontFamily(FinanceTheme.font(pagerData.isWeb)) }
             line.spans.forEach { part -> Span {
                 text(part.text)
                 if (part.bold || line.kind == MarkdownKind.HEADING) fontWeightBold()
@@ -145,32 +157,38 @@ internal fun ViewContainer<*, *>.EvidenceAnswerCard(doc: ResolvedDocument, state
     val tap = PlotTap()
     fun detail(focus: LensFocus? = null) = onDetail(FinanceRoute.Detail(stock.entityId, stock.snapshotId, focus, fromChat = true))
     View {
-        attr { marginTop(14f); padding(12f); backgroundColor(Color(0xFFF1F6F8L)); borderRadius(10f); accessibility("$short 行情证据卡") }
-        FinanceText({ "${stock.name} · ${stock.entityId}" }, 17f)
-        FinanceText({ "${MarketFormatter.price(doc.bars.last().closeMinor)} 元" }, 27f)
-        FinanceText({ "${stock.asOf.replace('T', ' ')} · 历史 Mock" }, 11f, financeMuted)
-        FinanceText({ doc.freshness.text }, 11f, financeMuted)
+        attr { marginTop(12f); padding(14f); backgroundColor(Color.WHITE); borderRadius(14f); accessibility("$short 行情证据卡") }
+        View { attr { flexDirectionRow(); justifyContentSpaceBetween(); alignItemsCenter() }
+            View { attr { flex(1f) }; FinanceText({ stock.name }, 16f, strong = true); FinanceText({ stock.entityId }, 12f, financeMuted) }
+            FinancePrice(MarketFormatter.price(doc.bars.last().closeMinor), 24f)
+        }
+        FinanceText({ "${stock.asOf.take(16).replace('T', ' ')} · 历史 Mock" }, 12f, financeMuted)
         doc.evidence.forEach { evidence ->
             val fact = presenter.present(LensState.initial(doc, LensFocus.EvidenceFocus(evidence.evidence.id)))
             View {
-                attr { marginTop(10f); padding(10f); backgroundColor(Color.WHITE); borderRadius(6f)
+                attr { minHeight(56f); marginTop(4f); paddingTop(8f); paddingBottom(8f)
                     accessibility("$short · 核对${evidence.evidence.label}"); touchEnable(evidence.available) }
                 event { click { if (evidence.available) detail(LensFocus.EvidenceFocus(evidence.evidence.id)) } }
-                FinanceText({ evidence.evidence.label + if (evidence.available) " ›" else " · 暂不可用" }, 12f, financeBlue)
-                FinanceText({ if (evidence.available) fact.value else evidence.reason ?: "依据不可用" }, 15f)
+                View { attr { flexDirectionRow(); alignItemsCenter(); justifyContentSpaceBetween() }
+                    FinanceText({ evidence.evidence.label + if (evidence.available) " ›" else " · 暂不可用" }, 13f, if (evidence.available) financeBlue else financeMuted)
+                    if (evidence.available) FinanceText({ fact.value.removePrefix("区间变化 ").removePrefix("量能倍数 ") }, 18f, strong = true)
+                }
+                if (!evidence.available) FinanceText({ evidence.reason ?: "依据不可用" }, 12f, financeMuted)
             }
+            View { attr { height(1f); backgroundColor(FinanceTheme.line) } }
         }
-        FinanceText({ "风险：历史数值不预测后市；局部区间不是最大回撤，量能不证明涨跌原因。" }, 11f, financeMuted)
-        FinanceAction("$short · 查看行情详情") { detail() }
-        FinanceAction("$short · 展开/收起走势") { state.expanded = !state.expanded; tap.reset() }
+        View { attr { marginTop(8f); marginBottom(4f) }; FinanceText({ doc.freshness.text }, 12f, financeMuted) }
+        FinanceText({ "风险：历史数值不预测后市；局部区间不是最大回撤，量能不证明涨跌原因。" }, 12f, financeMuted)
+        FinanceAction("$short · 查看行情详情", FinanceActionStyle.PRIMARY) { detail() }
+        FinanceAction("$short · 展开/收起走势", FinanceActionStyle.QUIET) { state.expanded = !state.expanded; tap.reset() }
         vif({ state.expanded }) {
             FinanceText({ "20 日走势 · 点按交易日进入详情核对" }, 12f, financeBlue)
             MarketPlot(doc.bars, { PlotMark() }, tap) { date -> detail(LensFocus.DayInspect(date)) }
         }
         View {
             attr { flexDirectionRow() }
-            View { attr { flex(1f); marginRight(4f) }; FinanceAction("追问 $short 风险") { onFollowUp("这只股票有什么风险？", stock.entityId) } }
-            View { attr { flex(1f) }; FinanceAction("检验 $short 缺量") { onFollowUp("如果量能缺失呢？", stock.entityId) } }
+            View { attr { flex(1f); marginRight(4f) }; FinanceAction("追问 $short 风险", FinanceActionStyle.QUIET) { onFollowUp("这只股票有什么风险？", stock.entityId) } }
+            View { attr { flex(1f) }; FinanceAction("检验 $short 缺量", FinanceActionStyle.QUIET) { onFollowUp("如果量能缺失呢？", stock.entityId) } }
         }
     }
 }

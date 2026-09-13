@@ -45,12 +45,12 @@ fun ViewContainer<*, *>.MarketPlot(bars: List<MarketBar>, mark: () -> PlotMark, 
     }
 }
 
-private val grid = Color(0xFFDFE7EBL)
-private val ink = Color(0xFF183342L)
-private val muted = Color(0xFF677C87L)
-private val up = Color(0xFFC14D43L)
-private val down = Color(0xFF188579L)
-private val focus = Color(0xFF176F91L)
+private val grid = Color(0xFFE6EAF0L)
+private val ink = Color(0xFF17212FL)
+private val muted = Color(0xFF626D80L)
+private val up = Color(0xFFC93838L)
+private val down = Color(0xFF087D62L)
+private val focus = Color(0xFF2563EBL)
 private fun CanvasContext.line(x1: Float, y1: Float, x2: Float, y2: Float, color: Color, width: Float = 1f) {
     beginPath(); strokeStyle(color); lineWidth(width); moveTo(x1, y1); lineTo(x2, y2); stroke()
 }
@@ -74,8 +74,8 @@ private fun drawMarketPlot(c: CanvasContext, g: MarketPlotLayout, mark: PlotMark
         val last = range.last.coerceIn(g.bars.indices)
         val x = g.left + first * g.step
         val w = (last - first + 1) * g.step
-        c.box(x, g.priceTop, w, g.priceBottom - g.priceTop, Color(0xFFE6F2F7L))
-        c.box(x, g.volumeTop, w, g.volumeBottom - g.volumeTop, Color(0xFFE6F2F7L))
+        c.box(x, g.priceTop, w, g.priceBottom - g.priceTop, Color(0xFFEDF3FFL))
+        c.box(x, g.volumeTop, w, g.volumeBottom - g.volumeTop, Color(0xFFEDF3FFL))
     }
     for (i in 0..2) {
         val value = g.minPrice + (g.maxPrice - g.minPrice) * i / 2

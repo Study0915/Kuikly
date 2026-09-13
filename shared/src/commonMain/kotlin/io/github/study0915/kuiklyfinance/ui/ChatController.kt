@@ -17,6 +17,7 @@ internal class ChatController {
     var notice by observable("")
     var pending by observable(false)
     var scenario by observable(DemoScenario.COMPLETE)
+    var demoPanelOpen by observable(false)
     var offset = 0f
     var jumpToLatest: (() -> Unit)? = null
     private var viewGeneration = 0
@@ -25,7 +26,7 @@ internal class ChatController {
     fun attachView(): Int { detachView(); return viewGeneration }
     fun acceptsView(generation: Int) = generation == viewGeneration
     fun currentView() = viewGeneration
-    fun detachView() { viewGeneration++; jumpToLatest = null }
+    fun detachView() { viewGeneration++; jumpToLatest = null; demoPanelOpen = false }
 
     fun sync() {
         if (session.turns.isEmpty()) turns.clear()

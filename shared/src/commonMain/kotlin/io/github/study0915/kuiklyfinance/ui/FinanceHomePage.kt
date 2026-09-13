@@ -17,21 +17,6 @@ import io.github.study0915.kuiklyfinance.market.*
 import io.github.study0915.kuiklyfinance.navigation.FinanceRoute
 import io.github.study0915.kuiklyfinance.chat.*
 
-internal val financeInk = Color(0xFF183342L)
-internal val financeMuted = Color(0xFF677C87L)
-internal val financeBlue = Color(0xFF176F91L)
-
-internal fun ViewContainer<*, *>.FinanceText(value: () -> String, size: Float = 14f, ink: Color = financeInk) {
-    Text { attr { text(value()); fontFamily("sans-serif"); fontSize(size); lineHeight(size * 1.55f); lines(0); color(ink) } }
-}
-internal fun ViewContainer<*, *>.FinanceAction(label: String, action: () -> Unit) {
-    View {
-        attr { padding(12f); marginTop(8f); backgroundColor(Color(0xFFE7F1F5L)); borderRadius(8f); accessibility(label) }
-        event { click { action() } }
-        FinanceText({ label }, 14f, financeBlue)
-    }
-}
-
 @Page(Task1Routes.FINANCE_HOME, supportInLocal = true)
 class FinanceHomePage : Pager() {
     private val provider = MockMarketProvider()
@@ -45,30 +30,56 @@ class FinanceHomePage : Pager() {
     private val tap = PlotTap()
     private val chat = ChatController()
     private val chatProvider: ChatProvider = MockChatProvider(provider)
+    private val detailPresentation = mutableMapOf<DocumentKey, DetailPresentationState>()
+    private var demoPanelOpen by observable(false)
+    private var detailGeneration = 0
 
     override fun body(): ViewBuilder {
         val ctx = this
         return {
-            attr { backgroundColor(Color(0xFFF1F5F7L)) }
+            attr { backgroundColor(FinanceTheme.background) }
             vif({ ctx.route == FinanceRoute.Home }) { ctx.home(this) }
             vif({ ctx.route == FinanceRoute.Chat }) {
                 FinanceChat(ctx.chat, { delay, action -> ctx.setTimeout(delay) { action() } },
                     { ctx.answer(it) }, { ctx.open(it) }, { ctx.back() })
+                FinanceTabs(true, { ctx.chat.demoPanelOpen = false; ctx.back() }, {})
             }
             vif({ ctx.route is FinanceRoute.Detail }) {
                 View {
-                    attr { padding(12f); backgroundColor(Color.WHITE) }
-                    vif({ (ctx.route as? FinanceRoute.Detail)?.fromChat == true }) { FinanceAction("‹ 返回问答会话") { ctx.back() } }
-                    velse { FinanceAction("‹ 返回行情列表") { ctx.back() } }
+                    attr { height(56f); paddingLeft(4f); paddingRight(4f); backgroundColor(Color.WHITE); flexDirectionRow(); alignItemsCenter() }
+                    vif({ (ctx.route as? FinanceRoute.Detail)?.fromChat == true }) { FinanceIconAction("‹ 返回问答会话", FinanceIcon.BACK) { ctx.back() } }
+                    velse { FinanceIconAction("‹ 返回行情列表", FinanceIcon.BACK) { ctx.back() } }
+                    View { attr { flex(1f) }; FinanceText({ "行情 · 证据" }, 18f, strong = true) }
+                    FinanceIconAction("演示设置", FinanceIcon.MORE) { ctx.demoPanelOpen = !ctx.demoPanelOpen }
                 }
                 vif({ ctx.load is MarketLoad.Ready }) {
                     val mounted = ctx.content!!
-                    FinanceDetail(mounted.document, { ctx.content?.takeIf { it.request == mounted.request }?.lens ?: mounted.lens }, ctx.tap, ctx.scenario,
-                        onScroll = { ctx.tap.cancel() },
-                        onAction = { event -> ctx.dispatch(mounted.request, event) },
-                        onScenario = { selected -> if (ctx.session.accepts(mounted.request)) ctx.switchScenario(selected) })
+                    val generation = ctx.detailGeneration
+                    val presentation = ctx.detailPresentation.getOrPut(mounted.document.key) { DetailPresentationState() }
+                    FinanceDetail(mounted.document, { ctx.content?.takeIf { it.request == mounted.request }?.lens ?: mounted.lens }, ctx.tap, ctx.scenario, presentation,
+                        isCurrent = { ctx.detailGeneration == generation && ctx.session.accepts(mounted.request) },
+                        onScroll = { offset -> if (ctx.detailGeneration == generation && ctx.session.accepts(mounted.request)) { ctx.tap.cancel(); presentation.offset = offset } },
+                        onAction = { event -> ctx.dispatch(mounted.request, event) })
                 }
                 velse { ctx.loadState(this) }
+                vif({ ctx.demoPanelOpen }) {
+                    View {
+                        attr { absolutePositionAllZero(); backgroundColor(Color(0x990F172AL)); accessibility("演示设置面板") }
+                        View { attr { height(48f) }; event { click { ctx.demoPanelOpen = false } } }
+                        View {
+                            attr { backgroundColor(Color.WHITE); padding(16f); borderRadius(16f); flex(1f) }
+                            View { attr { flexDirectionRow(); alignItemsCenter(); justifyContentSpaceBetween() }
+                                FinanceText({ "演示设置" }, 20f, strong = true)
+                                FinanceAction("关闭演示设置", FinanceActionStyle.QUIET) { ctx.demoPanelOpen = false }
+                            }
+                            FinanceText({ "切换当前详情的数据样本" }, 12f, financeMuted)
+                            List {
+                                attr { flex(1f); accessibility("演示场景列表") }
+                                DemoScenario.entries.forEach { option -> FinanceAction(option.label, FinanceActionStyle.QUIET) { ctx.demoPanelOpen = false; ctx.switchScenario(option) } }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -76,11 +87,22 @@ class FinanceHomePage : Pager() {
     private fun home(parent: ViewContainer<*, *>) {
         val ctx = this
         parent.View {
-            attr { padding(20f); backgroundColor(Color.WHITE) }
-            FinanceText({ "行情观察" }, 26f)
-            FinanceText({ "12 支示例股票 · 历史 Mock" }, 13f, financeMuted)
-            FinanceText({ "从一段解读，回到它的行情依据。" }, 14f, financeBlue)
-            FinanceAction("打开证据问答") { ctx.route = FinanceRoute.Chat; ctx.notifyRoute("push") }
+            attr { padding(16f); backgroundColor(Color.WHITE) }
+            View { attr { flexDirectionRow(); alignItemsCenter(); justifyContentSpaceBetween() }
+                FinanceText({ "行情观察" }, 22f, strong = true)
+                View { attr { padding(4f, 8f, 4f, 8f); backgroundColor(FinanceTheme.background); borderRadius(6f) }; FinanceText({ "历史 Mock" }, 12f, financeMuted) }
+            }
+            FinanceText({ "从解读出发，让依据可见。" }, 13f, financeMuted)
+        }
+        parent.View {
+            attr { margin(12f, 16f, 12f, 16f); padding(14f, 16f, 14f, 16f); backgroundColor(FinanceTheme.tint); borderRadius(12f) }
+            FinanceText({ "结论有出处，数字可核对" }, 16f, financeBlue, true)
+            FinanceText({ "12 支示例股票 · 点开行情，探索解读依据" }, 12f, financeMuted)
+        }
+        parent.View {
+            attr { padding(8f, 16f, 8f, 16f); flexDirectionRow(); justifyContentSpaceBetween() }
+            FinanceText({ "股票 / 代码" }, 12f, financeMuted)
+            FinanceText({ "最新价 / 当日涨跌" }, 12f, financeMuted)
         }
         parent.List {
             val list = this
@@ -92,25 +114,26 @@ class FinanceHomePage : Pager() {
                 val bars = doc.snapshot.bars; val last = bars.last()
                 val change = MarketFormatter.change(bars[bars.lastIndex - 1], last)!!
                 View {
-                    attr { margin(8f, 12f, 0f, 12f); padding(16f); borderRadius(12f); backgroundColor(Color.WHITE); accessibility("查看${doc.snapshot.name}") }
+                    attr { minHeight(72f); padding(12f, 16f, 12f, 16f); backgroundColor(Color.WHITE); accessibility("查看${doc.snapshot.name}") }
                     event { click { ctx.open(FinanceRoute.Detail(id)) } }
                     View {
-                        attr { flexDirectionRow(); justifyContentSpaceBetween() }
-                        FinanceText({ doc.snapshot.name }, 17f)
-                        FinanceText({ MarketFormatter.price(last.closeMinor) }, 22f)
+                        attr { flexDirectionRow(); justifyContentSpaceBetween(); alignItemsCenter() }
+                        FinanceText({ doc.snapshot.name }, 16f, strong = true)
+                        FinanceText({ MarketFormatter.price(last.closeMinor) }, 20f, strong = true)
                     }
-                    FinanceText({ "当日涨跌额 ${MarketFormatter.decimal((last.closeMinor - bars[bars.lastIndex - 1].closeMinor) / 100.0, true)} 元" }, 12f, financeMuted)
                     View {
                         attr { flexDirectionRow(); justifyContentSpaceBetween() }
-                        FinanceText({ "$id · 查看依据 ›" }, 12f, financeMuted)
-                        FinanceText({ "当日${MarketFormatter.direction(change)} ${MarketFormatter.percent(change)}" }, 13f,
-                            if (change >= 0) Color(0xFFB94B40L) else Color(0xFF188579L))
+                        FinanceText({ id }, 12f, financeMuted)
+                        FinanceText({ "${MarketFormatter.decimal((last.closeMinor - bars[bars.lastIndex - 1].closeMinor) / 100.0, true)} 元   ${MarketFormatter.percent(change)}" }, 13f,
+                            if (change >= 0) FinanceTheme.up else FinanceTheme.down)
                     }
                 }
+                View { attr { height(1f); marginLeft(16f); marginRight(16f); backgroundColor(FinanceTheme.line) } }
             }
             View { attr { padding(20f) }; FinanceText({ Task1ShellContract.DISCLAIMER }, 12f, financeMuted) }
             ctx.setTimeout(30) { if (ctx.route == FinanceRoute.Home) list.setContentOffset(0f, savedOffset, false) }
         }
+        parent.FinanceTabs(false, {}, { ctx.route = FinanceRoute.Chat; ctx.notifyRoute("push") })
     }
 
     private fun loadState(parent: ViewContainer<*, *>) {
@@ -134,6 +157,7 @@ class FinanceHomePage : Pager() {
     }
 
     private fun open(detail: FinanceRoute.Detail, notifyHost: Boolean = true) {
+        demoPanelOpen = false
         if (route == FinanceRoute.Chat) chat.detachView()
         route = detail
         scenario = detail.snapshotId?.let { provider.scenarioForSnapshot(detail.entityId, it) } ?: DemoScenario.COMPLETE
@@ -149,6 +173,7 @@ class FinanceHomePage : Pager() {
         request()
     }
     private fun request() {
+        detailGeneration++
         val detail = route as? FinanceRoute.Detail ?: return
         val ticket = session.begin(detail, scenario, attempt)
         load = MarketLoad.Loading; content = null; tap.reset()
@@ -165,6 +190,9 @@ class FinanceHomePage : Pager() {
         }
     }
     private fun back(notifyHost: Boolean = true): Boolean {
+        if (demoPanelOpen) { demoPanelOpen = false; return true }
+        if (chat.demoPanelOpen) { chat.demoPanelOpen = false; return true }
+        demoPanelOpen = false; detailGeneration++
         if (route == FinanceRoute.Home) return false
         if (route == FinanceRoute.Chat) chat.detachView()
         val destination = if ((route as? FinanceRoute.Detail)?.fromChat == true) FinanceRoute.Chat else FinanceRoute.Home
@@ -211,10 +239,12 @@ class FinanceHomePage : Pager() {
         when (pagerEvent) {
             "onBackPressed" -> acquireModule<BackPressModule>(BackPressModule.MODULE_NAME).backHandle(back())
             Task1Routes.HOST_BACK_EVENT -> {
+                demoPanelOpen = false
                 if (route == FinanceRoute.Chat) chat.detachView()
                 session.cancel(); tap.reset(); route = FinanceRoute.Home; load = MarketLoad.Loading; content = null
             }
             Task1Routes.HOST_CHAT_EVENT -> {
+                demoPanelOpen = false
                 session.cancel(); tap.reset(); route = FinanceRoute.Chat; load = MarketLoad.Loading; content = null
             }
             Task1Routes.HOST_OPEN_EVENT -> {

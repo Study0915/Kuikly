@@ -5,11 +5,12 @@ async (page) => {
   if (!/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/$/.test(base)) throw new Error('Use the local Task 1 session');
   const label = text => page.getByLabel(text, { exact: true });
   const chooseScenario = async text => {
-    await label('个股详情').evaluate(el => { el.scrollTop = el.scrollHeight; });
+    await label('演示设置').click();
     await label(text).click();
+    await label('演示设置面板').waitFor({state:'detached'});
   };
   const check = (ok, message) => { if (!ok) throw new Error(message); checks.push(message); };
-  const fact = () => label('当前行情事实').innerText();
+  const fact = async () => { if (await label('查看计算').count()) { await label('查看计算').click(); await label('计算明细').waitFor(); } return label('当前行情事实').innerText(); };
   const waitFact = text => page.waitForFunction(t => document.querySelector('[aria-label="当前行情事实"]')?.innerText.includes(t), text);
   const waitText = text => page.waitForFunction(t => document.body.innerText.includes(t), text);
   const waitDate = date => page.waitForFunction(d => history.state?.date === d && document.body.innerText.includes(`检视 ${d}`), date);
@@ -30,10 +31,10 @@ async (page) => {
     await label('区间内 · 中途回落 ›').click(); await waitFact('区间变化 -6.09%');
     await label('检视终点 08-27 ›').click(); await waitDate('2026-08-27');
     check(!(await fact()).includes('-6.09%') && (await fact()).includes('相对前收'), 'D3: endpoint inspection switches to day basis');
-    for (const width of [320, 390]) {
+    for (const width of [320, 390, 430, 1024]) {
       await page.setViewportSize({ width, height: 844 });
       await label('交易日导航').scrollIntoViewIfNeeded();
-      await page.waitForFunction(w => document.querySelector('[aria-label="行情双图：价格与成交量，点按检视交易日"]').getBoundingClientRect().width === w - 48, width);
+      await page.waitForFunction(w => document.querySelector('[aria-label="行情双图：价格与成交量，点按检视交易日"]').getBoundingClientRect().width === Math.min(w,480) - 32, width);
       const boxes = await Promise.all(['前一日', '后一日'].map(t => label(t).boundingBox()));
       check(boxes.every(b => b.x >= 0 && b.x + b.width <= width && b.height >= 42), `D3: date controls fit ${width}px with 42px targets`);
       await shot(`navigation-${width}`);
@@ -100,6 +101,30 @@ async (page) => {
     check(!(await fact()).includes('暂无可用解读') && await page.getByLabel(/^已选 ·/).count() === 0, 'D2: explicit overview keeps valid evidence unselected');
     await page.reload(); await waitFact('点选上方依据');
     check((await page.evaluate(() => history.state.overview)) === '1', 'D2: overview survives reload without becoming default evidence');
+    await page.goto(base + '?entity=MOCK_A&evidence=E3'); await label('当前行情事实').waitFor();
+    check(await label('计算明细').count() === 0, 'V05: fresh detail formula is folded');
+    const beforeDisclosure = {url:page.url(),history:await page.evaluate(()=>history.length),value:await label('当前行情事实').innerText()};
+    await label('查看计算').click(); await label('计算明细').waitFor();
+    check(page.url()===beforeDisclosure.url && await page.evaluate(()=>history.length)===beforeDisclosure.history && (await label('当前行情事实').innerText()).includes('量能倍数 1.50 倍'), 'V12: disclosure preserves focus value and history');
+    await label('计算明细').scrollIntoViewIfNeeded();
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    const savedDetailOffset = await label('个股详情').evaluate(e=>e.scrollTop);
+    await page.goBack(); await label('行情列表，12 支示例股票').waitFor();
+    await page.goForward(); await label('当前行情事实').waitFor();
+    await page.waitForFunction(y=>Math.abs(document.querySelector('[aria-label="个股详情"]').scrollTop-y)<3,savedDetailOffset);
+    check(await label('收起计算').count() === 1, 'V06: detail return preserves calculation expansion');
+    check(Math.abs(await label('个股详情').evaluate(e=>e.scrollTop)-savedDetailOffset)<3, 'V07: detail restores actual reading position');
+    await page.goBack(); await label('查看示例股票 B').click(); await label('当前行情事实').waitFor();
+    check(await label('计算明细').count()===0 && await label('个股详情').evaluate(e=>e.scrollTop)<3, 'V08: another document starts with independent presentation');
+    await label('查看计算').click(); await label('计算明细').waitFor();
+    await chooseScenario('量能缺失'); await waitText('当前：量能缺失');
+    check(await label('计算明细').count()===0, 'V09: missing snapshot has independent expansion');
+    await page.setViewportSize({width:390,height:360}); await label('演示设置').click();
+    await label('长文说明').scrollIntoViewIfNeeded(); const option=await label('长文说明').boundingBox();
+    check(option.y>=0 && option.y+option.height<=361, 'V10: short-viewport settings scroll to last option');
+    await label('长文说明').click(); await waitText('当前：长文说明');
+    check(await label('演示设置面板').count()===0, 'V11: choosing a scenario leaves no covering panel');
+    await page.setViewportSize({width:390,height:844});
     check(errors.length === 0, 'D4: no browser runtime errors');
     return { result: 'TASK1_DEEPENING_PASS', count: checks.length, checks, errors };
   } catch (error) {

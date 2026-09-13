@@ -27,6 +27,11 @@ async (page) => {
     await page.goto(base); await label('打开证据问答').click();
     await page.waitForURL('**/?page=chat');
     check(page.url().includes('page=chat'), 'home opens chat route');
+    const historyBefore = await page.evaluate(() => history.length); await label('当前问答').click();
+    check(await page.evaluate(() => history.length) === historyBefore, 'V03: current tab does not add history');
+    await label('演示设置').click(); await label('返回行情').click(); await label('行情列表，12 支示例股票').waitFor();
+    check(!page.url().includes('page=chat'), 'V14: tab switches immediately with chat settings open');
+    await label('打开证据问答').click(); await label('问答会话记录').waitFor();
     await label('发送问题').click(); await waitText('请输入问题后发送');
     check(await page.getByLabel(/^问题 \d+$/).count() === 0, 'empty send creates no message');
     await label('股票问题输入').fill('字'.repeat(501)); await label('发送问题').click(); await waitText('问题最多 500 字');
@@ -57,23 +62,23 @@ async (page) => {
     check(await followup.getByLabel('B 行情证据卡', {exact:true}).count() === 1 && await followup.getByLabel('A 行情证据卡', {exact:true}).count() === 0, 'follow-up captures B context');
     await followup.getByLabel('检验 B 缺量', {exact:true}).click(); id++; await waitText('量能需要完整样本');
     const missing = label(`回答 ${id}`);
-    check((await missing.innerText()).includes('成交量缺失：2026-09-02') && !(await missing.innerText()).includes('量能倍数 0.80'), 'missing sample disables volume conclusion');
+    check((await missing.innerText()).includes('成交量缺失：2026-09-02') && !(await missing.getByLabel('B · 核对量能观察',{exact:true}).innerText()).includes('0.80') && !/0\.80\s*倍/.test(await missing.innerText()), 'missing sample disables volume conclusion');
     await missing.getByLabel('B 行情证据卡', {exact:true}).scrollIntoViewIfNeeded(); await shot('missing-volume');
     await missing.getByLabel('B · 核对量能观察', {exact:true}).click({force:true});
     check(page.url().includes('page=chat'), 'invalid evidence does not navigate');
     await missing.getByLabel('B · 查看行情详情', {exact:true}).click(); await label('当前行情事实').waitFor();
     check(page.url().includes('missing_volume') && (await page.locator('body').innerText()).includes('当前：量能缺失'), 'missing snapshot survives detail handoff');
     await label('‹ 返回问答会话').click();
-    await label('新建会话').click();
+    await label('演示设置').click(); await label('新建会话').click();
     const unknown = await send('查询 MOCK_Z');
     check((await unknown.innerText()).includes('暂无匹配') && await unknown.getByLabel(/行情证据卡$/).count() === 0, 'unknown entity yields no fabricated card');
     const malicious = await send('<img src="https://invalid.test/x" onerror="alert(1)"><script>alert(1)</script>');
     check((await malicious.innerText()).includes('暂无匹配') && await page.locator('img, iframe, script[src*="invalid.test"]').count() === 0, 'untrusted user text does not create active DOM');
-    await label('切换回答场景').click(); await send('分析 B');
+    await label('演示设置').click(); await label('切换回答场景').click(); await send('分析 B');
     await label(`重试问题 ${id}`).waitFor(); await shot('failure-retry');
     await label(`重试问题 ${id}`).click(); await label(`回答 ${id}`).getByLabel('B 行情证据卡', {exact:true}).waitFor();
     check(await label(`问题 ${id}`).count() === 1, 'retry replaces failed answer without duplicate question');
-    await label('切换回答场景').click();
+    await label('演示设置').click(); await label('切换回答场景').click();
     await label('股票问题输入').fill('分析 A'); await label('发送问题').click(); id++;
     await label('取消本次回答').click(); await waitText('已取消');
     await page.waitForTimeout(750);
@@ -83,17 +88,18 @@ async (page) => {
     await label('股票问题输入').fill('分析 B'); await label('发送问题').click(); id++;
     await label('发送问题').click();
     await waitText('请等待当前回答');
-    await label('新建会话').click(); await page.waitForTimeout(750);
+    await label('演示设置').click(); await label('新建会话').click(); await page.waitForTimeout(750);
     check(await page.getByLabel(/^问题 \d+$/).count() === 0, 'new session rejects pending response and duplicate send');
     const responsive = await send('分析 A');
     await responsive.getByLabel('A · 展开/收起走势', {exact:true}).click();
     await label('行情双图：价格与成交量，点按检视交易日').waitFor();
     check(await responsive.locator('canvas').count() > 0, 'chat expands shared chart renderer');
-    for (const width of [320,390,1024]) {
+    for (const width of [320,390,430,1024]) {
       await page.setViewportSize({width,height:844});
-      await page.waitForFunction(w => document.querySelector('[aria-label="问答输入区"]')?.getBoundingClientRect().width === w, width);
+      await page.waitForFunction(w => document.querySelector('[aria-label="问答输入区"]')?.getBoundingClientRect().width === Math.min(w,480), width);
       const b = await label('问答输入区').boundingBox(), input = await label('股票问题输入').boundingBox();
       check(b.x >= 0 && b.x + b.width <= width+1 && b.y+b.height <= 845 && input.width > 100, `${width}px composer fits viewport`);
+      check(Math.abs(b.x - (width - b.width)/2) < 2, `${width}px shell is centered`);
       await responsive.getByLabel('A 行情证据卡', {exact:true}).scrollIntoViewIfNeeded(); await shot(`chat-${width}`);
     }
     await page.setViewportSize({width:390,height:500});

@@ -9,11 +9,12 @@ async (page) => {
   const check = (ok, text) => { if (!ok) throw new Error(text); checks.push(text); };
   const label = text => page.getByLabel(text, { exact: true });
   const chooseScenario = async text => {
-    await label('个股详情').evaluate(el => { el.scrollTop = el.scrollHeight; });
+    await label('演示设置').click();
     await label(text).click();
+    await label('演示设置面板').waitFor({state:'detached'});
   };
   const waitText = text => page.waitForFunction(t => document.body.innerText.includes(t), text);
-  const facts = () => label('当前行情事实').innerText();
+  const facts = async () => { if (await label('查看计算').count()) { await label('查看计算').click(); await label('计算明细').waitFor(); } return label('当前行情事实').innerText(); };
   const waitFact = text => page.waitForFunction(t => document.querySelector('[aria-label="当前行情事实"]')?.innerText.includes(t), text);
   const shot = name => page.screenshot({ path: `.cache/task1-evidence/browser/${name}.png` });
   const plot = () => label('行情双图：价格与成交量，点按检视交易日');
@@ -42,8 +43,12 @@ async (page) => {
       check(Math.abs(before.y - after.y) < 3, `F03: restored list position ${letter}`);
     }
     await label('查看示例股票 A').click(); await label('当前行情事实').waitFor();
-    const detailA = await page.locator('body').innerText();
+    const detailA = (await page.locator('body').innerText()).replace(/\s+/g,' ');
     check(['11.20 元', '+0.15 元', '+1.36%', '11.26', '10.99', '180.00 万股', 'AI 解读（Mock）'].every(t => detailA.includes(t)), 'F04/F05: A quote fields and AI');
+    check(await label('计算明细').count() === 0, 'V01: formula is folded on initial detail');
+    const firstPlot = await plot().boundingBox();
+    check(firstPlot.y >= 0 && firstPlot.y + firstPlot.height <= 844, 'V02: complete chart fits first detail screen');
+    check(await label('解读依据选择').evaluate(e => e.querySelectorAll('p').length === 3 && Array.from(e.querySelectorAll('p')).every(p => {const a=p.getBoundingClientRect(),b=p.parentElement.getBoundingClientRect();return a.top>=b.top-1 && a.bottom<=b.bottom+1;})), 'V04: chip labels fit within their touch targets');
     await shot('t1-detail-390');
     await label('中途回落').click();
     await waitFact('区间变化 -6.09%');
@@ -58,9 +63,9 @@ async (page) => {
     await label('区间内 · 中途回落 ›').click(); await waitText('区间变化 -6.09%');
     await touchDay(11, true); await waitText('检视 2026-08-25');
     check((await facts()).includes('135.00 万股'), 'P02: volume selects same day');
-    for (const width of [320, 390]) {
+    for (const width of [320, 390, 430, 1024]) {
       await page.setViewportSize({ width, height: 844 });
-      await page.waitForFunction(w => document.querySelector('[aria-label="行情双图：价格与成交量，点按检视交易日"]').getBoundingClientRect().width === w - 48, width);
+      await page.waitForFunction(w => document.querySelector('[aria-label="行情双图：价格与成交量，点按检视交易日"]').getBoundingClientRect().width === Math.min(w,480) - 32, width);
       check((await facts()).includes('检视 2026-08-25'), `P01: focus survives width ${width}`);
       await plot().scrollIntoViewIfNeeded(); await shot(`t1-plot-${width}`);
       await label('当前行情事实').scrollIntoViewIfNeeded(); await shot(`t1-facts-${width}`);
@@ -74,6 +79,10 @@ async (page) => {
     await label('比较样本 · 量能观察 ›').click(); await waitText('量能倍数 1.50 倍');
     await label('当前行情事实').scrollIntoViewIfNeeded(); await shot('t1-volume-facts');
     await chooseScenario('量能缺失'); await waitText('成交量缺失：2026-09-02');
+    await page.setViewportSize({width:320,height:844});
+    await page.waitForFunction(()=>document.querySelector('[aria-label="行情双图：价格与成交量，点按检视交易日"]').getBoundingClientRect().width===288);
+    check(await label('量能观察 · 暂不可用').evaluate(e=>{const p=e.querySelector('p');if(!p)return false;const a=p.getBoundingClientRect(),b=e.getBoundingClientRect();return a.top>=b.top-1&&a.bottom<=b.bottom+1&&a.left>=b.left-1&&a.right<=b.right+1;}), 'V13: unavailable chip fits 320px');
+    await page.setViewportSize({width:390,height:844});
     check(!(await page.locator('body').innerText()).includes('1.50'), 'I05: missing-volume summary has no stale ratio');
     await label('量能观察 · 暂不可用').click({ force: true });
     check((await facts()).includes('区间变化 +12.00%'), 'I05: unavailable evidence cannot replace valid focus');
@@ -100,7 +109,7 @@ async (page) => {
     check((await page.getByText(/^解读边界：/).innerText()).endsWith('不能据此推断买卖原因。'), 'Q04: complete long text retained');
     await page.setViewportSize({ width: 390, height: 844 }); await back();
     await label('查看示例股票 B').click(); await label('当前行情事实').waitFor();
-    const detailB = await page.locator('body').innerText();
+    const detailB = (await page.locator('body').innerText()).replace(/\s+/g,' ');
     check(['9.60 元', '+0.05 元', '+0.52%', '9.66', '9.49', '80.00 万股', '-4.00%', '0.80'].every(t => detailB.includes(t)), 'F04/I06: B distinct fields using same lens');
     await label('局部反弹').click(); await waitFact('区间变化 +5.49%'); check((await facts()).includes('+5.49%'), 'I01: B local rebound');
     await touchDay(17); await waitText('检视 2026-09-02');
@@ -122,6 +131,10 @@ async (page) => {
       check((await page.locator('body').innerText()).includes(expected), `F06/I06: route ${query}`);
       if (query.includes('UNKNOWN') || query.includes('unavailable')) check(await plot().count() === 0, 'F06: invalid route has no fake market');
     }
+    await page.goto(base+'?entity=MOCK_A'); await label('当前行情事实').waitFor();
+    await label('演示设置').click(); await page.goBack(); await label('行情列表，12 支示例股票').waitFor();
+    await label('打开证据问答').click(); await label('返回行情').click(); await label('行情列表，12 支示例股票').waitFor();
+    check(await label('演示设置面板').count()===0 && !page.url().includes('page=chat'), 'V15: browser back clears detail settings before later navigation');
     check(await page.locator('#root p:not([id])').count() === 0, 'Q05: no leaked text measurement node');
     check(errors.length === 0, 'Q05: no uncaught browser errors');
     check(external.length === 0, 'Q05: no external service requests');

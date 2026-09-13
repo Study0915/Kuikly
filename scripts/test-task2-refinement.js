@@ -52,7 +52,7 @@ async (page) => {
     await page.waitForTimeout(800);await label('打开证据问答').click();await label('问答会话记录').waitFor();
     id++;await label('定位最新回答').click();await page.waitForTimeout(150);
     check(await label(`回答 ${id}`).getByLabel('B 行情证据卡',{exact:true}).count()===1 && await latestStartsInView(),'detached response and remount use only the current list');
-    await label('新建会话').click();await page.waitForTimeout(120);
+    await label('演示设置').click(); await label('新建会话').click();await page.waitForTimeout(120);
     check(await label('问答会话记录').evaluate(el=>el.scrollTop)<2 && await page.getByLabel(/^问题 \d+$/).count()===0,'new session resets actual scroll and messages');
     check(errors.length===0,'refinement flows have no browser runtime errors');
     await page.screenshot({path:'.cache/task2-evidence/refinement-end.png'});
