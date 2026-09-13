@@ -11,7 +11,7 @@
 
 | 项目 | 链接 |
 | --- | --- |
-| ⭐ 仓库地址 | [Study0915/Kuikly · 课程成果](https://github.com/Study0915/Kuikly/tree/feature/task2-evidence-chat) |
+| ⭐ 仓库地址 | [Study0915/Kuikly · 课程成果](https://github.com/Study0915/Kuikly) |
 
 ## 课程说明
 
