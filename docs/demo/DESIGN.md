@@ -4,13 +4,13 @@
 
 [Android 布局指南](https://developer.android.com/design/ui/mobile/guides/layout-and-content/layout-basics)的内容分组和主要动作原则，用在报价头、图表、依据、事实的顺序；[TradingView 精简行情列表](https://www.tradingview.com/blog/en/minimalistic-display-mode-for-watchlist-41721/)提供紧凑价格/涨跌列表参考；[Android 无障碍指南](https://developer.android.com/guide/topics/ui/accessibility/apps)用于 48 触控区和文字对比度目标。落实结果见[视觉审查](../evidence/task2/visual-review.json)，这不是全量无障碍认证。
 
-| 参考项目 | 公开材料可借鉴之处 | 本轮取舍 |
+| 参考项目 | 公开材料可借鉴之处 | 设计取舍 |
 |---|---|---|
 | [KuiklyStock / PR 1](https://github.com/Kuikly-contrib/Kuikly-awesome/pull/1) | 行情失败降级及完整操作 | 保留明确状态与恢复动作，不加入未实现的搜索入口 |
 | [StockChat / PR 2](https://github.com/Kuikly-contrib/Kuikly-awesome/pull/2) | 问答、业务卡和详情追问 | 缩短欢迎内容，统一输入区与证据卡 |
 | [SaiRen / PR 3](https://github.com/Kuikly-contrib/Kuikly-awesome/pull/3) | 紧凑行情与分类卡片、项目预览 | 减少卡片嵌套，三条依据纵向清晰排列 |
 | [KuiklyAIStock / PR 4](https://github.com/Kuikly-contrib/Kuikly-awesome/pull/4) | 完整导航和分析信息分区 | 只提供行情/问答两个真实入口，优先看事实再展开细节 |
 
-上述参考来自作者公开材料，不是对其真机、接口或性能的独立验收；不认定所有同学都完成了物理真机部署。登记格式另按[官方指南](https://github.com/Kuikly-contrib/Kuikly-awesome/tree/Tencent/OpenSourceTalent)办理，仅准备自己的 GitHub ID 目录 README。
+上述项目按公开材料作为界面参考，未对其运行平台、接口或性能做独立验收。课程登记格式采用[官方指南](https://github.com/Kuikly-contrib/Kuikly-awesome/tree/Tencent/OpenSourceTalent)。
 
-本项目保留的重点：结论与区间、交易日、计算式可双向核对；缺量影响可计算性；两题按股票/快照/证据身份实际复用 resolver、presenter、plot 和详情。没有因为视觉模仿而移除数值口径或改变图表命中几何，也不把其他项目已有的问答卡说成本项目独有。
+本项目将证据身份、可计算性和双向核对作为交互基础：结论与区间、交易日、计算式相互对应；缺量会影响量能计算。两题按股票/快照/证据身份复用 resolver、presenter、plot 和详情，视觉调整保留原数值口径和图表命中几何。

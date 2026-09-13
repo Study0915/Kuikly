@@ -50,18 +50,18 @@ Windows PowerShell：
 
 预览地址由脚本输出；这是本机运行入口。首次构建需要下载固定依赖。Kuikly 2.4.0、Kotlin 2.0.21、JDK 17、Gradle Wrapper 8.0 已固定。[脚本说明](scripts/README.md)
 
-## 工程与评分证据
+## 课程要求与验证证据
 
-| 老师评分维度 | 对应成果 |
+| 课程维度 | 对应成果 |
 |---|---|
 | 功能完整性 40% | 两题完整路径、字段、异常恢复及明确的未知对象提示 |
 | 工程设计 25% | 事实计算/状态/绘制分离，显式 Markdown 与业务卡类型，跨题复用与请求隔离 |
 | AI 场景 25% | 结论、依据、风险、时效和双向核对；明确区分可计算与不可计算 |
-| 加分 10% | 浅色移动布局、窄屏与桌面适配、触摸交互和连续阅读体验；实际效果以证据为准 |
+| 体验优化 10% | 浅色移动布局、窄屏与桌面适配、触摸交互和连续阅读体验；实际效果以证据为准 |
 
-[完整评分证据与限制](docs/submit/SCORING-AUDIT.md) · [当前验证及候选版本](docs/submit/DELIVERY.md)
+[课程要求与验证证据](docs/submit/SCORING-AUDIT.md) · [版本与验证记录](docs/submit/DELIVERY.md)
 
-本轮 53 项共同逻辑测试与 233 项浏览器检查通过；H5 浏览器交互、Android APK 构建和设备运行分别记录。构建输入、实际运行产物、测试与录像通过收据绑定，打包拒绝混用陈旧证据。不将内部自评当成老师成绩。
+53 项共同逻辑测试与 233 项浏览器检查通过；H5 浏览器交互、Android APK 构建和设备运行分别记录。构建输入、实际运行产物、测试与录像通过收据绑定，打包拒绝混用陈旧证据。
 
 `shared` 包含行情、证据、会话、Markdown、页面和路由；`h5App` 与 `androidApp` 承接宿主。`finance_home` 是唯一 Pager。历史归档及空 `KuiklyChart` module 不代表活动实现能力。[当前架构](docs/ARCHITECTURE.md)
 
@@ -69,8 +69,7 @@ Windows PowerShell：
 
 仅作技术演示，不构成投资建议。当前支持有限 Mock 意图、受限 Markdown、500 字输入和 20 轮会话；没有真实模型、行情服务、交易功能或持久化会话。Android 原生设备及键盘、iOS、HarmonyOS 未运行验证，APK 构建不等于设备运行。
 
-- [原始题面与官方提交格式](docs/REQUIREMENTS.md) · [课程登记候选](docs/submit/course-entry/OpenSourceTalent/Study0915/README.md)
+- [原始题面与官方提交格式](docs/REQUIREMENTS.md) · [课程登记](docs/submit/course-entry/OpenSourceTalent/Study0915/README.md)
 - [Task 1 学习报告](docs/learning/TASK1-LEARNING.md) · [Task 2 学习报告](docs/learning/TASK2-LEARNING.md)
-- [协作流程](docs/agent-workflow.md) · [分支规则](docs/GIT-WORKFLOW.md) · [当前工作台](docs/workboard.md)
-- Codex 负责两题 PLAN、CODE、TESTS、LEARNING 与本地 SUBMIT 准备；Claude Code、OpenCode 当前不参与活动实施。用户决定合并、推送、PR、发布和实际提交。
+- 开发方式：采用 AI 辅助开发，Codex 参与方案、代码实现、测试与文档整理。
 - [许可证](LICENSE) · [第三方声明](THIRD_PARTY_NOTICES.md)

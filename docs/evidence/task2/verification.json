@@ -66,13 +66,5 @@
   ],
   "recordingResult": "PASS",
   "receiptGateChecks": 12,
-  "publicDelivery": {
-    "repositoryPublic": true,
-    "checkedDate": "2026-09-13",
-    "publicDefaultBranch": "main",
-    "publicMainCommit": "24cedfe6b6f8be84bbed4115438c3c136241be32",
-    "currentFeatureBranchPublic": false,
-    "status": "PUBLIC_REPOSITORY_BUT_CURRENT_RESULT_NOT_SYNCED"
-  },
   "pathBase": "repository root"
 }
