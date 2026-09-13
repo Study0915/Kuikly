@@ -1,44 +1,48 @@
 # 两题本地交付说明
 
-日期：2026-09-12。业务版本`972167b`，分支`feature/task2-evidence-chat`。本轮修复比较对象替换、日期/数量误判、快捷追问丢失草稿和长会话定位；最新本地候选位于`.cache/submission-20260912-r3/`及同名ZIP。r2历史包保留。包外SHA与包内MANIFEST记录确切文件版本，validation包含构建/UI/录像收据。未推送、PR、合并、发布、报名提交或外发。
+2026-09-13。视觉实施基线 485964c，计划提交 602bc15，业务版本 **c25eeed**，分支 feature/task2-evidence-chat。本轮完成浅色行情首页、首屏双图与折叠计算、紧凑问答卡、容器适配和连续状态恢复；题面及创新范围不变。新候选名为 submission-20260913-r4，封存成功以 CANDIDATE_ARCHIVE_VERIFIED 和包外 SHA 为准。没有推送、PR、合并、发布、报名提交或外发。
 
-## 先看什么
+## 先看新版成果
 
-1. `videos/task1.webm`：87.68秒，行情→依据→单日/样本→缺量→B复用→失败重试。
-2. `videos/task2.webm`：99.12秒，输入→Markdown+卡片→精确详情→返回→A/B→追问保留草稿→缺量→C/Z范围提示→重试→共享图形。
-3. `source/README.md`与[评分审计](SCORING-AUDIT.md)：内部自评T1约90、T2约91；实际老师评分未知。
-4. `preview/serve.cjs`：已有Node环境运行`node preview/serve.cjs`，打开`http://127.0.0.1:18770/`，无需先构建。
+1. [项目 README](../../README.md)：定位、三页截图、两题路径、具体优势与运行方法。
+2. [Task 1 视频](../demo/task1.webm)：88.44 秒，结论→区间→单日→计算→缺量→B 复用→失败恢复。
+3. [Task 2 视频](../demo/task2.webm)：92.64 秒，输入→Markdown+卡片→同快照详情→比较/追问→保留草稿→缺量→原位重试→共享图形。
+4. [评分证据审计](SCORING-AUDIT.md)：按 40/25/25/10 展示证据，已撤下旧版 90/91 数字自评，老师实际评分未知。
+5. [课程登记候选](course-entry/OpenSourceTalent/Study0915/README.md)：仅包含自己的 GitHub ID、Task 1 & Task 2、仓库链接与简短说明，按老师模板独立准备。
 
-两段视频均为真实H5操作，无音频，说明字幕在应用画面外。已抽帧目检核心场景，并用工作区FFmpeg解码完整视频；没有将字幕中的功能描述当作额外应用功能。
+两段录像来自实际 H5 操作，520×1020 外框内的应用为 390×844；字幕在应用画面外，无音频。已全片解码并各检查三个关键帧。docs/demo 的公开视频与验证录像逐字节一致，README 不依赖本机路径或忽略缓存。
 
-## 源码与复现
+## 公开入口仍待同步
 
-源码由明确的tracked文件白名单导出，包含Gradle Wrapper、各活动module、测试、运行/验收脚本、当前说明与证据；另附当前Kotlin/JS yarn.lock快照。排除归档源码、Git历史、个人配置、SDK、依赖缓存、密钥和原始私有材料。
+2026-09-13 用不带 Authorization 的匿名请求核对：[仓库](https://github.com/Study0915/Kuikly)已 public，但默认 main 仍为 **24cedfe6b6f8be84bbed4115438c3c136241be32**，公开 README 仍写旧空壳；feature/task2-evidence-chat 的公开分支接口返回 404。本地改版完成不等于老师已经能看到这些功能，当前登记链接尚未指向本轮成果。
 
-在Windows PowerShell中，将完整JDK17、Node.js、Android command-line tools分别解压到`source/.cache/jdk17`、`.cache/node`、`.cache/android-sdk/cmdline-tools/latest`。然后运行`bootstrap-cli.ps1`、`doctor.ps1`、`verify.ps1`。bootstrap将所需Yarn1.22.17和缺失SDK包安装在工作区；首次构建需要固定依赖下载，不要求全局Gradle或改系统PATH。
+[官方指南](https://github.com/Kuikly-contrib/Kuikly-awesome/tree/Tencent/OpenSourceTalent)要求 9 月 14 日当天项目仓库公开可访问，未列具体时刻；用户转发的群通知另写“9 月 14 日实战结束”。不推定深夜截止，也不把公开开关已打开当成交付完成。
 
-2026-09-12已在独立源码目录、无该目录项目构建产物的条件下复验：共用工作区依赖与Gradle构建缓存，JS/H5与Android构建成功，53项JVM结果通过；源码输入指纹与H5产物SHA均与活动目录完全一致。Android APK的SHA不同，部分DEX条目不同，不声称APK逐字节可复现。该复验不冒充第二台机器全新联网安装或实际设备运行。
+最终对外提交前必须逐项匿名检查：
 
-## 验收范围
+- 登记链接打开的默认入口包含本轮完整代码，至少涵盖业务 c25eeed 及后续展示文档提交。
+- README 三页截图、两段视频、运行说明和学习材料均能访问。
+- 课程目录为 OpenSourceTalent/Study0915/README.md，Task 1 & Task 2 填写准确，未提交整个工程到课程登记仓库。
+- 核对老师最新通知。本轮只做本地候选；同步、合并、PR 和实际提交由用户另行决定。
 
-53个共同逻辑测试；T1 59/7/23/4项H5/触摸/深化/鼠标；T2 32项H5、11项会话/触摸和独立32项桌面通过。新增17项对象、草稿和可见位置检查在触摸/桌面各通过。详情见[Task2测试报告](../REVIEWS/TASK2-TESTS.md)。
+## 验收与复现边界
 
-12项[交付门禁检查](../evidence/task2/receipt-gates.json)在隔离副本通过：修改源码、加入未跟踪业务文件、替换JS、同源码重建不同JS、改变测试/证据、缺少完成录像或修改视频均被拒绝；文档编辑不会无故使业务构建失效。打包要求全部构建/测试/录制输入纳入导出范围，并检查包内Markdown链接。
+53 个共同逻辑测试通过（0 failures/errors）；H5 production 和 Android Debug 构建通过。Task 1：66 H5、7 触摸、33 深化、4 鼠标，共 110 项。Task 2：39 H5、11 会话/触摸、39 桌面，17 优化检查在触摸/桌面各通过，共 123 项。两题共 233 项浏览器检查，包含不同输入模式的重复场景，不等同于 233 项独立功能。
 
-H5与APK版本、截图及JSON结果位于源码的`docs/evidence/task2`。原始包含本机路径的构建日志只留在忽略目录，不放入候选。
+320/390/430/1024、短视口、三页、缺量、失败、长会话经过回归与视觉核对。完整图表在 390×844 首屏，按钮文字/48 触控区、计算展开、按文档恢复、演示面板返回通过检查。对比度、截图与产物哈希见[验证摘要](../evidence/task2/verification.json)和[视觉审查](../evidence/task2/visual-review.json)。未做全量无障碍认证。
 
-## 保留的边界
+[12 项交付门禁](../evidence/task2/receipt-gates.json)在隔离副本通过；源码、运行 JS、UI 脚本/结果、录像与产物收据绑定。打包对公开视频另做哈希匹配，导出所有构建/测试/录制输入，检查 Markdown 相对链接，再逐文件核对 ZIP 长度与 SHA。
 
-全部行情和AI回答为确定性历史Mock。Android设备/原生键盘、iOS、鸿蒙、真实模型/API、性能基准与个人讲述能力未验证。20轮/500字上限、刷新清空会话、受限Markdown有明确说明。锁定工具链存在上游警告，不宣称零警告。
+候选源码来自明确的 tracked 白名单，附验证过的 Kotlin/JS yarn.lock，不带 Git 历史、SDK、缓存、个人工具配置或归档。导出的源码指纹、H5 JS 和 APK 必须匹配收据。本轮没有重复宣称独立目录构建；2026-09-12 r3 的独立源码目录复验使用共享工作区依赖/Gradle 缓存，属于历史证据，不能当成本轮独立机器初装或 APK 逐字节可复现证明。
 
-原仓库初始14个tracked修改及未跟踪CLAUDE.md保留；本轮聚焦提交没有整仓纳入旧差异。候选会携带必要文档的当前内容，MANIFEST逐文件哈希为准。
+快速看候选：在已有 Node 环境执行 node preview/serve.cjs，可选端口参数，例如 18771。源码运行按项目 README：JDK17、Node、Android command-line tools 全部放在 source/.cache，再运行 bootstrap-cli、doctor、verify。原始带本机路径的日志只留在忽略目录；本轮没有安装新依赖，也没有修改系统 PATH 或 base 环境。
 
-本地候选以成功的CANDIDATE_ARCHIVE_VERIFIED输出和包外SHA为准。ZIP内每个清单文件复核长度与SHA，另外核对导出的源码指纹、JS/APK及验证收据。原始含本机路径的日志不进入包。外部提交仍需用户决定。
+## 保留与未验证项目
 
-### r3 完成后核验
+旧 submission-20260912-r3.zip 保留，13,425,449 字节、174 个清单文件，SHA256 D08B38C7D219EEE2A10CDA9F318F2EC100CA587380D68334C138474C43159E31；旧 r2 也未删除。新候选使用独立名称，不覆盖旧包。
 
-`submission-20260912-r3.zip`：13,425,449字节，174个清单文件，SHA256 `D08B38C7D219EEE2A10CDA9F318F2EC100CA587380D68334C138474C43159E31`。包内链接检查通过，文本隐私与禁止路径扫描均为0命中。导出预览实测C/Z不出伪造卡、B的E2显示+5.49%、返回会话成功且无运行错误；已验证原r2预览会被新版哈希门禁拒绝。
+初始 14 份 tracked 内容留有工作区备份；README 按本轮明确授权重写，其他 13 份原差异保持，未整仓纳入提交。未跟踪兼容入口未读取或提交。必要文档在候选里采用当前内容，以 MANIFEST 逐文件哈希为准。
 
-包内源码快照来自59e3f3a及保留的必要文档工作树差异；本段是ZIP生成后的验收记录，不回写已封存的包。当前本地预览为r3，端口18770；r2文件未删除。
+全部行情和回答是确定性历史 Mock。Android 设备/模拟器与原生键盘、iOS、HarmonyOS、真实行情/API/模型、性能基准、真实投资效果与个人讲述能力未验证。20 轮/500 字、刷新清空会话、受限 Markdown 均保留；工具链仍有上游警告。
 
-下一步：用户预览视频与Demo，练习讲述，并决定是否对外提交；当前无需额外环境安装。
+下一步：预览新版候选，确认正确成果同步到公开入口，再按老师格式登记。外部操作尚未执行。

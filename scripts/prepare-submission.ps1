@@ -20,7 +20,8 @@ try {
         $_ -in $roots -or $_ -in $docs -or $_ -match '^(gradle|shared|androidApp|h5App|KuiklyChart|scripts)/' -or
         $_ -match '^docs/(interfaces|evidence/task1|evidence/task2)/' -or
         $_ -match '^docs/(plans|learning|handoffs|REVIEWS)/TASK[12]-(PLAN|LEARNING|CODE|TESTS)\.md$' -or
-        $_ -match '^docs/decisions/ADR-01[34].*\.md$' -or $_ -match '^docs/submit/(SCORING-AUDIT|DELIVERY|TASK[12]-VIDEO)\.md$'
+        $_ -match '^docs/decisions/ADR-01[345].*\.md$' -or $_ -match '^docs/submit/(SCORING-AUDIT|DELIVERY|TASK[12]-VIDEO)\.md$' -or
+        $_ -match '^docs/demo/' -or $_ -eq 'docs/submit/course-entry/OpenSourceTalent/Study0915/README.md'
     })
     foreach ($inputFile in @($buildReceipt.source.files) + @($uiReceipt.scripts.files) + @($recordingReceipt.scripts.files)) {
         if ($inputFile.path -ne 'kotlin-js-store/yarn.lock' -and $inputFile.path -notin $files) {
@@ -62,6 +63,11 @@ try {
     Copy-Item h5App/src/jsMain/resources/index.html (Join-Path $outputRoot 'preview/index.html')
     Copy-Item androidApp/build/outputs/apk/debug/androidApp-debug.apk (Join-Path $outputRoot 'binaries/android-debug-build-only.apk')
     foreach ($taskNumber in @(1,2)) {
+        $publicVideo = "docs/demo/task$taskNumber.webm"
+        if (-not (Test-Path -LiteralPath $publicVideo) -or
+            (Get-FileHash -LiteralPath $publicVideo).Hash -ne (Get-FileHash -LiteralPath ".cache/task2-evidence/task$taskNumber-final.webm").Hash) {
+            throw "Public Task $taskNumber video differs from the validated recording."
+        }
         Copy-Item ".cache/task2-evidence/task$taskNumber-final.webm" (Join-Path $outputRoot "videos/task$taskNumber.webm")
         Copy-Item "docs/submit/TASK$taskNumber-VIDEO.md" (Join-Path $outputRoot "videos/task$taskNumber-transcript.md")
     }

@@ -1,5 +1,7 @@
 # Kuikly Finance 当前架构
 
+2026-09-13呈现调整见[ADR-015](decisions/ADR-015-shared-finance-presentation.md)：FinanceTheme统一文字/按钮/本地图标；DetailPresentationState按DocumentKey保存计算展开及详情阅读位置，首次真实布局后恢复。LensFocus仍来自原Session，未增加第二套证据状态。H5根宽度来自最大480的实际容器，Android宿主同步浅色系统栏。测试状态以两题TESTS及交付说明为准。
+
 ## 当前状态
 
 2026-09-12更新：Task2证据问答已实现并通过[专项验收](REVIEWS/TASK2-TESTS.md)。`finance_home`仍是唯一Pager，内部Home/Chat/Detail路由；shared新增chat包。Markdown与EvidenceCard显式分离；ChatSession管理请求代次与原位重试，ChatController保存草稿、列表位置及每条消息展开状态。聊天卡消费Task1的EvidenceResolver/LensPresenter/MarketPlot，承接页复用FinanceDetail/QuoteEvidenceLens。结构与授权见[ADR-014](decisions/ADR-014-evidence-chat.md)、[接口](interfaces/EvidenceChat.md)。下文Task1基线说明中的“Task2待实现”仅描述当时边界。

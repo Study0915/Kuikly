@@ -1,53 +1,76 @@
-# Kuikly Finance
+# 行情观察 · Kuikly Finance
 
-基于 Kuikly 的两题股票原型：Task 1 将行情与 AI 依据双向联动；Task 2 将 Markdown、可核对的行情卡、追问与详情连接起来。全部使用确定性历史 Mock，交互真实运行。见 [Task 1](docs/TASK1-RUN.md)、[Task 2](docs/TASK2-RUN.md) 和 [评分证据](docs/submit/SCORING-AUDIT.md)。
+**从一句解读，回到可以核对的行情依据。**
 
-Shape Task 1/2 的原始题面与完成定义以 [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) 为准。Issue #1477 是独立历史/可选参考，不定义两题的 Must；通用图表、K 线和高级手势只有被用户选入 Task 总计划时才进入范围。
+2026 OpenSourceTalent / Shape with AI · **Task 1 & Task 2** · GitHub ID：**Study0915**
 
-## 当前状态
+基于 Kuikly 的股票行情与证据问答原型。点击结论定位区间，选择交易日反查依据，展开公式核对数值；问答里的行情卡沿用同一份股票与快照，进入详情后继续核对。全部行情和回答使用确定性历史 **Mock**，不接入真实模型或实时行情。
 
-- `[FACT]` 活动入口为 `finance_home`。
-- `[MOCK]` 12 个确定性股票样例；摘要由数值事实和有限模板生成，没有真实行情或模型服务。
-- `[VERIFIED]` 53 项共同逻辑测试；Task 1 的 59/7/23/4 项 H5/触摸/深化/桌面检查，Task 2 的 32 项 H5、11 项会话/触摸及独立 32 项桌面检查通过；新增 17 项对象、草稿与阅读位置检查在触摸/桌面各通过。H5 production 与 Android Debug 构建通过。
-- `[VERIFIED]` 两题实现、测试和学习材料已完成；最新带字幕演示与本地候选见 [交付说明](docs/submit/DELIVERY.md)。个人掌握程度未代签。
-- `[UNVERIFIED]` Android 设备运行、iOS 和 HarmonyOS 未执行；APK 构建不等于设备运行。
-- `[DECISION]` Codex 负责两题 PLAN、TESTS、LEARNING 和 SUBMIT 准备；OpenCode 是两题默认 CODE 写入者，Codex 只有经用户确认后才备选接管。
+| 行情列表 | 证据联动详情 | 问答与行情卡 |
+|---|---|---|
+| ![行情列表](docs/demo/home.png) | ![证据联动详情](docs/demo/detail.png) | ![证据问答](docs/demo/chat.png) |
 
-## 环境
+**先看演示：** [Task 1：行情与证据核对](docs/demo/task1.webm) · [Task 2：问答到同一份详情](docs/demo/task2.webm) · [视频说明与文字稿](docs/demo/README.md)
 
-- JDK 17：`.cache\jdk17`
-- Node.js/npm：`.cache\node`、`.cache\npm`
-- Gradle Wrapper 8.0：缓存位于 `.cache\gradle`
-- Android SDK：`.cache\android-sdk`
+录屏来自实际 H5 操作，说明字幕在应用画面外。手机尺寸的浏览器画面不代表原生真机部署。
 
-依赖和 SDK 不安装到 C 盘，也不要求全局 Gradle。PowerShell 入口：
+## 两题完成了什么
+
+| 任务 | 实际路径 | 操作与验收 |
+|---|---|---|
+| Task 1 | 12 只股票列表 → 完整报价字段 → 详情与解读 → 区间/单日核对 → 缺量及失败恢复 | [运行说明](docs/TASK1-RUN.md) · [测试报告](docs/REVIEWS/TASK1-TESTS.md) |
+| Task 2 | 输入问题 → Markdown + 行情业务卡 → 精确详情 → 返回追问/比较 → 取消、重试与新会话 | [运行说明](docs/TASK2-RUN.md) · [测试报告](docs/REVIEWS/TASK2-TESTS.md) |
+
+## 核心设计：解释可以核对
+
+**从结论到行情，也能从交易日回到依据。** A 的“中途回落”定位到同一段 K 线与成交量，展示 `11.50 → 10.80，−6.09%`；展开计算可检查分母。点区间内的一天，则切换为该日的开高低收、成交量和相对前收涨跌，并列出已有相关依据。区间变化、单日涨跌和最大回撤不会混为一谈。
+
+**缺失数据会改变能得出的结论。** 在缺量情景中，09-02 的成交量缺失，五日均量与量能倍数不再可用；价格依据仍可核对。组件不会跳过缺失日补凑样本，也不会继续显示此前的完整量能结论。
+
+**两题实际共用组件。** 行情详情和问答卡共用 `EvidenceResolver`、`LensPresenter` 与 `MarketPlot`；问答卡携带股票、快照和证据身份，进入同一个 `FinanceDetail / QuoteEvidenceLens`。单股、A/B 比较和缺量回答消费同一套能力。[证据组件合同](docs/interfaces/QuoteEvidenceLens.md) · [问答接口合同](docs/interfaces/EvidenceChat.md)
+
+**连续操作保留上下文。** 详情返回后保留消息、草稿、阅读位置和卡片展开状态；快捷追问携带原股票上下文，不覆盖未发送的草稿。取消、原位重试和新会话分别处理旧响应。会话仅保存在本次页面运行中，刷新会清空。
+
+## 快速运行
+
+工具全部放在项目 `.cache` 内；无需全局 Gradle，也不修改系统 PATH 或 base 环境。先准备：
+
+- JDK 17 解压到 `.cache/jdk17`，其中包含 `bin/java.exe`。
+- Node.js 解压到 `.cache/node`，其中包含 `node.exe` 和 npm。
+- Android command-line tools 放到 `.cache/android-sdk/cmdline-tools/latest`，其中包含 `bin/sdkmanager.bat`。
+
+Windows PowerShell：
 
 ```powershell
 .\scripts\bootstrap-cli.ps1
 .\scripts\doctor.ps1
 .\scripts\verify.ps1
+.\scripts\run-h5.ps1 -Production
 ```
 
-手工调用 Wrapper 前执行 `. .\scripts\use-cli-env.ps1`。H5 生产预览使用 `.\scripts\run-h5.ps1 -Production`；运行后打开 http://127.0.0.1:18761/。浏览器回归见 `.\scripts\test-ui.ps1`。
+预览地址由脚本输出；这是本机运行入口。首次构建需要下载固定依赖。Kuikly 2.4.0、Kotlin 2.0.21、JDK 17、Gradle Wrapper 8.0 已固定。[脚本说明](scripts/README.md)
 
-交付准备按 `verify → test-ui -Task Both → record-demos → test-receipts → prepare-submission` 执行，见 [脚本说明](scripts/README.md)。构建输入、运行产物、交互检查和录像通过工作区收据绑定；源码或证据变动后，旧收据不能继续用于新包。
+## 工程与评分证据
 
-## 活动模块
+| 老师评分维度 | 对应成果 |
+|---|---|
+| 功能完整性 40% | 两题完整路径、字段、异常恢复及明确的未知对象提示 |
+| 工程设计 25% | 事实计算/状态/绘制分离，显式 Markdown 与业务卡类型，跨题复用与请求隔离 |
+| AI 场景 25% | 结论、依据、风险、时效和双向核对；明确区分可计算与不可计算 |
+| 加分 10% | 浅色移动布局、窄屏与桌面适配、触摸交互和连续阅读体验；实际效果以证据为准 |
 
-- `KuiklyChart/`：保留的空 module，旧 API 不再有效，也不构成 Task 1 核心完成前置。
-- `shared/`：market 行情、insight 证据与双图、chat 会话/Markdown/内容块、ui 页面与卡片、navigation 内部路由。
-- `androidApp/`、`h5App/`：Android/H5 最小宿主。
-- `docs/`：需求、架构、任务合同、证据和学习报告。
+[完整评分证据与限制](docs/submit/SCORING-AUDIT.md) · [当前验证及候选版本](docs/submit/DELIVERY.md)
 
-## 开发顺序
+本轮 53 项共同逻辑测试与 233 项浏览器检查通过；H5 浏览器交互、Android APK 构建和设备运行分别记录。构建输入、实际运行产物、测试与录像通过收据绑定，打包拒绝混用陈旧证据。不将内部自评当成老师成绩。
 
-1. Task 1：Codex PLAN → OpenCode CODE → Codex TESTS → Codex LEARNING；
-2. Task 2：Codex PLAN → OpenCode CODE → Codex TESTS → Codex LEARNING；
-3. 两题 LEARNING 均通过后，Codex 按 40/25/25/10 和导师要求准备 SUBMIT 候选；
-4. 用户决定合并、PR、发布、报名提交和外部沟通。
+`shared` 包含行情、证据、会话、Markdown、页面和路由；`h5App` 与 `androidApp` 承接宿主。`finance_home` 是唯一 Pager。历史归档及空 `KuiklyChart` module 不代表活动实现能力。[当前架构](docs/ARCHITECTURE.md)
 
-详细流程见 [`docs/agent-workflow.md`](docs/agent-workflow.md)，分支与交接规则见 [`docs/GIT-WORKFLOW.md`](docs/GIT-WORKFLOW.md)，当前任务见 [`docs/workboard.md`](docs/workboard.md)。
+## 范围与进一步阅读
 
-## 真实性边界
+仅作技术演示，不构成投资建议。当前支持有限 Mock 意图、受限 Markdown、500 字输入和 20 轮会话；没有真实模型、行情服务、交易功能或持久化会话。Android 原生设备及键盘、iOS、HarmonyOS 未运行验证，APK 构建不等于设备运行。
 
-默认使用离线、确定性的 Mock。真实行情、真实模型、登录、交易、联网检索和付费服务不在默认范围。股票内容仅作技术演示，不构成投资建议；未实际运行的平台不会标为支持。
+- [原始题面与官方提交格式](docs/REQUIREMENTS.md) · [课程登记候选](docs/submit/course-entry/OpenSourceTalent/Study0915/README.md)
+- [Task 1 学习报告](docs/learning/TASK1-LEARNING.md) · [Task 2 学习报告](docs/learning/TASK2-LEARNING.md)
+- [协作流程](docs/agent-workflow.md) · [分支规则](docs/GIT-WORKFLOW.md) · [当前工作台](docs/workboard.md)
+- Codex 负责两题 PLAN、CODE、TESTS、LEARNING 与本地 SUBMIT 准备；Claude Code、OpenCode 当前不参与活动实施。用户决定合并、推送、PR、发布和实际提交。
+- [许可证](LICENSE) · [第三方声明](THIRD_PARTY_NOTICES.md)

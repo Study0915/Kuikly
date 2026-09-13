@@ -1,0 +1,144 @@
+{
+  "date": "2026-09-13",
+  "codeCommit": "c25eeed",
+  "buildFingerprint": "594DBB539D7CCDC8E9D399B20C7BCAB66931A7C1AEDF99E6BA40F74BFB96D5EF",
+  "result": "PASS_WITH_PLATFORM_LIMITS",
+  "viewports": [
+    {
+      "width": 320,
+      "height": 844
+    },
+    {
+      "width": 390,
+      "height": 844
+    },
+    {
+      "width": 430,
+      "height": 844
+    },
+    {
+      "width": 1024,
+      "height": 844,
+      "containerWidth": 480
+    },
+    {
+      "width": 390,
+      "height": 500,
+      "scenario": "20 turns and composer"
+    },
+    {
+      "width": 390,
+      "height": 360,
+      "scenario": "scrollable demo settings"
+    }
+  ],
+  "checks": [
+    "Home, detail, chat screenshots visually reviewed",
+    "Price and volume plot fully inside initial 390x844 detail viewport",
+    "Three evidence buttons and disabled missing-volume text contained at 320",
+    "Same-document calculation expansion and scroll restore; other snapshots isolated",
+    "Comparison cards vertically stacked; latest answer and 20-turn record readable",
+    "Composer remains inside short viewport; settings last option reachable",
+    "Six video keyframes visually inspected and both entire video streams decoded"
+  ],
+  "contrastMethod": "WCAG relative luminance for source palette; not a full accessibility audit",
+  "contrast": [
+    {
+      "foreground": "#17212F",
+      "background": "#FFFFFF",
+      "ratio": 16.216
+    },
+    {
+      "foreground": "#626D80",
+      "background": "#FFFFFF",
+      "ratio": 5.226
+    },
+    {
+      "foreground": "#626D80",
+      "background": "#EDF3FF",
+      "ratio": 4.695
+    },
+    {
+      "foreground": "#626D80",
+      "background": "#F5F7FA",
+      "ratio": 4.869
+    },
+    {
+      "foreground": "#2563EB",
+      "background": "#FFFFFF",
+      "ratio": 5.169
+    },
+    {
+      "foreground": "#2563EB",
+      "background": "#EDF3FF",
+      "ratio": 4.643
+    },
+    {
+      "foreground": "#C93838",
+      "background": "#FFFFFF",
+      "ratio": 5.114
+    },
+    {
+      "foreground": "#087D62",
+      "background": "#FFFFFF",
+      "ratio": 5.097
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "docs/demo/home.png",
+      "sha256": "2B242E5107E8FF074F828E16820C8ACE693B299D00110FCE5E2DE8BCA4C44A25"
+    },
+    {
+      "path": "docs/demo/detail.png",
+      "sha256": "5AC992E039DDC9BE87C7713A4BCEBE295F8B32B4311EDE8DB8E4D51940C15AE6"
+    },
+    {
+      "path": "docs/demo/chat.png",
+      "sha256": "D95A1F41B5E0414EA22640B28ECD4D2B178BD155D3078BB108BC430C0E0E2EC1"
+    },
+    {
+      "path": "docs/demo/calculation.png",
+      "sha256": "9619CA765E6D46556CAAE55D5289B675AC94BF492F6AFC702DFF3D89B7C65167"
+    },
+    {
+      "path": "docs/demo/missing.png",
+      "sha256": "BD5863154A02D84CBC075D74366C91213284101F309FC4A2849EA255301A24BC"
+    },
+    {
+      "path": "docs/demo/chat-320.png",
+      "sha256": "8B340E85CD6F142CC00E32D7505D09ABBE1CB6E9530B1E98A00F8615EFA5FF2E"
+    },
+    {
+      "path": "docs/demo/chat-430.png",
+      "sha256": "F7CD7C872151069D4DBF6E09C95AF98ED3C08DA2CC599D9D6B3140747076D68D"
+    },
+    {
+      "path": "docs/demo/chat-desktop.png",
+      "sha256": "E266536BF80E04464404B8BDCDC31F69BA131F837D18D73B33F9DF38486C9ADE"
+    },
+    {
+      "path": "docs/evidence/task2/long-session.png",
+      "sha256": "F2503A5810CBAC3B4B3043DEA3E7276525BA5D333233B5254B27BC7CCCD3BAED"
+    },
+    {
+      "path": "docs/evidence/task2/long-session-short.png",
+      "sha256": "064996DBA9618F94C86806C82137FC7C770EC06631E9C78217B3F41F905293A6"
+    },
+    {
+      "path": "docs/evidence/task2/short-settings.png",
+      "sha256": "25F92EDE01C339FD7C7DD22D84511867C182F4819C19722EDAC259EFFA2750C5"
+    },
+    {
+      "path": "docs/evidence/task2/failure-retry.png",
+      "sha256": "4350FD976DF6BCA0B653FA71F0BFDA4CD05D477DB4BDD081C59A2041133C84DA"
+    }
+  ],
+  "notVerified": [
+    "physical Android or iOS device",
+    "native soft keyboard",
+    "screen reader conformance",
+    "HarmonyOS"
+  ],
+  "pathBase": "repository root"
+}

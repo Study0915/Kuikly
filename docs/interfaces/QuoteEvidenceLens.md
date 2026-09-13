@@ -1,5 +1,7 @@
 # QuoteEvidenceLens 调用合同
 
+2026-09-13：保留四参数调用合同（公式直接显示）。新版详情使用额外的 `calculationExpanded` getter 与 `onToggleCalculation` 回调，由Pager按DocumentKey保存展开状态；两者只控制公式的呈现，不改变LensFocus、URL或数值。端点、样本和相关依据入口持续可用，首次真实布局后恢复该文档阅读位置。视觉依赖仅为共享FinanceTheme，不依赖页面或路由。
+
 ## 数据到交互
 
 `MockMarketProvider → EvidenceDocument → EvidenceResolver.resolve → ResolvedDocument → QuoteEvidenceLens`

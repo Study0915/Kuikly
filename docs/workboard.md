@@ -6,26 +6,26 @@
 
 ## 当前阶段
 
-2026-09-13：用户已批准联合视觉与提交改版，基线485964c，见两题总计划与ADR-015。本轮CODE/TESTS/LEARNING/SUBMIT为IN_PROGRESS；下表VERIFIED记录仅代表此前r3基线，不代表新视觉已通过。当前下一步：共享主题→首页→详情→问答→宿主→全部回归/视觉→新录像/README/候选。
+2026-09-13：用户批准联合视觉与提交改版，基线 485964c，计划 602bc15，业务 c25eeed。当前本地实现与验收见下表；最终候选封存以 DELIVERY 和包外 SHA 为准，公开入口仍待同步。
 
-| 阶段 | Owner | 前置条件 | 状态 | 唯一产物 / 完成条件 |
-|---|---|---|---|---|
-| T1-PLAN | Codex | 用户审阅计划提交后明确“开始实施” | VERIFIED | [TASK1-PLAN v1.0](plans/TASK1-PLAN.md) 已于 2026-09-07 获确认；确认时提交 `0060711` |
-| T1-CODE | Codex | T1-PLAN VERIFIED | VERIFIED | 2026-09-08 D1–D4 深化完成；会话隔离、上下文恢复、逐日导航、计算明细；最终业务 e6bb182 |
-| T1-TESTS | Codex | T1-CODE 实施记录完整 | VERIFIED | [TESTS](REVIEWS/TASK1-TESTS.md)：32 单测、59 原有 H5、23 深化、7 触摸、4 桌面检查通过；设备 UNVERIFIED |
-| T1-LEARNING | Codex / 用户自测 | T1-TESTS VERIFIED | VERIFIED | 2026-09-12核对[复盘材料](learning/TASK1-LEARNING.md)，个人讲述能力仍未验证；用户授权自主推进，见ADR-014 |
-| T2-PLAN | Codex | T1-LEARNING VERIFIED | VERIFIED | [TASK2-PLAN](plans/TASK2-PLAN.md) v1.1，延续自主决策授权；初版计划25514f5，优化计划随972167b保存 |
-| T2-CODE | Codex | T2-PLAN VERIFIED | VERIFIED | [CODE记录](handoffs/TASK2-CODE.md)，优化业务972167b；比较对象、草稿和阅读位置已修复 |
-| T2-TESTS | Codex | T2-CODE 实施记录完整 | VERIFIED | [TESTS](REVIEWS/TASK2-TESTS.md)：53共同逻辑、32H5、11会话/触摸、32桌面；新增17项触摸/桌面各通过；Task1全93项通过 |
-| T2-LEARNING | Codex | T2-TESTS VERIFIED | VERIFIED | [复盘](learning/TASK2-LEARNING.md)材料已核对；个人掌握程度未代签 |
-| SUBMIT | Codex / 用户 | T1、T2 LEARNING 均 VERIFIED | VERIFIED | r3本地候选174项文件/ZIP哈希、文档链接、隐私扫描与导出预览通过；构建/UI/录像收据一致；外部提交未执行 |
+| 阶段 | Owner | 状态 | 当前产物 / 边界 |
+|---|---|---|---|
+| T1-PLAN | Codex / 用户确认 | VERIFIED | [TASK1-PLAN](plans/TASK1-PLAN.md) 含联合视觉范围，ADR-015 记录结构增量 |
+| T1-CODE | Codex | VERIFIED | [CODE](handoffs/TASK1-CODE.md)：共享主题、紧凑行情、首屏图表、折叠计算与文档状态 |
+| T1-TESTS | Codex | VERIFIED | [TESTS](REVIEWS/TASK1-TESTS.md)：53 共同逻辑、66 H5 / 7 触摸 / 33 深化 / 4 鼠标；设备未验证 |
+| T1-LEARNING | Codex / 用户自测 | VERIFIED | [复盘](learning/TASK1-LEARNING.md) 已更新；个人掌握程度未代签 |
+| T2-PLAN | Codex / 用户确认 | VERIFIED | [TASK2-PLAN](plans/TASK2-PLAN.md) 含联合视觉与正式登记要求 |
+| T2-CODE | Codex | VERIFIED | [CODE](handoffs/TASK2-CODE.md)：紧凑证据卡、统一输入和导航、旧状态保护 |
+| T2-TESTS | Codex | VERIFIED | [TESTS](REVIEWS/TASK2-TESTS.md)：39 H5 / 11 会话 / 39 桌面，17 优化检查触摸/桌面各通过 |
+| T2-LEARNING | Codex / 用户自测 | VERIFIED | [复盘](learning/TASK2-LEARNING.md) 已核对；无真机和真实模型声明 |
+| SUBMIT | Codex | VERIFIED | 新版 README、截图、88.44 / 92.64 秒录像、登记候选及本地 r4；封存记录见 [DELIVERY](submit/DELIVERY.md)；外部提交未执行 |
 
 ## 当前下一步
 
-1. 两题持续优化、联合回归、学习材料与最新视频已完成；12项版本门禁反例通过，源码/运行产物/测试/录像绑定。[评分审计](submit/SCORING-AUDIT.md)保守自评约90/91，实际老师评分未知。
-2. 本地候选已核验；用户预览视频与Demo，练习讲述并决定外部提交。个人讲述能力另记未验证。
-3. Android 设备运行单独待验证：先证明 ADB/设备配置落点满足工作区约束，不把 APK 构建申报为设备运行。
-4. 分支 `feature/task2-evidence-chat`，基于既有 Task 1 HEAD 创建；聚焦本地提交，初始差异保留，没有 push、PR、merge、tag 或外发。
+1. 本地成果、233 项浏览器检查、53 JVM 和新录像已绑定；旧 90/91 数字自评撤下，按[评分证据](submit/SCORING-AUDIT.md)讲述具体功能与边界。
+2. 公开仓库已 public，但 main 仍为 24cedfe 旧空壳；feature/task2-evidence-chat 尚未公开。最终提交前必须匿名核对正确代码、README、截图、视频全部可访问。
+3. 用户决定推送、合并、PR、发布和实际登记。本轮没有执行这些外部动作。9 月 14 日要求不按深夜预留时间。
+4. Android 设备/键盘、iOS/HarmonyOS、真实接口与个人讲述另行验证。依赖与临时文件全部限制在工作区，本轮无新增安装。
 
 ## 2026-09-07 PLAN 记录
 

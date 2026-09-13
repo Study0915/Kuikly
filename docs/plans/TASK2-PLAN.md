@@ -2,7 +2,7 @@
 
 ## 2026-09-13 已授权视觉与提交改版
 
-用户以“PLEASE IMPLEMENT THIS PLAN”确认完整方案。基线 `485964cbd2cc351146c1b01391268e9e373ce454`，分支 `feature/task2-evidence-chat`，Owner为Windows Codex主代理；初始14个tracked差异和未跟踪CLAUDE.md保留。允许shared/src、h5App/src、androidApp/src必要宿主、scripts、README、两题docs；独立课程登记候选和工具/临时产物仅在工作区.cache。禁止归档、无关文件、全局环境、推送和PR。
+用户以“PLEASE IMPLEMENT THIS PLAN”确认完整方案。基线 `485964cbd2cc351146c1b01391268e9e373ce454`，分支 `feature/task2-evidence-chat`，Owner为Windows Codex主代理；初始14个tracked内容已备份；README按本轮授权改写，其余13个原差异及未跟踪兼容入口保留。允许shared/src、h5App/src、androidApp/src必要宿主、scripts、README、两题docs；独立课程登记候选位于 docs/submit/course-entry/OpenSourceTalent/Study0915/README.md；工具/临时产物仅在工作区.cache。禁止归档、无关文件、全局环境、推送和PR。
 
 采用[ADR-015](../decisions/ADR-015-shared-finance-presentation.md)：浅灰#F5F7FA/白色表面/#17212F正文/#2563EB主操作；边距16、8步进，正文16/辅助12–13/标题22/报价36，触控区域48。统一字体与测量，H5最大480居中、Android浅色宿主。
 
