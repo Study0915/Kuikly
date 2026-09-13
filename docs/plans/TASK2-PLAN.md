@@ -1,5 +1,20 @@
 # Task 2 总计划 v1.1
 
+## 2026-09-13 已授权视觉与提交改版
+
+用户以“PLEASE IMPLEMENT THIS PLAN”确认完整方案。基线 `485964cbd2cc351146c1b01391268e9e373ce454`，分支 `feature/task2-evidence-chat`，Owner为Windows Codex主代理；初始14个tracked差异和未跟踪CLAUDE.md保留。允许shared/src、h5App/src、androidApp/src必要宿主、scripts、README、两题docs；独立课程登记候选和工具/临时产物仅在工作区.cache。禁止归档、无关文件、全局环境、推送和PR。
+
+采用[ADR-015](../decisions/ADR-015-shared-finance-presentation.md)：浅灰#F5F7FA/白色表面/#17212F正文/#2563EB主操作；边距16、8步进，正文16/辅助12–13/标题22/报价36，触控区域48。统一字体与测量，H5最大480居中、Android浅色宿主。
+
+1. R-FUNC 40：统一视觉、约72高完整行情行、Home/Chat双入口；详情报价→完整双图→三类依据→当前事实→折叠计算，390×844首屏完整核心图表。问答保留输入/Markdown/业务卡/正确详情/返回。
+2. R-ENG 25：只增加共享呈现组件及Pager按文档展开/滚动状态，不复制LensFocus、resolver或图表。证明Task1、单股、比较、缺量的实际复用。
+3. R-AI 25：突出可核对数值和依据；展示结论定位区间、交易日反查、缺量使量能计算不可用。公式按需展开，风险与时效仍可见。
+4. R-BONUS 10：320/390/430/1024及短视口无溢出或输入遮挡，48触控、文本对比度；新增真机/模型不进入关键路径。测试不能代替视觉完成度。
+5. TESTS：doctor、verify（JS/H5/JVM/APK）、test-ui -Task Both、视觉截图与人工检查；更新计算/设置入口与480尺寸断言，不削弱业务断言。再录约90秒的两题视频、收据核验、新候选打包，保留r3。
+6. LEARNING/SUBMIT：README改为产品、演示、两题对照、创新、运行、架构/边界；公开素材进入docs/demo，另备OpenSourceTalent/Study0915/README.md。官方要求9月14日当天公开可访问，具体时刻未公布。当前public main仍为旧空壳；公开最新版本的核验是后续外部交付门槛，本地通过不能代替。
+
+退出条件：以上布局实看、回归、新视频与包通过；重新审视原90/91自评，不保证老师成绩。依次实施，失败回CODE，环境与缓存只在工作区。
+
 2026-09-12，Owner：Windows Codex。授权：用户要求自主完成并持续完善两题至约 90 分以上，常规选项不再询问。依据 REQUIREMENTS 与 ADR-014。T1-LEARNING 材料已核对；个人学习未代签。
 
 ## 目标与评分
