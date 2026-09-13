@@ -52,8 +52,6 @@ Windows PowerShell：
 
 ## 验证证据
 
-[课程要求与验证证据](docs/submit/SCORING-AUDIT.md) · [版本与验证记录](docs/submit/DELIVERY.md)
-
 53 项共同逻辑测试与 233 项浏览器检查通过；H5 浏览器交互、Android APK 构建和设备运行分别记录。构建输入、实际运行产物、测试与录像通过收据绑定，打包拒绝混用陈旧证据。
 
 `shared` 包含行情、证据、会话、Markdown、页面和路由；`h5App` 与 `androidApp` 承接宿主。`finance_home` 是唯一 Pager。历史归档及空 `KuiklyChart` module 不代表活动实现能力。[当前架构](docs/ARCHITECTURE.md)
